@@ -51,7 +51,7 @@
       </ImageView>
       <ImageView fx:id="setting" accessibleRole="BUTTON" layoutX="1194.0" layoutY="589.0" onMousePressed="#setSetting" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@icons8-settings-64.png" />
+            <Image url="@settings.png" />
          </image>
          <effect>
             <Blend mode="HARD_LIGHT" />
