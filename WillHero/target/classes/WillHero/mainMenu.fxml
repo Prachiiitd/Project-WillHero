@@ -6,8 +6,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720" prefWidth="1298.0" styleClass="root" stylesheets="@background.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.MainMenu">
+<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" styleClass="root" stylesheets="@background.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.MainMenu">
    <children>
+      <ImageView fitHeight="768.0" fitWidth="1366.0">
+         <image>
+            <Image url="@background.jpg" />
+         </image>
+      </ImageView>
       <ImageView fx:id="floatingName" fitHeight="162.0" fitWidth="279.0" layoutX="539.0" layoutY="52.0" preserveRatio="true" AnchorPane.topAnchor="52.0">
          <image>
             <Image url="@willHero.png" />
@@ -51,7 +56,7 @@
       </ImageView>
       <ImageView fx:id="setting" accessibleRole="BUTTON" layoutX="1194.0" layoutY="589.0" onMousePressed="#setSetting" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@icons8-settings-64.png" />
+            <Image url="@settings.png" />
          </image>
          <effect>
             <Blend mode="HARD_LIGHT" />
