@@ -6,14 +6,20 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" styleClass="root" stylesheets="@background.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.MainMenu">
+<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@promptStyling.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.MainMenu">
    <children>
-      <ImageView fitHeight="768.0" fitWidth="1366.0">
+      <ImageView fitHeight="768.0" fitWidth="1366.0" focusTraversable="true">
          <image>
             <Image url="@background.jpg" />
          </image>
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor>
+         <effect>
+            <Blend opacity="0.46" />
+         </effect>
       </ImageView>
-      <ImageView fx:id="floatingName" fitHeight="162.0" fitWidth="279.0" layoutX="585.0" layoutY="44.0" preserveRatio="true" AnchorPane.topAnchor="44.0">
+      <ImageView fx:id="floatingName" fitHeight="162.0" fitWidth="279.0" layoutX="560.0" layoutY="28.0" preserveRatio="true">
          <image>
             <Image url="@willHero.png" />
          </image>
@@ -21,7 +27,7 @@
             <Blend mode="HARD_LIGHT" />
          </effect>
       </ImageView>
-      <ImageView fx:id="exit" accessibleRole="BUTTON" layoutX="961.0" layoutY="450.0" onMousePressed="#setExit" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="exit" accessibleRole="BUTTON" layoutX="923.0" layoutY="429.0" onMousePressed="#setExit" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@exit.png" />
          </image>
@@ -32,7 +38,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <ImageView fx:id="resumeGame" accessibleRole="BUTTON" layoutX="659.0" layoutY="454.0" onMousePressed="#setResumeGame" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="resumeGame" accessibleRole="BUTTON" layoutX="631.0" layoutY="425.0" onMousePressed="#setResumeGame" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@resume.png" />
          </image>
@@ -43,7 +49,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <ImageView fx:id="newGame" accessibleRole="BUTTON" layoutX="355.0" layoutY="435.0" onMousePressed="#setNewGame" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="newGame" accessibleRole="BUTTON" layoutX="349.0" layoutY="411.0" onMousePressed="#setNewGame" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@newGame.png" />
          </image>
