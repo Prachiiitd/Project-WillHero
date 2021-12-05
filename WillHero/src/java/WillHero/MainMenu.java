@@ -1,17 +1,10 @@
 package WillHero;
 
-import javafx.animation.ScaleTransition;
+import Exceptions.WorldNotExistException;
 import javafx.animation.TranslateTransition;
-import javafx.css.PseudoClass;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,8 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -35,40 +27,32 @@ import java.util.ResourceBundle;
 
 public class MainMenu implements Initializable {
 
+    private World newGame;
+    private LeaderBoard leaderBoard;
+
+    public MainMenu() {
+        this.newGame = new World();
+        this.leaderBoard = new LeaderBoard();
+    }
+
+    @FXML
+    private Label bestReward;
+    @FXML
+    private Label bestLocation;
     @FXML
     private ImageView floatingName;
     @FXML
-    private ImageView newGame;
+    private ImageView newGameIcon;
     @FXML
-    private ImageView resumeGame;
+    private ImageView resumeGameIcon;
     @FXML
     private ImageView exit;
     @FXML
-    private ImageView leaderboard;
+    private ImageView leaderboardIcon;
     @FXML
-    private ImageView setting;
+    private ImageView settingIcon;
 
-    public void start(Stage stage) throws IOException {
-
-//        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-
-        Parent root = FXMLLoader.load(Objects.requireNonNull(WillHero.class.getResource("mainMenu.fxml")));
-        Scene scene = new Scene(root);
-
-        Image icon = new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("mainIcon.png")).getPath()));
-        stage.setTitle("Will Hero");
-        stage.getIcons().add(icon);
-
-        stage.setScene(scene);
-        stage.show();
-
-        stage.setOnCloseRequest(event -> {
-            event.consume();
-            exit(stage);
-        });
-    }
-
-    public void exit(Stage stage){
+    private void exit(Stage stage){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"You're about to Exit!", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Exit");
         alert.initStyle(StageStyle.UNDECORATED);
@@ -77,6 +61,24 @@ public class MainMenu implements Initializable {
         if (result.isPresent() &&  result.get() == ButtonType.YES){
             stage.close();
         }
+    }
+
+//    @FXML
+//    private void onHover(){
+//        StaticFunction.onHover(newGameIcon, Rotate.X_AXIS);
+//    }
+
+    public void start(Stage stage) throws IOException {
+
+//        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+
+        URL toScene = getClass().getResource("MainMenu.fxml");
+        StaticFunction.setScene(stage, toScene, "Main Menu");
+
+        stage.setOnCloseRequest(event -> {
+            event.consume();
+            exit(stage);
+        });
     }
 
     @Override
@@ -88,21 +90,14 @@ public class MainMenu implements Initializable {
         trFloatingName.setCycleCount(TranslateTransition.INDEFINITE);
         trFloatingName.setAutoReverse(true);
         trFloatingName.play();
+
+        showLocation();
+        showReward();
     }
 
-    private void onClickZoom(ImageView image){
-        ScaleTransition scale = new ScaleTransition();
-        scale.setNode(image);
-        scale.setDuration(Duration.millis(200));
-        scale.setCycleCount(2);
-        scale.setAutoReverse(true);
-        scale.setByY(0.2);
-        scale.setByX(0.2);
-        scale.play();
-    }
 
-    public void setNewGame(MouseEvent newGame) throws FileNotFoundException {
-        onClickZoom(this.newGame);
+    public void newGame(MouseEvent newGameIcon) throws FileNotFoundException {
+        StaticFunction.clickResponse(this.newGameIcon);
 
         Image icon = new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("mainIcon.png")).getPath()));
         ImageView imageView = new ImageView(icon);
@@ -115,10 +110,6 @@ public class MainMenu implements Initializable {
         textInputDialog.setContentText("Enter Your Name");
         textInputDialog.setGraphic(imageView);
 
-        Alert alert = new Alert(Alert.AlertType.WARNING,"Name Can not be blank", ButtonType.OK);
-        alert.initStyle(StageStyle.UNDECORATED);
-        alert.setHeaderText(null);
-
         Label label = new Label();
 
         Optional<String> result = textInputDialog.showAndWait();
@@ -128,32 +119,87 @@ public class MainMenu implements Initializable {
             label.setText(name);
 
             if (label.getText().length() == 0) {
+                Alert alert = new Alert(Alert.AlertType.WARNING,"Name Can not be blank", ButtonType.OK);
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.setHeaderText(null);
                 alert.showAndWait();
+
             } else {
-                System.out.println(label.toString());
-                System.out.println("load game page with label");
+
+                newGame = new World();
+                try {
+                    newGame.start(StaticFunction.getStage(newGameIcon), label);
+                } catch (WorldNotExistException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         });
     }
 
-
-    public void setResumeGame(MouseEvent resumeGame) {
-        onClickZoom(this.resumeGame);
+    public void resumeGame(MouseEvent resumeGameIcon) {
+        StaticFunction.clickResponse(this.resumeGameIcon);
     }
 
-    public void setSetting(MouseEvent setting) {
-        onClickZoom(this.setting);
+    public void setting(MouseEvent settingIcon) {
+        StaticFunction.clickResponse(this.settingIcon);
     }
 
-    public void setLeaderboard(MouseEvent leaderboard) {
-        onClickZoom(this.leaderboard);
+    public void showLeaderboard(MouseEvent leaderboardIcon) {
+        StaticFunction.clickResponse(this.leaderboardIcon);
+
+        leaderBoard = new LeaderBoard();
+        try {
+            leaderBoard.start(StaticFunction.getStage(leaderboardIcon));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setExit(MouseEvent exit) {
-        onClickZoom(this.exit);
+    public void showLocation(){
+       /*TODO find out the best location reached so far from database*/
+        int best_location = 212;
+        bestLocation.setText(String.valueOf(best_location));
+    }
 
-        Node node = (Node) exit.getSource();
-        Stage stage = (Stage) node.getScene().getWindow();
-        exit(stage);
+    public void showReward(){
+        /*TODO find out the best reward got so far from database*/
+        int best_reward = 212;
+        bestReward.setText(String.valueOf(best_reward));
+    }
+
+    public void exit(MouseEvent exit) {
+        StaticFunction.clickResponse(this.exit);
+        exit(StaticFunction.getStage(exit));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

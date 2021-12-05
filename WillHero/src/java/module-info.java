@@ -11,4 +11,7 @@ module willhero.willhero {
 
     opens WillHero to javafx.fxml;
     exports WillHero;
+    exports Exceptions;
 }
+
+

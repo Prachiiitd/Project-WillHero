@@ -17,10 +17,10 @@ import java.util.Objects;
 
 public class WillHero extends Application {
 
+    private MainMenu mainMenu;
 
-    public static void mainMenu(Stage stage) throws IOException {
-        MainMenu mainMenu = new MainMenu();
-        mainMenu.start(stage);
+    public WillHero() {
+        this.mainMenu = new MainMenu();
     }
 
     @Override
@@ -44,12 +44,15 @@ public class WillHero extends Application {
 
         PauseTransition delay = new PauseTransition(Duration.seconds(5));
         delay.setOnFinished( event -> {
+            stage.close();
+
+            mainMenu = new MainMenu();
             try {
-                stage.close();
-                mainMenu(new Stage());
+                mainMenu.start(new Stage());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         });
         delay.play();
     }

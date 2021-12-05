@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.LeaderBoard">
+   <children>
+      <ImageView fitHeight="768.0" fitWidth="1366.0">
+         <image>
+            <Image url="@background.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="backIcon" accessibleRole="BUTTON" fitHeight="51.0" fitWidth="60.0" layoutX="6.0" layoutY="6.0" onMousePressed="#setBack" pickOnBounds="true">
+         <image>
+            <Image url="@back.png" />
+         </image>
+         <effect>
+            <Blend mode="HARD_LIGHT" />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+   </children>
+</AnchorPane>
