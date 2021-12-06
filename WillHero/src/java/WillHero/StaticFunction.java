@@ -2,11 +2,13 @@ package WillHero;
 
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -61,6 +63,29 @@ public class StaticFunction {
         Scene scene = new Scene(FXMLLoader.load(toFrame));
         stage.setScene(scene);
         stage.show();
+    }
+
+    static void setTranslation(Node node, float xMotion, float yMotion, int duration, int cycle, boolean reverse ){
+        TranslateTransition trFloatingName = new TranslateTransition();
+        trFloatingName.setNode(node);
+        trFloatingName.setByY(xMotion);
+        trFloatingName.setByY(yMotion);
+        trFloatingName.setDuration(Duration.millis(duration));
+        trFloatingName.setCycleCount(cycle);
+        trFloatingName.setAutoReverse(reverse);
+        trFloatingName.play();
+    }
+
+    static void bestReward(Label label){
+        int reward;
+        reward = 350;
+        label.setText(String.valueOf(reward));
+    }
+
+    static void bestLocation(Label label){
+        int location;
+        location = 350;
+        label.setText(String.valueOf(location));
     }
 
 

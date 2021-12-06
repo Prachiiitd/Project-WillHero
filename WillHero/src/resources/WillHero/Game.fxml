@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="game" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
+<AnchorPane fx:id="gameAnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
     <children>
         <ImageView fitHeight="768.0" fitWidth="1366.0" focusTraversable="true">
             <image>
@@ -38,7 +38,7 @@
             <DropShadow height="0.0" offsetX="-3.0" offsetY="3.0" radius="0.0" width="0.0" />
          </effect>
         </ImageView>
-        <ImageView fx:id="island1" layoutX="109.0" layoutY="307.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="island1" fitHeight="278.0" fitWidth="493.0" layoutX="109.0" layoutY="307.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@island2.png" />
             </image>
@@ -47,7 +47,7 @@
                 <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="island2" layoutX="529.0" layoutY="329.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="island2" fitHeight="274.0" fitWidth="437.0" layoutX="570.0" layoutY="372.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@island2.png" />
             </image>
@@ -56,7 +56,7 @@
                 <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="greenOrc1" fitHeight="43.0" fitWidth="43.0" layoutX="624.0" layoutY="378.0">
+        <ImageView fx:id="greenOrc1" fitHeight="111.0" fitWidth="111.0" layoutX="836.0" layoutY="391.0">
             <image>
                 <Image url="@greenOrc.png" />
             </image>
@@ -65,7 +65,7 @@
                 <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="hero" fitHeight="51.0" fitWidth="43.0" layoutX="331.0" layoutY="362.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="hero" fitHeight="107.0" fitWidth="99.0" layoutX="381.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@helmet.png" />
             </image>
@@ -95,7 +95,7 @@
                 <DropShadow offsetX="-3.0" offsetY="3.0" />
             </effect>
         </Polygon>
-        <Label fx:id="currLocation" blendMode="HARD_LIGHT" layoutX="623.0" layoutY="19.0" text="0" textFill="WHITE">
+        <Label fx:id="currLocation" blendMode="HARD_LIGHT" layoutX="663.0" layoutY="9.0" text="0" textFill="WHITE">
             <font>
                 <Font name="DejaVu Serif Bold" size="35.0" />
             </font>
@@ -107,7 +107,7 @@
             <effect>
                 <DropShadow offsetX="-3.0" offsetY="3.0" radius="4.75" width="0.0" />
             </effect></Rectangle>
-        <Label fx:id="currReward" layoutX="1207.0" layoutY="12.0" text="0" textFill="#fff800">
+        <Label fx:id="currReward" blendMode="HARD_LIGHT" layoutX="1207.0" layoutY="12.0" text="0" textFill="#fff800">
             <font>
                 <Font name="DejaVu Serif Bold" size="30.0" />
             </font>
@@ -115,5 +115,9 @@
                 <DropShadow height="0.0" offsetX="-3.0" offsetY="3.0" radius="0.0" width="0.0" />
             </effect>
         </Label>
+        <Rectangle arcHeight="9.0" arcWidth="9.0" fill="#e4c711" height="20.0" layoutX="1168.0" layoutY="22.0" stroke="#fff800" strokeLineJoin="ROUND" strokeWidth="5.0" width="21.0">
+            <effect>
+                <DropShadow height="0.0" offsetX="-3.0" offsetY="2.0" radius="4.75" />
+            </effect></Rectangle>
     </children>
 </AnchorPane>

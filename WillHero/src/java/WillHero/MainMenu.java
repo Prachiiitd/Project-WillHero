@@ -3,19 +3,15 @@ package WillHero;
 import Exceptions.WorldNotExistException;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.transform.Rotate;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,17 +26,12 @@ public class MainMenu implements Initializable {
     private World newGame;
     private LeaderBoard leaderBoard;
 
-    public MainMenu() {
-        this.newGame = new World();
-        this.leaderBoard = new LeaderBoard();
-    }
-
     @FXML
     private Label bestReward;
     @FXML
     private Label bestLocation;
     @FXML
-    private ImageView floatingName;
+    private Text floatingName;
     @FXML
     private ImageView newGameIcon;
     @FXML
@@ -52,6 +43,12 @@ public class MainMenu implements Initializable {
     @FXML
     private ImageView settingIcon;
 
+
+    public MainMenu() {
+        this.newGame = new World();
+        this.leaderBoard = new LeaderBoard();
+    }
+
     private void exit(Stage stage){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"You're about to Exit!", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Exit");
@@ -62,11 +59,6 @@ public class MainMenu implements Initializable {
             stage.close();
         }
     }
-
-//    @FXML
-//    private void onHover(){
-//        StaticFunction.onHover(newGameIcon, Rotate.X_AXIS);
-//    }
 
     public void start(Stage stage) throws IOException {
 
@@ -83,16 +75,9 @@ public class MainMenu implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        TranslateTransition trFloatingName = new TranslateTransition();
-        trFloatingName.setNode(floatingName);
-        trFloatingName.setByY(100);
-        trFloatingName.setDuration(Duration.millis(1000));
-        trFloatingName.setCycleCount(TranslateTransition.INDEFINITE);
-        trFloatingName.setAutoReverse(true);
-        trFloatingName.play();
-
-        showLocation();
-        showReward();
+        StaticFunction.setTranslation(floatingName, 0, 100, 1000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.bestLocation(bestLocation);
+        StaticFunction.bestReward(bestReward);
     }
 
 
@@ -153,18 +138,6 @@ public class MainMenu implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void showLocation(){
-       /*TODO find out the best location reached so far from database*/
-        int best_location = 212;
-        bestLocation.setText(String.valueOf(best_location));
-    }
-
-    public void showReward(){
-        /*TODO find out the best reward got so far from database*/
-        int best_reward = 212;
-        bestReward.setText(String.valueOf(best_reward));
     }
 
     public void exit(MouseEvent exit) {
