@@ -17,17 +17,8 @@
 
 <AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.MainMenu">
    <children>
-      <ImageView fitHeight="768.0" fitWidth="1366.0" focusTraversable="true">
-         <image>
-            <Image url="@background.jpg" />
-         </image>
-         <cursor>
-            <Cursor fx:constant="WAIT" />
-         </cursor>
-         <effect>
-            <Blend opacity="0.46" />
-         </effect>
-      </ImageView>
+<!--
+-->
       <ImageView fx:id="exit" accessibleRole="BUTTON" layoutX="923.0" layoutY="429.0" onMousePressed="#exit" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@exit.png" />

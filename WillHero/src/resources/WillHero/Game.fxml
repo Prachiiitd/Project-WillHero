@@ -16,29 +16,39 @@
 
 <AnchorPane fx:id="gameAnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
     <children>
-        <ImageView fitHeight="768.0" fitWidth="1366.0" focusTraversable="true">
-            <image>
-                <Image url="@background.jpg" />
-            </image>
+        <ImageView fitHeight="768.0" fitWidth="1366.0" focusTraversable="true" preserveRatio="true">
             <cursor>
                 <Cursor fx:constant="WAIT" />
             </cursor>
-            <effect>
-                <Blend opacity="0.46" />
-            </effect>
         </ImageView>
-        <ImageView fx:id="pauseIcon" accessibleRole="BUTTON" layoutX="11.0" layoutY="10.0" onMousePressed="#pause" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@settings.png" />
-            </image>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
+      <ImageView fx:id="island11" fitHeight="153.0" fitWidth="94.0" layoutX="-17.0" layoutY="182.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@island2.png" />
+         </image>
          <effect>
-            <DropShadow height="0.0" offsetX="-3.0" offsetY="3.0" radius="0.0" width="0.0" />
+            <Blend mode="HARD_LIGHT" />
+            <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
          </effect>
-        </ImageView>
-        <ImageView fx:id="island1" fitHeight="278.0" fitWidth="493.0" layoutX="109.0" layoutY="307.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
+      <ImageView fx:id="island21" fitHeight="135.0" fitWidth="79.0" layoutX="1331.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@island2.png" />
+         </image>
+         <effect>
+            <Blend mode="HARD_LIGHT" />
+            <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
+         </effect>
+      </ImageView>
+      <ImageView fx:id="island211" fitHeight="135.0" fitWidth="79.0" layoutX="1045.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@island2.png" />
+         </image>
+         <effect>
+            <Blend mode="HARD_LIGHT" />
+            <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
+         </effect>
+      </ImageView>
+        <ImageView fx:id="island1" fitHeight="153.0" fitWidth="94.0" layoutX="225.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@island2.png" />
             </image>
@@ -47,27 +57,18 @@
                 <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="island2" fitHeight="274.0" fitWidth="437.0" layoutX="570.0" layoutY="372.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="island011" fitHeight="135.0" fitWidth="79.0" layoutX="749.0" layoutY="163.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@island2.png" />
+         </image>
+         <effect>
+            <Blend mode="HARD_LIGHT" />
+            <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
+         </effect>
+      </ImageView>
+        <ImageView fx:id="island2" fitHeight="135.0" fitWidth="79.0" layoutX="480.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@island2.png" />
-            </image>
-            <effect>
-                <Blend mode="HARD_LIGHT" />
-                <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
-            </effect>
-        </ImageView>
-        <ImageView fx:id="greenOrc1" fitHeight="111.0" fitWidth="111.0" layoutX="836.0" layoutY="391.0">
-            <image>
-                <Image url="@greenOrc.png" />
-            </image>
-            <effect>
-                <Blend mode="HARD_LIGHT" />
-                <DropShadow offsetX="-1.0" offsetY="1.0" radius="4.75" width="0.0" />
-            </effect>
-        </ImageView>
-        <ImageView fx:id="hero" fitHeight="107.0" fitWidth="99.0" layoutX="381.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@helmet.png" />
             </image>
             <effect>
                 <Blend mode="HARD_LIGHT" />
@@ -119,5 +120,16 @@
             <effect>
                 <DropShadow height="0.0" offsetX="-3.0" offsetY="2.0" radius="4.75" />
             </effect></Rectangle>
+        <ImageView fx:id="pauseIcon" accessibleRole="BUTTON" layoutX="11.0" layoutY="10.0" onMousePressed="#pause" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@settings.png" />
+            </image>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+         <effect>
+            <DropShadow height="0.0" offsetX="-3.0" offsetY="3.0" radius="0.0" width="0.0" />
+         </effect>
+        </ImageView>
     </children>
 </AnchorPane>

@@ -12,7 +12,7 @@ public class World {
     private final ArrayList<Game> worldList = new ArrayList<>();
 
     public void passName(Label name) {
-        worldList.add(new Game());
+        worldList.add(new Game(name));
     }
 
     public int selectGame(Label nameLabel) {

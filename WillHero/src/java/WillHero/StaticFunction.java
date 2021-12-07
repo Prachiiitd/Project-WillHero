@@ -4,14 +4,24 @@ import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
 
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -33,12 +43,12 @@ public class StaticFunction {
         scale.play();
     }
 
-    static Stage getStage(MouseEvent mouseEvent){
+    static Stage getStage(MouseEvent mouseEvent) {
         Node node = (Node) mouseEvent.getSource();
         return (Stage) node.getScene().getWindow();
     }
 
-    static void onHover(Node node, Point3D axis){
+    static void onHover(Node node, Point3D axis) {
         RotateTransition rotate = new RotateTransition();
         rotate.setNode(node);
         rotate.setByAngle(360);
@@ -48,7 +58,7 @@ public class StaticFunction {
         rotate.play();
     }
 
-    static void offHover(Node node){
+    static void offHover(Node node) {
         RotateTransition rotate = new RotateTransition();
         rotate.setNode(node);
         rotate.stop();
@@ -59,13 +69,18 @@ public class StaticFunction {
         Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
         stage.setTitle("WillHero: " + title);
         stage.getIcons().add(icon);
+        Parent root =  FXMLLoader.load(toFrame);
 
-        Scene scene = new Scene(FXMLLoader.load(toFrame));
+
+        Scene scene = new Scene(root);
+
+        ((AnchorPane) scene.getRoot()).setBackground(defaultBackground());
+
         stage.setScene(scene);
         stage.show();
     }
 
-    static void setTranslation(Node node, float xMotion, float yMotion, int duration, int cycle, boolean reverse ){
+    static void setTranslation(Node node, float xMotion, float yMotion, int duration, int cycle, boolean reverse) {
         TranslateTransition trFloatingName = new TranslateTransition();
         trFloatingName.setNode(node);
         trFloatingName.setByY(xMotion);
@@ -76,18 +91,26 @@ public class StaticFunction {
         trFloatingName.play();
     }
 
-    static void bestReward(Label label){
+    static Background defaultBackground(){
+        return new Background(new BackgroundFill(
+                new LinearGradient(
+                        0, 0, 0 , 1, true,                  //sizing
+                        CycleMethod.NO_CYCLE,                 //cycling
+                        new Stop(0, Color.web("#01D9F8FF")),    //colors
+                        new Stop(1, Color.web("#C4F4FEFF"))
+                ),  CornerRadii.EMPTY, Insets.EMPTY)
+        );
+    }
+
+    static void bestReward(Label label) {
         int reward;
-        reward = 350;
+        reward = 80;
         label.setText(String.valueOf(reward));
     }
 
-    static void bestLocation(Label label){
+    static void bestLocation(Label label) {
         int location;
-        location = 350;
+        location = 20;
         label.setText(String.valueOf(location));
     }
-
-
-
 }
