@@ -1,5 +1,6 @@
 package WillHero;
 
+
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 
@@ -42,7 +43,7 @@ public class WillHero extends Application {
         stage.setScene(scene);
         stage.show();
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(0));
+        PauseTransition delay = new PauseTransition(Duration.seconds(5));
         delay.setOnFinished( event -> {
             stage.close();
 

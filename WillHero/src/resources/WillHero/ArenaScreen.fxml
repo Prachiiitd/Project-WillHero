@@ -73,7 +73,7 @@
         </ImageView>
         <ImageView fx:id="restartIcon" accessibleRole="BUTTON" fitHeight="74.0" fitWidth="64.0" layoutX="643.0" layoutY="602.0" onMousePressed="#restart" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@start.png" />
+                <Image url="@play.png" />
             </image>
             <cursor>
                 <Cursor fx:constant="HAND" />
@@ -100,7 +100,7 @@
                 <Image url="@handPoint.gif" />
             </image>
         </ImageView>
-        <ImageView fx:id="saveIcon" fitHeight="60.0" fitWidth="64.0" layoutX="945.0" layoutY="603.0" preserveRatio="true">
+        <ImageView fx:id="saveIcon" fitHeight="60.0" fitWidth="64.0" layoutX="945.0" layoutY="603.0" onMousePressed="#save" preserveRatio="true">
             <image>
                 <Image url="@save.png" />
             </image>

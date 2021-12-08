@@ -1,29 +1,23 @@
 package WillHero;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.FileInputStream;
@@ -31,20 +25,23 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Game implements Initializable {
 
-    private final Player player;
+    private final Hero hero;
+    public ParallelCamera camera;
     private VBox vBox;
     private StackPane stackPane;
     private Group screenObj;
-    private ArrayList<Platform> platforms;
+    private final ArrayList<Platform> platforms;
     public ImageView island11;
     public ImageView island21;
     public ImageView island211;
     public ImageView island011;
-    private Timeline tl;
+    public Timeline tl;
+    boolean gravity = true;
 
 
     @FXML
@@ -57,8 +54,8 @@ public class Game implements Initializable {
     private ImageView island2;
     @FXML
     private ImageView greenOrc1;
-    @FXML
-    private ImageView hero;
+//    @FXML
+//    private ImageView hero;
     @FXML
     private Label currLocation;
     @FXML
@@ -83,15 +80,17 @@ public class Game implements Initializable {
 
     public Game() {
 
-        player = new Player(new Label(), 0);
+        hero = new Hero(new Label(), 0);
         currLocation = new Label();
         currReward = new Label();
         bestLocation = new Label();
         bestReward = new Label();
+        platforms = new ArrayList<>();
    }
 
     public Game(Label nameLabel) {
-        player = new Player(nameLabel, 0);
+
+        hero = new Hero(nameLabel, 0);
         vBox  = new VBox();
         stackPane = new StackPane();
         currLocation = new Label();
@@ -104,7 +103,7 @@ public class Game implements Initializable {
         platforms = new ArrayList<>();
     }
 
-    public void start(Stage stage, Label nameLabel) throws IOException {
+    public void start(Stage stage) throws IOException {
 
         gameAnchorPane  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Game.fxml")));
         screenAnchorPane =  FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ArenaScreen.fxml")));
@@ -113,19 +112,13 @@ public class Game implements Initializable {
         stackPane.getChildren().add(screenAnchorPane);
 
         Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
-        stage.setTitle("WillHero: " + player.getName().getText());
+        stage.setTitle("WillHero: " + hero.getName().getText());
         stage.getIcons().add(icon);
         vBox.getChildren().add(stackPane);
         Scene scene = new Scene(vBox);
-
-        tl = new Timeline(new KeyFrame(Duration.millis(10), e -> playGame(gameAnchorPane, player)));
-        tl.setCycleCount(Timeline.INDEFINITE);
         buildWorld(platforms,screenObj);
-        showStats(player);
-
-
         stackPane.setOnKeyPressed(new EventHandler<KeyEvent> () {
-            int var = 0;
+
             @Override
             public void handle(KeyEvent event)
             {
@@ -133,25 +126,32 @@ public class Game implements Initializable {
                 VBox vBox=(VBox) node.getScene().getRoot();
                 StackPane stackPane = (StackPane) vBox.getChildren().get(0);
 
-                System.out.println(player.getPlayer().getX() + " " + player.getPlayer().getY());
+                System.out.println(hero.getHero().getX() + " " + hero.getHero().getY());
                 if(stackPane.getChildren().size() == 2) return;
 
-                if(event.getCode().isWhitespaceKey()) {
-                    player.getPlayer().setX(player.getPlayer().getX() + 5);
-                }
-                if(event.getCode().isArrowKey()) {
-                    player.getPlayer().setY(player.getPlayer().getY() + 5);
-                }
-                if(event.getCode().isDigitKey()) {
-                    screenObj.setTranslateX(screenObj.getTranslateX() - 200);
-                    var+=60;
+                if(event.getCode() == KeyCode.RIGHT)
+                    hero.getHero().setX(hero.getHero().getX() + 5);
+                if(event.getCode() == KeyCode.LEFT)
+                    hero.getHero().setX(hero.getHero().getX() - 5);
+                if(event.getCode() == KeyCode.UP)
+                    hero.getHero().setY(hero.getHero().getY() + 5);
+                if(event.getCode() == KeyCode.DOWN)
+                    hero.getHero().setY(hero.getHero().getY() - 5);
+
+                if(event.getCode().isDigitKey()){
+                    screenObj.setLayoutX(screenObj.getLayoutX() - 30);
                 }
             }
         });
 
         stage.setScene(scene);
         stage.show();
+
+        tl = new Timeline(new KeyFrame(Duration.millis(200), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
+        tl.setCycleCount(Timeline.INDEFINITE);
+        tl.play();
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -163,15 +163,23 @@ public class Game implements Initializable {
         StaticFunction.setTranslation(island011, 0, -25, 2000,TranslateTransition.INDEFINITE, true);
         StaticFunction.setTranslation(island1, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
         StaticFunction.setTranslation(greenOrc1, 0, 40, 1000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(hero, 0, 40, 1000,TranslateTransition.INDEFINITE, true);
+//        StaticFunction.setTranslation(hero, 0, 40, 1000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setRotation(resumeIcon,360, 1000,2, true);
+        StaticFunction.setRotation(restartIcon,360, 1000, 2,true);
+        StaticFunction.setRotation(pauseIcon,360, 1000, 2,true);
+        StaticFunction.setRotation(saveIcon,360, 1000, 2,true);
+        StaticFunction.setRotation(mainMenuIcon,360, 1000, 2,true);
+
+
 
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
 
-        if(!player.isAlive()) gameOver();
+
+        if(!hero.isAlive()) gameOver();
     }
 
-
+    @FXML
     public void buildWorld(ArrayList<Platform> platforms, Group screenObj) {
 
         platforms.add(new Platform(0, 150, 350, 700, 0));
@@ -180,26 +188,58 @@ public class Game implements Initializable {
         for (Platform platform : platforms) {
             screenObj.getChildren().add(platform.getIsLand());
         }
-        gameAnchorPane.getChildren().add(screenObj);
-        gameAnchorPane.getChildren().add( player.getPlayer());
-        player.setScoreLabel(currReward,currLocation);
+        gameAnchorPane.getChildren().add(screenObj) ;
+        gameAnchorPane.getChildren().add( hero.getHero());
+        hero.setScoreLabel(currReward,currLocation);
     }
 
-
-    public void showStats(Player player) {
+    @FXML
+    public void showStats(Hero hero) {
         /*TODO find out the best location reached so far from database*/
-        System.out.println(player.getName().getText() + " " + player.getLocation() + " " + player.getReward());
-        player.setLocation(player.getLocation() + 20);
-        System.out.println(player.getName().getText() + " " + player.getLocation() + " " + player.getReward());
+        System.out.println("In ShowStats" + hero.getName().getText() + " " + hero.getLocation() + " " + hero.getReward());
+        hero.setLocation(hero.getLocation() + 5);
+        System.out.println("In ShowStats" + hero.getName().getText() + " " + hero.getLocation() + " " + hero.getReward());
+    }
+
+    @FXML
+    public void playGame(AnchorPane gameAnchorPane, Hero hero, ArrayList<Platform> platforms, Group screenObj, Label currReward, Label currLocation) {
+
+        if(!hero.isAlive()) {
+            gameOver();
+            return;
+        }
+
+        for (Platform platform : platforms) {
+            System.out.println("ID:" + platform.getId() + " X:" + (screenObj.getTranslateX() + platform.getIsLand().getX()) + " Y:" + (screenObj.getTranslateY()+platform.getIsLand().getY()));
+            if(platform.collided(hero.getHero(), screenObj)) {
+                System.out.println("\t /h/hCollided with platform: " + platform.getId());
+//                gravity = false;
+//                hero.jump();
+            } else gravity = true;
+        }
+
+        System.out.println("gravity: " + gravity);
+
+//        gravity(hero.getHero(),gravity);
     }
 
 
-    public void playGame(AnchorPane gameAnchorPane, Player player) {
-        player.setLocation(player.getLocation() + 1);
-        System.out.println(player.getLocation());
+
+    public void gravity(Node node, boolean isGravity) {
+        if(isGravity) {
+            System.out.println("Gravity");
+            node.setTranslateY(node.getTranslateY() + 2);
+        }
     }
 
 
+    @FXML
+    public void gameOver() {
+        /*TODO yha se kaam krna h tumhe prachi*/
+
+    }
+
+    @FXML
     public void pause(MouseEvent pause) {
         StaticFunction.clickResponse(this.pauseIcon);
 
@@ -211,7 +251,6 @@ public class Game implements Initializable {
             Parent loadArena =  FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ArenaScreen.fxml")));
             stackPane.getChildren().add(loadArena);
 
-
         } catch (IOException e) {
             System.out.println("ArenaScreen couldn't be loaded");
             e.printStackTrace();
@@ -219,47 +258,7 @@ public class Game implements Initializable {
     }
 
 
-    public void mainMenu(MouseEvent mainMenu) {
-        StaticFunction.clickResponse(this.mainMenuIcon);
-
-        URL toScene = getClass().getResource("MainMenu.fxml");
-        try {
-            StaticFunction.setScene(StaticFunction.getStage(mainMenu), toScene, "WillHero: Main Menu");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void restart(MouseEvent restart) {
-        StaticFunction.clickResponse(this.restartIcon);
-
-        Game restarted = new Game();
-
-//        try {
-//            StaticFunction.setScene(StaticFunction.getStage(restart), toScene, "WillHero: " + player.getName().getText());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-    }
-
-//    private void jump(){
-//        TranslateTransition translate = new TranslateTransition();
-//        {
-//            translate.setDuration(Duration.millis(200));
-//            translate.setCycleCount(2);
-//            translate.setAutoReverse(true);
-//            Node ball;
-//            translate.setNode(ball);
-//        }
-//        translate.setByY(-40);
-//        translate.play();
-//    }
-
-    public void gameOver() {
-        /*TODO yha se kaam krna h tumhe prachi*/
-
-    }
-
+    @FXML
     public void resumeGame(MouseEvent resume) {
         StaticFunction.clickResponse(this.resumeIcon);
 
@@ -273,4 +272,55 @@ public class Game implements Initializable {
             System.out.println("Already Deleted");
         }
     }
+
+
+    public void mainMenu(MouseEvent mainMenu) {
+        StaticFunction.clickResponse(this.mainMenuIcon);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"DO you want to save the game?", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Back to Main Menu");
+        alert.initStyle(StageStyle.UNDECORATED);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() &&  result.get() == ButtonType.YES){
+            MainMenu _mainMenu = new MainMenu();
+            try {
+                _mainMenu.start(StaticFunction.getStage(mainMenu));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public void save(MouseEvent save)  {
+        StaticFunction.clickResponse(this.saveIcon);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,"DO you want to save the game?", ButtonType.OK);
+        alert.setTitle("Save Prompt");
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.showAndWait();
+    }
+
+
+    public void restart(MouseEvent restart) {
+        StaticFunction.clickResponse(this.restartIcon);
+
+        Label nameLabel = hero.getName();
+        World world = new World();
+        world.start(StaticFunction.getStage(restart), nameLabel);
+    }
+
+//    public void camera(KeyEvent keyEvent) {
+//        Node node=(Node) keyEvent.getSource();
+//        VBox vBox=(VBox) node.getScene().getRoot();
+//        StackPane stackPane = (StackPane) vBox.getChildren().get(0);
+//
+//        System.out.println(hero.getHero().getX() + " " + hero.getHero().getY());
+//        if(stackPane.getChildren().size() == 2) return;
+//        if(keyEvent.getCode() == KeyCode.LEFT) {
+//            () -> this.camera().setX(this.camera(keyEvent).getX() - 10);
+//
+//
+//    }
 }

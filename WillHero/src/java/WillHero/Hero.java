@@ -8,55 +8,54 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Objects;
 
-public class Player {
+public class Hero {
 
     private final Label name;
-    private final ImageView player;
+    private final ImageView hero;
 
     private boolean isAlive;
     private int reward;
     private int location;
 
-    public Player(Label name, int location) {
+    public Hero(Label name, int location) {
         isAlive = true;
         this.name = name;
         this.location=location;
-        this.player = setPlayer();
-        jump();
+        this.hero = setHero();
     }
 
-    private ImageView setPlayer(){
-        ImageView player;
+    private ImageView setHero(){
+        ImageView hero;
         try {
-            player = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("helmet.png")).getPath())));
-            player.setPreserveRatio(true);
-            player.setFitWidth(70);
-            player.setX(345);
-            player.setY(295);
+            hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
+            hero.setPreserveRatio(true);
+            hero.setFitWidth(100);
+            hero.setX(350);
+            hero.setY(150);
+
         } catch (FileNotFoundException | NullPointerException e) {
-            player = null;
-            System.out.println("Failed to load player");
+            hero = null;
+            System.out.println("Failed to load hero");
             e.printStackTrace();
         }
 
-        return player;
+        return hero;
     }
 
     public Label getName() {
         return name;
     }
 
-    public ImageView getPlayer() throws NullPointerException {
-        return player;
+    public ImageView getHero() throws NullPointerException {
+        return hero;
     }
-
 
     public int getLocation() {
         return location;
     }
 
     public void setLocation(int location) {
-        this.location = 1000;
+        this.location = location;
     }
 
     public int getReward() {
@@ -64,8 +63,7 @@ public class Player {
     }
 
     public void setReward(int reward) {
-        System.out.println(this.reward);
-        this.reward = 50;
+        this.reward = reward;
     }
 
     public void setScoreLabel(Label reward, Label location) {
@@ -82,7 +80,14 @@ public class Player {
         return isAlive;
     }
 
-    public void jump(){
-
+    public void jump() {
+        int height = 150;
+        int time  = 500;
+        StaticFunction.setTranslation(hero, 0, -height, time,1, false);
     }
+
+    public double getSpeed() {
+        return -1;
+    }
+
 }

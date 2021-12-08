@@ -32,7 +32,7 @@ public class World {
             Game game  = worldList.get(srNo);
 
             try {
-                game.start(stage, nameLabel);
+                game.start(stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }

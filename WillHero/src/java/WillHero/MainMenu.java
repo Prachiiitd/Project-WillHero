@@ -5,13 +5,12 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -82,11 +81,21 @@ public class MainMenu implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        StaticFunction.setTranslation(floatingName, 0, 100, 1000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(floatingName, 0, 80, 1000,TranslateTransition.INDEFINITE, true);
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
     }
 
+    public void showLeaderboard(MouseEvent leaderboardIcon) {
+        StaticFunction.clickResponse(this.leaderboardIcon);
+
+        leaderBoard = new LeaderBoard();
+        try {
+            leaderBoard.start(StaticFunction.getStage(leaderboardIcon));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void newGame(MouseEvent newGameIcon) throws FileNotFoundException {
         StaticFunction.clickResponse(this.newGameIcon);
@@ -130,18 +139,16 @@ public class MainMenu implements Initializable {
 
     public void resumeGame(MouseEvent resumeGameIcon) {
         StaticFunction.clickResponse(this.resumeGameIcon);
+
+
     }
 
     public void setting(MouseEvent settingIcon) {
         StaticFunction.clickResponse(this.settingIcon);
-    }
 
-    public void showLeaderboard(MouseEvent leaderboardIcon) {
-        StaticFunction.clickResponse(this.leaderboardIcon);
-
-        leaderBoard = new LeaderBoard();
+        Setting setting = new Setting();
         try {
-            leaderBoard.start(StaticFunction.getStage(leaderboardIcon));
+            setting.start(StaticFunction.getStage(settingIcon));
         } catch (IOException e) {
             e.printStackTrace();
         }

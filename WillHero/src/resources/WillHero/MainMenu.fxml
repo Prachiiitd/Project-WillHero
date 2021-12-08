@@ -33,7 +33,7 @@
       </ImageView>
       <ImageView fx:id="newGameIcon" accessibleRole="BUTTON" layoutX="631.0" layoutY="425.0" onMousePressed="#newGame" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@start.png" />
+            <Image url="@play.png" />
          </image>
          <cursor>
             <Cursor fx:constant="HAND" />

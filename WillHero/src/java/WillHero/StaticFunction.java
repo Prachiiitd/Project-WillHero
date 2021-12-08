@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -87,6 +88,17 @@ public class StaticFunction {
         trFloatingName.setByY(yMotion);
         trFloatingName.setDuration(Duration.millis(duration));
         trFloatingName.setCycleCount(cycle);
+        trFloatingName.setAutoReverse(reverse);
+        trFloatingName.play();
+    }
+
+    static void setRotation (Node node, int angle, int duration, int cycle, boolean reverse) {RotateTransition trFloatingName6= new RotateTransition();
+        RotateTransition trFloatingName= new RotateTransition();
+        trFloatingName.setNode(node);
+        trFloatingName.setAxis(Rotate.Z_AXIS);
+        trFloatingName.setDuration(Duration.millis(duration));
+        trFloatingName.setCycleCount(cycle);
+        trFloatingName.setByAngle(angle);
         trFloatingName.setAutoReverse(reverse);
         trFloatingName.play();
     }

@@ -1,6 +1,6 @@
 package WillHero;
 
-import javafx.animation.TranslateTransition;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -26,7 +26,7 @@ public class Platform {
         allot++;
     }
 
-    private ImageView setIsLnd(int id, int x, int y, int size) throws NullPointerException{
+    private ImageView setIsLnd(int id, int x, int y, int size) throws NullPointerException {
         ImageView isLand;
         try {
             System.out.println("in pla" + id);
@@ -53,7 +53,17 @@ public class Platform {
         return id;
     }
 
-    public int getLength() {
-        return length;
+    public boolean collided(ImageView obj, Group screen) throws ClassCastException {
+        boolean isCollision = false;
+
+        ImageView island = (ImageView) this.getIsLand().clone();
+        island.setX(island.getX() + screen.getLayoutX());
+        island.setY(island.getY() + screen.getLayoutY());
+        System.out.println("in coll island hero X:" + island.getX() + " Y:" + island.getY());
+        if (obj.getBoundsInParent().intersects(isLand.getBoundsInParent())) {
+            isCollision = true;
+        }
+
+        return isCollision;
     }
 }
