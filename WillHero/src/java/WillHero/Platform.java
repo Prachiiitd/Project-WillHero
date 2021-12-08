@@ -56,7 +56,7 @@ public class Platform {
     public boolean collided(ImageView obj, Group screen) throws ClassCastException {
         boolean isCollision = false;
 
-        ImageView island = (ImageView) this.getIsLand().clone();
+        ImageView island = (ImageView) this.getIsLand();
         island.setX(island.getX() + screen.getLayoutX());
         island.setY(island.getY() + screen.getLayoutY());
         System.out.println("in coll island hero X:" + island.getX() + " Y:" + island.getY());
