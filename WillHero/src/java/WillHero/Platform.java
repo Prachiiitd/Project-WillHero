@@ -29,16 +29,17 @@ public class Platform {
     private ImageView setIsLnd(int id, int x, int y, int size) throws NullPointerException {
         ImageView isLand;
         try {
-            System.out.println("in pla" + id);
             isLand = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("island" + id + ".png")).getPath())));
             isLand.setPreserveRatio(true);
             isLand.setFitWidth(size);
             isLand.setX(x);
             isLand.setY(y);
             return isLand;
-        } catch (FileNotFoundException e) {
-            throw new NullPointerException("Failed to load Platform");
+        } catch (FileNotFoundException | NullPointerException e) {
+            isLand = null;
+            System.out.println("Failed to load Platform");
         }
+        return isLand;
     }
 
     public ImageView getIsLand() throws NullPointerException {
@@ -46,7 +47,7 @@ public class Platform {
     }
 
     private void motion() {
-        StaticFunction.setTranslation(isLand, 0, speed, 3000, -1, true);
+        this.getIsLand().setX(this.getIsLand().getX() - 60);
     }
 
     public int getId() {
@@ -56,7 +57,7 @@ public class Platform {
     public boolean collided(ImageView obj, Group screen) throws ClassCastException {
         boolean isCollision = false;
 
-        ImageView island = this.getIsLand();
+        ImageView island = new ImageView(this.isLand.getImage());
         island.setX(island.getX() + screen.getLayoutX());
         island.setY(island.getY() + screen.getLayoutY());
         System.out.println("in coll island hero X:" + island.getX() + " Y:" + island.getY());

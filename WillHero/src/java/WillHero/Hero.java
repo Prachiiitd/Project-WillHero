@@ -1,11 +1,20 @@
 package WillHero;
 
+import javafx.animation.PathTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.transform.Translate;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
 
 public class Hero {
@@ -29,7 +38,7 @@ public class Hero {
         try {
             hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
             hero.setPreserveRatio(true);
-            hero.setFitWidth(100);
+            hero.setFitWidth(70);
             hero.setX(350);
             hero.setY(150);
 
@@ -80,10 +89,12 @@ public class Hero {
         return isAlive;
     }
 
+
     public void jump() {
-        int height = 150;
-        int time  = 500;
-        StaticFunction.setTranslation(hero, 0, -height, time,1, false);
+
+        double height = hero.getY() - 180;
+        int time  = 4;
+        hero.setY(height);
     }
 
     public double getSpeed() {

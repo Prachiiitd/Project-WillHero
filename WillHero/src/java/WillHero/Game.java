@@ -9,6 +9,7 @@ import javafx.scene.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -32,6 +33,7 @@ public class Game implements Initializable {
 
     private final Hero hero;
     public ParallelCamera camera;
+    public ProgressBar progressBar;
     private VBox vBox;
     private StackPane stackPane;
     private Group screenObj;
@@ -40,8 +42,8 @@ public class Game implements Initializable {
     public ImageView island21;
     public ImageView island211;
     public ImageView island011;
-    public Timeline tl;
-    boolean gravity = true;
+    public static Timeline tl;
+
 
 
     @FXML
@@ -139,7 +141,9 @@ public class Game implements Initializable {
                     hero.getHero().setY(hero.getHero().getY() - 5);
 
                 if(event.getCode().isDigitKey()){
-                    screenObj.setLayoutX(screenObj.getLayoutX() - 30);
+                    for(Platform platform : platforms){
+
+                    }
                 }
             }
         });
@@ -147,7 +151,7 @@ public class Game implements Initializable {
         stage.setScene(scene);
         stage.show();
 
-        tl = new Timeline(new KeyFrame(Duration.millis(200), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
+        tl = new Timeline(new KeyFrame(Duration.millis(20), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
@@ -174,20 +178,18 @@ public class Game implements Initializable {
 
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
-
-
-        if(!hero.isAlive()) gameOver();
     }
 
     @FXML
     public void buildWorld(ArrayList<Platform> platforms, Group screenObj) {
 
-        platforms.add(new Platform(0, 150, 350, 700, 0));
-        platforms.add(new Platform(2, 900, 350, 400, 0));
+        platforms.add(new Platform(0, 150, 350, 600, 0));
+        platforms.add(new Platform(2, 900, 350, 200, 0));
         platforms.add(new Platform(3, 1800, 350, 400, 50));
         for (Platform platform : platforms) {
             screenObj.getChildren().add(platform.getIsLand());
         }
+
         gameAnchorPane.getChildren().add(screenObj) ;
         gameAnchorPane.getChildren().add( hero.getHero());
         hero.setScoreLabel(currReward,currLocation);
@@ -204,39 +206,60 @@ public class Game implements Initializable {
     @FXML
     public void playGame(AnchorPane gameAnchorPane, Hero hero, ArrayList<Platform> platforms, Group screenObj, Label currReward, Label currLocation) {
 
-        if(!hero.isAlive()) {
-            gameOver();
-            return;
+        System.out.println("In PlayGame" + hero.getHero().getX() + " " + hero.getHero().getY());
+        boolean gravity;
+
+        if(hero.getHero().getY() > 480) {
+            //if hero is out of the 3screen
+            hero.setAlive(false);
+            StaticFunction.setRotation(hero.getHero(), 360, 100, -1, true);
+
+            if(hero.getHero().getX() > 700){
+                //if hero is out of the screen
+                System.out.println("\t/h/h/h/hgame over");
+                gameOver(gameAnchorPane);
+//                tl.stop();
+            }
         }
+
+        System.out.println("hero zinda h" + hero.isAlive() + " " + hero.getHero().getX() + " " + hero.getHero().getY());
+
+        gravity = true;
 
         for (Platform platform : platforms) {
-            System.out.println("ID:" + platform.getId() + " X:" + (screenObj.getTranslateX() + platform.getIsLand().getX()) + " Y:" + (screenObj.getTranslateY()+platform.getIsLand().getY()));
             if(platform.collided(hero.getHero(), screenObj)) {
                 System.out.println("\t /h/hCollided with platform: " + platform.getId());
-//                gravity = false;
-//                hero.jump();
-            } else gravity = true;
+                gravity = false;
+                hero.jump();
+            }
         }
 
+        gravity(hero.getHero(), gravity);
         System.out.println("gravity: " + gravity);
-
-//        gravity(hero.getHero(),gravity);
     }
 
 
 
-    public void gravity(Node node, boolean isGravity) {
+    public void gravity(ImageView node, boolean isGravity) {
         if(isGravity) {
             System.out.println("Gravity");
-            node.setTranslateY(node.getTranslateY() + 2);
+            node.setY(node.getY() + 4);
         }
     }
 
 
-    @FXML
-    public void gameOver() {
+    public void gameOver(AnchorPane gameAnchorPane) {
         /*TODO yha se kaam krna h tumhe prachi*/
-
+        tl.pause();
+        System.out.println("Game Over");
+        URL toScene = getClass().getResource("GameOver.fxml");
+        Stage stage = (Stage) gameAnchorPane.getScene().getWindow();
+        try {
+            StaticFunction.setScene(stage, toScene, "Game Over");
+//            tl.stop();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -283,6 +306,7 @@ public class Game implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() &&  result.get() == ButtonType.YES){
+            tl.stop();
             MainMenu _mainMenu = new MainMenu();
             try {
                 _mainMenu.start(StaticFunction.getStage(mainMenu));
@@ -305,10 +329,13 @@ public class Game implements Initializable {
 
     public void restart(MouseEvent restart) {
         StaticFunction.clickResponse(this.restartIcon);
-
+        tl.play();
         Label nameLabel = hero.getName();
         World world = new World();
         world.start(StaticFunction.getStage(restart), nameLabel);
+    }
+
+    public void resurrect(MouseEvent mouseEvent) {
     }
 
 //    public void camera(KeyEvent keyEvent) {

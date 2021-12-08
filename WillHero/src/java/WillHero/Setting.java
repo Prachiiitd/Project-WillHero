@@ -12,4 +12,6 @@ public class Setting {
         URL toScene = getClass().getResource("Setting.fxml");
         StaticFunction.setScene(stage, toScene, "Settings");
     }
+
+
 }
