@@ -21,6 +21,7 @@ public class Hero {
 
     private final Label name;
     private final ImageView hero;
+    private final Helmet helmet;
 
     private boolean isAlive;
     private int reward;
@@ -31,6 +32,7 @@ public class Hero {
         this.name = name;
         this.location=location;
         this.hero = setHero();
+        this.helmet = new Helmet();
     }
 
     private ImageView setHero(){
@@ -76,8 +78,12 @@ public class Hero {
     }
 
     public void setScoreLabel(Label reward, Label location) {
+        this.location += 1;
+        this.location += 1;
+        System.out.println("hcsjjncn,mc" + this.location + " " + this.reward);
         reward.setText(String.valueOf(this.reward));
         location.setText(String.valueOf(this.location));
+        System.out.println("reward" + reward.getText()  + location.getText());
     }
 
 
@@ -92,8 +98,9 @@ public class Hero {
 
     public void jump() {
 
-        double height = hero.getY() - 180;
+        float height = (float) hero.getY() - 180;
         int time  = 4;
+//        StaticFunction.setTranslation(hero, 0, height, time, -1, false);
         hero.setY(height);
     }
 

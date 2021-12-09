@@ -7,6 +7,7 @@ public abstract class Weapon {
     private final ImageView weaponImage;
     private final int damage;
     private final int range;
+    private boolean active = false;
 
     public Weapon(ImageView weaponImage, int damage, int range) {
         this.weaponImage = weaponImage;
@@ -27,9 +28,17 @@ public abstract class Weapon {
     }
 
     public boolean collided(ImageView object){
+        //to  implimented
         return true;
     }
 
+    public void setActivate(){
+        active = true;
+    }
+
+    public boolean isActive(){
+        return active;
+    }
     public abstract void attack(ImageView character);
     public abstract void upgrade(ImageView character);
 }

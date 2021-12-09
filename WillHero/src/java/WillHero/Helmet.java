@@ -17,7 +17,7 @@ public class Helmet {
         return weapons.get(index);
     }
     
-    public  int getPower(int i){
+    public  int get(int i){
         return weapons.get(i).getDamage();
     }
 }

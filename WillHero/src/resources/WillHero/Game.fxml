@@ -27,7 +27,7 @@
         </ImageView>
       <ImageView fx:id="island11" fitHeight="153.0" fitWidth="94.0" layoutX="-17.0" layoutY="182.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@island2.png" />
+            <Image url="@island1.png" />
          </image>
          <effect>
             <Blend mode="HARD_LIGHT" />
@@ -36,7 +36,7 @@
       </ImageView>
       <ImageView fx:id="island21" fitHeight="135.0" fitWidth="79.0" layoutX="1331.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@island2.png" />
+            <Image url="@island1.png" />
          </image>
          <effect>
             <Blend mode="HARD_LIGHT" />
@@ -45,7 +45,7 @@
       </ImageView>
       <ImageView fx:id="island211" fitHeight="135.0" fitWidth="79.0" layoutX="1045.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@island2.png" />
+            <Image url="@island1.png" />
          </image>
          <effect>
             <Blend mode="HARD_LIGHT" />
@@ -54,7 +54,7 @@
       </ImageView>
         <ImageView fx:id="island1" fitHeight="153.0" fitWidth="94.0" layoutX="225.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@island2.png" />
+                <Image url="@island1.png" />
             </image>
             <effect>
                 <Blend mode="HARD_LIGHT" />
@@ -63,7 +63,7 @@
         </ImageView>
       <ImageView fx:id="island011" fitHeight="135.0" fitWidth="79.0" layoutX="749.0" layoutY="163.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@island2.png" />
+            <Image url="@island1.png" />
          </image>
          <effect>
             <Blend mode="HARD_LIGHT" />
@@ -72,7 +72,7 @@
       </ImageView>
         <ImageView fx:id="island2" fitHeight="135.0" fitWidth="79.0" layoutX="480.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@island2.png" />
+                <Image url="@island1.png" />
             </image>
             <effect>
                 <Blend mode="HARD_LIGHT" />
