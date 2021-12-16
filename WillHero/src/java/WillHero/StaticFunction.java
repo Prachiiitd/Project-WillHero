@@ -125,4 +125,32 @@ public class StaticFunction {
         location = 20;
         label.setText(String.valueOf(location));
     }
+
+    static boolean topCollision(Node node1, Node node2) {
+//        top side collision of node1 with node2 bottom side
+        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
+                node1.getBoundsInParent().getMaxY() >= node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMinY() <= node2.getBoundsInParent().getMaxY();
+    }
+
+    static boolean bottomCollision(Node node1, Node node2) {
+//        bottom side collision of node1 with node2 bottom side
+        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
+                node1.getBoundsInParent().getMinY() <= node2.getBoundsInParent().getMaxY() &&
+                node1.getBoundsInParent().getMaxY() >= node2.getBoundsInParent().getMinY();
+    }
+
+    static boolean leftCollision(Node node1, Node node2) {
+//        left side collision of node1 with node2 bottom side
+        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
+                node1.getBoundsInParent().getMaxX() >= node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMinX() <= node2.getBoundsInParent().getMaxX();
+    }
+
+    static boolean rightCollision(Node node1, Node node2) {
+//        right side collision of node1 with node2 bottom side
+        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
+                node1.getBoundsInParent().getMinX() <= node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMaxX() >= node2.getBoundsInParent().getMinX();
+    }
 }

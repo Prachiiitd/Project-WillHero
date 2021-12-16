@@ -23,18 +23,6 @@ public class LeaderBoard {
     public void start(Stage stage) throws IOException {
 
         URL toScene = getClass().getResource("LeaderBoard.fxml");
-        table.setEditable(true);
-        table.setBackground(new Background(new BackgroundFill(Color.DARKTURQUOISE, null, null)));
-        table.setMaxSize(300, 400);
-        TableColumn firstNameCol = new TableColumn("Rank");
-        TableColumn lastNameCol = new TableColumn("Hero\nUsername");
-        TableColumn emailCol = new TableColumn("High Score");
-        firstNameCol.setMaxWidth(70);
-        lastNameCol.setMaxWidth(400);
-        emailCol.setMaxWidth(200);
-        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
-        table.setLayoutX(50);
-        table.setLayoutY(50);
         StaticFunction.setScene(stage, toScene, "Leaderboard");
     }
 

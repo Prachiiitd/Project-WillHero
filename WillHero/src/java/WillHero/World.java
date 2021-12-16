@@ -1,23 +1,29 @@
 package WillHero;
 
 import Exceptions.WorldNotExistException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class World {
     /* the class is  of no use in particular but is added considering the scalability og game */
     private final ArrayList<Game> worldList = new ArrayList<>();
 
-    public void passName(Label name) {
-        worldList.add(new Game(name));
+    public World() {
+        worldList.add(new Game());
     }
 
     public int selectGame(Label nameLabel) {
-        passName(nameLabel);
-
         int game;
         /* Option for taking inputs for a particular world ca be taken
             and that world will appear for user
@@ -29,10 +35,32 @@ public class World {
     public void start(Stage stage, Label nameLabel) throws WorldNotExistException {
         int srNo = selectGame(nameLabel);
         if (srNo < worldList.size()){
-            Game game  = worldList.get(srNo);
+            AnchorPane gameAnchorPane, screenAnchorPane;
+            StackPane stackPane = new StackPane();
+            VBox vBox = new VBox();
 
             try {
-                game.start(stage);
+                FXMLLoader root_gameAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("Game.fxml")));
+                FXMLLoader root_screenAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("ArenaScreen.fxml")));
+                gameAnchorPane = root_gameAnchorPane.load();
+                screenAnchorPane = root_screenAnchorPane.load();
+                gameAnchorPane.setBackground(StaticFunction.defaultBackground());
+                stackPane.getChildren().add(gameAnchorPane);
+                stackPane.getChildren().add(screenAnchorPane);
+                Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
+                stage.setTitle("WillHero: " + nameLabel.getText());
+
+                Game gameController = root_gameAnchorPane.getController();
+                System.out.println("Game Controller: 111111111");
+                gameController.start(stage, nameLabel, vBox, stackPane, gameAnchorPane, screenAnchorPane);
+                System.out.println("Game Controller: 222222222");
+
+                stage.getIcons().add(icon);
+                vBox.getChildren().add(stackPane);
+                Scene scene = new Scene(vBox);
+                stage.setScene(scene);
+                stage.show();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -42,4 +70,3 @@ public class World {
         }
     }
 }
-

@@ -17,12 +17,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,41 +31,23 @@ import java.util.ResourceBundle;
 
 public class Game implements Initializable {
 
-    private final Hero hero;
-    public ParallelCamera camera;
-    public ProgressBar progressBar;
-    private VBox vBox;
-    private StackPane stackPane;
-    private Group screenObj;
-    private final ArrayList<Platform> platforms;
-    private final ArrayList<Coin> coins;
-    public ImageView island11;
-    public ImageView island21;
-    public ImageView island211;
-    public ImageView island011;
-    public static Timeline tl;
-
-
-
     @FXML
-    public static AnchorPane gameAnchorPane;
+    private ImageView tempIl1;
     @FXML
-    private AnchorPane screenAnchorPane;
+    private ImageView tempIl2;
     @FXML
-    private ImageView island1;
+    private ImageView tempIl3;
     @FXML
-    private ImageView island2;
+    private ImageView tempIl4;
     @FXML
-    private ImageView greenOrc1;
+    private ImageView tempIl5;
     @FXML
-    private Label currLocation;
-    @FXML
-    private Label currReward;
-    @FXML
-    private ImageView pauseIcon;
-
+    private ImageView tempIl6;
     @FXML
     private Text floatingName;
+
+    @FXML
+    private ImageView pauseIcon;
     @FXML
     private ImageView mainMenuIcon;
     @FXML
@@ -76,57 +57,56 @@ public class Game implements Initializable {
     @FXML
     private ImageView resumeIcon;
     @FXML
-    private Label bestLocation;
+    private AnchorPane gameAnchorPane;
     @FXML
-    private Label bestReward;
+    private AnchorPane screenAnchorPane;
+    @FXML
+    private Label currLocation;
+    @FXML
+    private Label currReward;
+    @FXML
+    private Label bestLocation = new Label();
+    @FXML
+    private Label bestReward = new Label();
+    @FXML
+    private ProgressBar progressBar = new ProgressBar();
 
-    public Game() {
+    private static Hero hero;
+    private VBox vBox;
+    private StackPane stackPane;
+    private Group screenObj;
+    private static ArrayList<Platform> platforms;
+    private static ArrayList<Orc> orcs;
+    private ArrayList<Coin> coins;
+    private static Timeline tl;
 
-        hero = new Hero(new Label(), 0);
-        currLocation = new Label();
-        currReward = new Label();
-        bestLocation = new Label();
-        bestReward = new Label();
-        platforms = new ArrayList<>();
-        coins = new ArrayList<>();
-   }
 
-    public Game(Label nameLabel) {
+
+
+    public void start(Stage stage, Label nameLabel, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
 
         hero = new Hero(nameLabel, 0);
-        vBox  = new VBox();
-        stackPane = new StackPane();
-        currLocation = new Label();
-        currReward = new Label();
+        this.vBox = vBox;
+        this.stackPane = stackPane;
+        this.gameAnchorPane = gameAnchorPane;
+        this.screenAnchorPane = screenAnchorPane;
+
+
         bestLocation = new Label();
         bestReward = new Label();
-        screenAnchorPane = new AnchorPane();
-        gameAnchorPane = new AnchorPane();
         screenObj = new Group();
         platforms = new ArrayList<>();
         coins = new ArrayList<>();
+        orcs = new ArrayList<>();
 
-    }
-
-    public void start(Stage stage) throws IOException {
-
-        gameAnchorPane  = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Game.fxml")));
-        screenAnchorPane =  FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ArenaScreen.fxml")));
-        gameAnchorPane.setBackground(StaticFunction.defaultBackground());
-        stackPane.getChildren().add(gameAnchorPane);
-        stackPane.getChildren().add(screenAnchorPane);
-
-        Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
-        stage.setTitle("WillHero: " + hero.getName().getText());
-        stage.getIcons().add(icon);
-        vBox.getChildren().add(stackPane);
-        Scene scene = new Scene(vBox);
         buildWorld(coins, platforms,screenObj);
         stackPane.setOnKeyPressed(new EventHandler<KeyEvent> () {
 
             @Override
             public void handle(KeyEvent event)
             {
+                gravity(hero.getHero(), false, 0);
+
                 Node node=(Node) event.getSource();
                 VBox vBox=(VBox) node.getScene().getRoot();
                 StackPane stackPane = (StackPane) vBox.getChildren().get(0);
@@ -145,26 +125,25 @@ public class Game implements Initializable {
                 if(event.getCode() == KeyCode.SPACE)
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
+//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
                         imageView.setX(imageView.getX() + 50 );
                     }
+
 
 
                 if(event.getCode().isDigitKey()){
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
                         imageView.setX(imageView.getX() -30);
+//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
+
                     }
-//                    for(Platform object : platforms) {
-//                        object.getIsLand().setX(object.getIsLand().getX() - 30);
-//                    }
                 }
             }
         });
 
-        stage.setScene(scene);
-        stage.show();
 
-        tl = new Timeline(new KeyFrame(Duration.millis(20), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
+        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
@@ -173,24 +152,26 @@ public class Game implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         StaticFunction.setTranslation(floatingName, 0, 100, 1000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(island2, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(island11, 0, -25, 2000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(island211, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(island21, 1, 20, 2000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(island011, 0, -25, 2000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(island1, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
-        StaticFunction.setTranslation(greenOrc1, 0, 40, 1000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl1, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl2, 0, -25, 2000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl3, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl4, 1, 20, 2000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl5, 0, -25, 2000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl6, 0, 25, 2000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(tempIl6, 0, 40, 1000,TranslateTransition.INDEFINITE, true);
         StaticFunction.setRotation(resumeIcon,360, 1000,2, true);
         StaticFunction.setRotation(restartIcon,360, 1000, 2,true);
         StaticFunction.setRotation(pauseIcon,360, 1000, 2,true);
         StaticFunction.setRotation(saveIcon,360, 1000, 2,true);
         StaticFunction.setRotation(mainMenuIcon,360, 1000, 2,true);
 
+        System.out.println("gjdshkjhcjnlsmk");
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
+    }
 
-        showStats(hero);
-        currLocation.setText("105");
+    public static Hero getHero() {
+        return hero;
     }
 
     @FXML
@@ -199,39 +180,60 @@ public class Game implements Initializable {
         platforms.add(new Platform(3, 100, 350, 200, 50));
         platforms.add( new Platform(0, 400, 350, 600, 0));
         ImageView gate = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("gate.png"))));
-        gate.setPreserveRatio(true); gate.setFitWidth(220); gate.setLayoutX(700); gate.setLayoutY(150);
-        screenObj.getChildren().addAll(platforms.get(0).getIsLand(), gate, platforms.get(1).getIsLand());
-        //initialization khtm
+        gate.setPreserveRatio(true); gate.setFitWidth(220); gate.setLayoutX(350); gate.setLayoutY(150);
+        ImageView gif = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("WN8R.gif"))));
+        gif.setPreserveRatio(true); gif.setFitWidth(190); gif.setLayoutX(364); gif.setLayoutY(160);
+        screenObj.getChildren().addAll(platforms.get(0).getIsLand(), gif,gate, platforms.get(1).getIsLand());
 
         Group platform = getPlatforms(platforms);
-        Group coin = getCoinCluster(920, 300, coins);
-        WindMill windMill = new WindMill(platforms.get(0).getIsLand().getX() + platforms.get(0).getIsLand().getBoundsInParent().getWidth() / 2, platforms.get(0).getIsLand().getY() - 300);
+//        GreenOrc g=new GreenOrc(1450,250);
+        CoinChest co=new CoinChest(1850,300);
 
+        //Add orc manually
+        Orc r=new RedOrc(2500,250);
+        orcs.add(r);
 
-//        screenObj.getChildren().addAll(windMill.getWindMill().getChildren());
-        screenObj.getChildren().addAll(windMill.getWindMill().getChildren());
-        screenObj.getChildren().addAll(coin.getChildren());
+        WindMill windMill = new WindMill(platforms.get(5).getIsLand().getX() + platforms.get(5).getIsLand().getBoundsInParent().getWidth() / 2, platforms.get(5).getIsLand().getY() - 300);
+        screenObj.getChildren().add(r.getOrc());
+        screenObj.getChildren().add(co.getChest());
         screenObj.getChildren().addAll(platform.getChildren());
+        screenObj.getChildren().addAll(windMill.getWindMill().getChildren());
+
         gameAnchorPane.getChildren().addAll(screenObj);
         gameAnchorPane.getChildren().add( hero.getHero());
         hero.setScoreLabel(currReward,currLocation);
-        System.out.println("hjhsdjh " + currReward.getText() + " " + currLocation.getText());
+    }
+
+    public static ArrayList<Platform> getPlatformList() {
+        return platforms;
     }
 
     private Group getPlatforms(ArrayList<Platform> platforms) {
         Group group = new Group();
-        for(int i = 0; i < 10; i++) {
+        int z=0;
+        for(int i = 0; i < 20; i++) {
+
             if(i+3 > 4) {
                 int n = (i+3) % 4;
                 int speed = 0;
                 if(i*25 % 40 == 0) {
                     speed = 50;
                 }
-                int x = (int) (platforms.get(platforms.size()-1).getIsLand().getX() + platforms.get(platforms.size()-1).getIsLand().getFitWidth() + 100);
+                int x = (int) (platforms.get(platforms.size()-1).getIsLand().getX() + platforms.get(platforms.size()-1).getIsLand().getFitWidth() + 200);
                 Platform platform  = new Platform(n, x, 350, n*100, speed);
+                if(z%3==0) {
+                    Group coi = getCoinCluster(x, 300, coins);
+                    if (i%3==0){
+                        GreenOrc g=new GreenOrc(x-30,250);
+                        orcs.add(g);
+                        screenObj.getChildren().add(g.getOrc());
+                    }
+                    screenObj.getChildren().addAll(coi.getChildren());
+                }
                 platforms.add(platform);
-                group.getChildren().add(platform.getIsLand());
+                group.getChildren().addAll(platform.getIsLand());
             }
+            z++;
         }
         return group;
     }
@@ -248,91 +250,57 @@ public class Game implements Initializable {
         }
         return group;
     }
-//    @FXML
-//    public void buildWorld(ArrayList<Platform> platforms, Group screenObj) {
-//        Group g=cluster(920,300,coins);
-//        platforms.add(new Platform(0, 150, 350, 700, 0));
-//        platforms.add(new Platform(2, 900, 350, 400, 0));
-//        platforms.add(new Platform(3, 1800, 350, 400, 50));
-//
-//        for (Platform platform : platforms) {
-//            screenObj.getChildren().add(platform.getIsLand());
-//        }
-//        Group g1=new Group();
-//        screenObj.getChildren().addAll(g.getChildren());
-//        g1.getChildren().addAll(screenObj,g);
-//        gameAnchorPane.getChildren().addAll(screenObj) ;
-//        gameAnchorPane.getChildren().add( hero.getHero());
-//        hero.setScoreLabel(currReward,currLocation);
-//    }
-
-    @FXML
-    public void showStats(Hero hero) {
-        /*TODO find out the best location reached so far from database*/
-        System.out.println("In ShowStats" + hero.getName().getText() + " " + hero.getLocation() + " " + hero.getReward());
-        hero.setLocation(hero.getLocation() + 5);
-        System.out.println("In ShowStats" + hero.getName().getText() + " " + hero.getLocation() + " " + hero.getReward());
-    }
 
     @FXML
     public void playGame(AnchorPane gameAnchorPane, Hero hero, ArrayList<Platform> platforms, Group screenObj, Label currReward, Label currLocation) {
 
-        System.out.println("In PlayGame" + hero.getHero().getTranslateX() + " " + hero.getHero().getTranslateY());
-        boolean gravity;
+        entityCollision();
+        setScoreLabel();
 
         if(hero.getHero().getY() > 480) {
-            //if hero is out of the 3screen
             hero.setAlive(false);
             StaticFunction.setRotation(hero.getHero(), 360, 100, -1, true);
 
             if(hero.getHero().getY() > 700){
-                //if hero is out of the screen
-                System.out.println("\t/h/h/h/hgame over");
+                System.out.println("\t/h/h/h/h Game over");
                 gameOver(gameAnchorPane);
             }
         }
 
-        System.out.println("hero zinda h" + hero.isAlive() + " " + hero.getHero().getX() + " " + hero.getHero().getY());
+        if(!hero.isAlive()) {
+            hero.getHero().setScaleY(0.5);
 
-        gravity = true;
-
-        for (Platform platform : platforms) {
-            if(platform.collided(hero.getHero(), screenObj)) {
-                System.out.println("\t /h/hCollided with platform: " + platform.getId());
-                gravity = false;
-                hero.jump();
-            }
+            System.out.println("orc se mra h");
+            gameOver(gameAnchorPane);
         }
 
-        gravity(hero.getHero(), gravity);
-        System.out.println("gravity: " + gravity);
     }
 
+    private void entityCollision() {
+        coins.removeIf(coin -> coin.collision(hero));
+        for(Orc orc:orcs){
+            orc.collision(hero);
+        }
+    }
 
+    private void setScoreLabel() {
+        System.out.println(hero.getReward());
+        currReward.setText("Reward: " + hero.getReward());
+        currLocation.setText("Location: " + hero.getLocation());
+    }
 
-    public void gravity(ImageView node, boolean isGravity) {
+    public void gravity(ImageView node, boolean isGravity, int speed) {
         if(isGravity) {
-            System.out.println("Gravity");
-            node.setY(node.getY() + 4);
+            node.setY(node.getY() + speed);
+        } else {
+            node.setY(node.getY());
         }
     }
 
 
     public void gameOver(AnchorPane gameAnchorPane) {
-        /*TODO yha se kaam krna h tumhe prachi*/
         tl.pause();
-        gravity(hero.getHero(), false);
         System.out.println("Game Over");
-//        URL toScene = getClass().getResource("GameOver.fxml");
-//        Stage stage = (Stage) gameAnchorPane.getScene().getWindow();
-//        try {
-//            StaticFunction.setScene(stage, toScene, "Game Over");
-////            tl.stop();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//
         VBox vBox=(VBox)gameAnchorPane.getScene().getRoot();
         StackPane stackPane = (StackPane) vBox.getChildren().get(0);
 
@@ -384,7 +352,7 @@ public class Game implements Initializable {
     public void mainMenu(MouseEvent mainMenu) {
         StaticFunction.clickResponse(this.mainMenuIcon);
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"DO you want to save the game?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to go to MainMenu?", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Back to Main Menu");
         alert.initStyle(StageStyle.UNDECORATED);
 
@@ -410,45 +378,20 @@ public class Game implements Initializable {
         alert.showAndWait();
     }
 
-
+    @FXML
     public void restart(MouseEvent restart) {
         StaticFunction.clickResponse(this.restartIcon);
         tl.stop();
-        Label nameLabel = hero.getName();
+        Label nameLabel = new Label();
         World world = new World();
         world.start(StaticFunction.getStage(restart), nameLabel);
     }
 
     public void resurrect(MouseEvent resurrect) {
-        System.out.println("Resurrect  zkzzcmbnz" + hero.getName());
-        gameAnchorPane.getChildren().add(hero.getHero());
-        hero.getHero().setX(0);
-        hero.getHero().setY(0);
-        System.out.println(hero.getHero().getX() + " jhvskhdvmn " + hero.getHero().getY());
-
-        Node node=(Node) resurrect.getSource();
-        VBox vBox=(VBox) node.getScene().getRoot();
-        StackPane stackPane = (StackPane) vBox.getChildren().get(0);
-        try {
-            stackPane.getChildren().remove(stackPane.getChildren().get(1));
-            System.out.println("\nremoved ");
-        } catch (NullPointerException e){
-            System.out.println("Already Deleted");
-        }
-
-//        tl.play();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,"You dont have enough coins to resurrect.", ButtonType.OK);
+        alert.setTitle("Resurrect");
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.showAndWait();
+        tl.stop();
     }
-
-//    public void camera(KeyEvent keyEvent) {
-//        Node node=(Node) keyEvent.getSource();
-//        VBox vBox=(VBox) node.getScene().getRoot();
-//        StackPane stackPane = (StackPane) vBox.getChildren().get(0);
-//
-//        System.out.println(hero.getHero().getX() + " " + hero.getHero().getY());
-//        if(stackPane.getChildren().size() == 2) return;
-//        if(keyEvent.getCode() == KeyCode.LEFT) {
-//            () -> this.camera().setX(this.camera(keyEvent).getX() - 10);
-//
-//
-//    }
 }

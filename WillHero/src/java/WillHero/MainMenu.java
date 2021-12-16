@@ -3,18 +3,12 @@ package WillHero;
 import Exceptions.WorldNotExistException;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -139,6 +133,12 @@ public class MainMenu implements Initializable {
 
     public void resumeGame(MouseEvent resumeGameIcon) {
         StaticFunction.clickResponse(this.resumeGameIcon);
+       ResumeGame s= new ResumeGame();
+        try {
+            s.start(StaticFunction.getStage(resumeGameIcon));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -159,7 +159,6 @@ public class MainMenu implements Initializable {
         exit(StaticFunction.getStage(exit));
     }
 }
-
 
 
 

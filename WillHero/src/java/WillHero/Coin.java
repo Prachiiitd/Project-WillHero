@@ -38,9 +38,14 @@ public class Coin {
         return coin;
     }
 
-    public void collision(Hero hero) {
-        increaseReward(hero);
-        this.coin.setVisible(false);
+    public boolean collision(Hero hero) {
+        if (hero.getHero().getBoundsInParent().intersects(coin.getBoundsInParent())) {
+            System.out.println("Coin collected");
+            increaseReward(hero);
+            this.coin.setVisible(false);
+            return true;
+        }
+        return false;
     }
 
     private void increaseReward(Hero hero) {

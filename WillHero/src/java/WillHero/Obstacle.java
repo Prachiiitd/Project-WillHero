@@ -66,8 +66,8 @@ class WindMill extends Obstacle {
         setRotation(blades, x, y);
 
         Group chakki = new Group();
-        chakki.getChildren().addAll(building);
-        chakki.getChildren().addAll(blades);
+        chakki.getChildren().addAll(building,blade3,blade2,blade1);
+//        chakki.getChildren().addAll(blades);
 
         return chakki;
     }

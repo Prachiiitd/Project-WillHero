@@ -70,7 +70,7 @@
                 <DropShadow offsetX="-3.0" offsetY="3.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="restartIcon" accessibleRole="BUTTON" layoutX="631.0" layoutY="570.0" onMousePressed="#restart" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="restartIcon" accessibleRole="BUTTON" layoutX="931.0" layoutY="568.0" onMousePressed="#restart" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@play.png" />
             </image>
@@ -83,17 +83,6 @@
             </effect>
         </ImageView>
         <Group />
-        <ImageView fx:id="LeadeBoard" accessibleRole="BUTTON" layoutX="866.0" layoutY="571.0" pickOnBounds="true">
-            <image>
-                <Image url="@Leaderboard.png" />
-            </image>
-            <effect>
-                <Blend />
-            </effect>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
-        </ImageView>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="102.0" layoutX="574.0" layoutY="119.0" strokeType="INSIDE" width="200.0">
             <effect>
                 <DropShadow />

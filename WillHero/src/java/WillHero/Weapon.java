@@ -28,7 +28,8 @@ public abstract class Weapon {
     }
 
     public boolean collided(ImageView object){
-        //to  implimented
+        //to  implemented
+
         return true;
     }
 

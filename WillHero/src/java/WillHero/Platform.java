@@ -60,7 +60,6 @@ public class Platform {
         ImageView island = new ImageView(this.isLand.getImage());
         island.setX(island.getX() + screen.getLayoutX());
         island.setY(island.getY() + screen.getLayoutY());
-        System.out.println("in coll island hero X:" + island.getX() + " Y:" + island.getY());
         if (obj.getBoundsInParent().intersects(isLand.getBoundsInParent())) {
             isCollision = true;
         }

@@ -19,7 +19,7 @@
 
 <AnchorPane fx:id="screenAnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
     <children>
-      <Region layoutX="-1.0" onMousePressed="#resumeGame" prefHeight="768.0" prefWidth="1368.0" />
+        <Region layoutX="-1.0" onMousePressed="#resumeGame" prefHeight="768.0" prefWidth="1368.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="70.0" layoutY="599.0" strokeType="INSIDE" width="1370.0">
             <stroke>
                 <LinearGradient>
@@ -171,16 +171,16 @@
             </effect>
         </Label>
         <Group />
-      <Text fill="#e4c711" fontSmoothingType="LCD" layoutX="1092.0" layoutY="100.0" stroke="#fff800" strokeDashOffset="20.0" strokeLineCap="ROUND" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeType="OUTSIDE" strokeWidth="2.0" text="BEST" textAlignment="JUSTIFY">
-         <font>
-            <Font name="DejaVu Serif" size="26.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="WAIT" />
-         </cursor>
-         <effect>
-            <DropShadow offsetX="-5.0" offsetY="5.0" radius="4.75" width="0.0" />
-         </effect>
-      </Text>
+        <Text fill="#e4c711" fontSmoothingType="LCD" layoutX="1092.0" layoutY="100.0" stroke="#fff800" strokeDashOffset="20.0" strokeLineCap="ROUND" strokeLineJoin="BEVEL" strokeMiterLimit="0.0" strokeType="OUTSIDE" strokeWidth="2.0" text="BEST" textAlignment="JUSTIFY">
+            <font>
+                <Font name="DejaVu Serif" size="26.0" />
+            </font>
+            <cursor>
+                <Cursor fx:constant="WAIT" />
+            </cursor>
+            <effect>
+                <DropShadow offsetX="-5.0" offsetY="5.0" radius="4.75" width="0.0" />
+            </effect>
+        </Text>
     </children>
 </AnchorPane>

@@ -17,8 +17,6 @@ public class Setting {
 
         URL toScene = getClass().getResource("setting.fxml");
         StaticFunction.setScene(stage, toScene, "Settings");
-        WindMill obstacle=new WindMill(300,300);
-        obstacle.start(stage);
 
     }
     public void exit(MouseEvent mouseEvent) throws IOException {
@@ -41,4 +39,5 @@ public class Setting {
 
 
     }
+
 }
