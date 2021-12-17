@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -39,6 +40,7 @@ public class Hero {
         this.location=location;
         this.hero = setHero();
         this.helmet = new Helmet();
+
         this.tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
@@ -49,7 +51,7 @@ public class Hero {
         try {
             hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
             hero.setPreserveRatio(true);
-            hero.setFitWidth(50);
+            hero.setFitWidth(30);
             hero.setX(410);
             hero.setY(150);
 
@@ -102,10 +104,11 @@ public class Hero {
 
     public void jump() {
         this.hero.setY(hero.getY() + jumpSpeed);
-
-//        Iterator platformIterator = StaticFunction.getPlatformList();
-        for(Platform platform : Game.getPlatformList()) {
-            if(collision(platform)){
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.addAll(Game.getPlatformList());
+        objects.addAll(Game.getOrcList());
+        for(Object object : objects){
+            if(collision(object)){
                 if (isAlive)
                     jumpSpeed = -1;
                 else
@@ -113,28 +116,36 @@ public class Hero {
                 break;
             }
 
-            if(hero.getY() < platform.getIsLand().getY()-jumpHeight){
+            if(hero.getY() < fromHeight-jumpHeight){
                 jumpSpeed = 1;
                 break;
             }
         }
     }
 
-
     private boolean collision(Object object){
 
         if(object instanceof Platform platform){
 //            top side collision with platform
-            if(StaticFunction.topCollision(platform.getIsLand(), hero)){
-                fromHeight = Math.min(fromHeight, platform.getIsLand().getBoundsInLocal().getMinY());
+            if(StaticFunction.topCollision(platform.getIsLand(), hero, 2)){
+                System.out.println("top collision with platform");
+                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
         }
 
         if(object instanceof Orc orc){
-//            top side collision with orc
-            if(StaticFunction.topCollision(orc.getOrc(), hero)) {
-                fromHeight = Math.min(fromHeight, orc.getOrc().getBoundsInLocal().getMinY());
+//            top side collision of hero with orc bottom
+            if(StaticFunction.topCollision(orc.getOrc(), hero, 0)) {
+                System.out.println((orc.getOrc().getY() + " hero " +  hero.getY()));
+                System.out.println("You are dead by hero class");
+                isAlive = false;
+                return true;
+            }
+
+            if(StaticFunction.topCollision(orc.getOrc(), hero, 2)) {
+                System.out.println("top collision with orc in hero");
+                fromHeight = Math.min(fromHeight, Math.max(orc.getOrc().getBoundsInLocal().getMinY(), 200));
                 return true;
             }
         }

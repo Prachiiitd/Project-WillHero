@@ -17,7 +17,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -71,26 +70,28 @@ public class Game implements Initializable {
     @FXML
     private ProgressBar progressBar = new ProgressBar();
 
-    private static Hero hero;
+    private Hero hero;
     private VBox vBox;
     private StackPane stackPane;
     private Group screenObj;
+    private static ArrayList<Hero> heroWrap;
     private static ArrayList<Platform> platforms;
     private static ArrayList<Orc> orcs;
     private ArrayList<Coin> coins;
     private static Timeline tl;
+    Camera camera;
+
+    
 
 
-
-
-    public void start(Stage stage, Label nameLabel, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
+    public void start(Stage stage, Label nameLabel, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane, AnchorPane screenAnchorPane) throws IOException {
 
         hero = new Hero(nameLabel, 0);
         this.vBox = vBox;
         this.stackPane = stackPane;
         this.gameAnchorPane = gameAnchorPane;
         this.screenAnchorPane = screenAnchorPane;
-
+        this.camera = new PerspectiveCamera();
 
         bestLocation = new Label();
         bestReward = new Label();
@@ -98,6 +99,9 @@ public class Game implements Initializable {
         platforms = new ArrayList<>();
         coins = new ArrayList<>();
         orcs = new ArrayList<>();
+        heroWrap = new ArrayList<>();
+        heroWrap.add(hero);
+        stage.getScene().setCamera(camera);
 
         buildWorld(coins, platforms,screenObj);
         stackPane.setOnKeyPressed(new EventHandler<KeyEvent> () {
@@ -126,17 +130,19 @@ public class Game implements Initializable {
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
 //                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
-                        imageView.setX(imageView.getX() + 50 );
+                        imageView.setX(imageView.getX() + 100 );
                     }
 
 
 
                 if(event.getCode().isDigitKey()){
+//                    hero.getHero().setX(hero.getHero().getX() + 100);
+//                    camera.translateXProperty().set(hero.getHero().getX() + 100);
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
-                        imageView.setX(imageView.getX() -30);
+                        imageView.setX(imageView.getX() -100);
+                        hero.setLocation(hero.getLocation() + 1);
 //                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
-
                     }
                 }
             }
@@ -165,13 +171,18 @@ public class Game implements Initializable {
         StaticFunction.setRotation(saveIcon,360, 1000, 2,true);
         StaticFunction.setRotation(mainMenuIcon,360, 1000, 2,true);
 
-        System.out.println("gjdshkjhcjnlsmk");
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
     }
 
-    public static Hero getHero() {
-        return hero;
+    public static ArrayList<Hero> getHero() {
+        return heroWrap;
+    }
+    public static ArrayList<Orc> getOrcList() {
+        return orcs;
+    }
+    public static ArrayList<Platform> getPlatformList() {
+        return platforms;
     }
 
     @FXML
@@ -204,9 +215,7 @@ public class Game implements Initializable {
         hero.setScoreLabel(currReward,currLocation);
     }
 
-    public static ArrayList<Platform> getPlatformList() {
-        return platforms;
-    }
+
 
     private Group getPlatforms(ArrayList<Platform> platforms) {
         Group group = new Group();
@@ -273,20 +282,27 @@ public class Game implements Initializable {
             System.out.println("orc se mra h");
             gameOver(gameAnchorPane);
         }
-
     }
+
+
+    private void activateJump(){
+//        for(Orc orc : orcs){
+//            orc.jump(hero, platforms);
+//        }
+    }
+
 
     private void entityCollision() {
         coins.removeIf(coin -> coin.collision(hero));
-        for(Orc orc:orcs){
-            orc.collision(hero);
-        }
+//        for(Orc orc:orcs){
+//            if(StaticFunction.topCollision());
+//        }
     }
 
     private void setScoreLabel() {
-        System.out.println(hero.getReward());
-        currReward.setText("Reward: " + hero.getReward());
-        currLocation.setText("Location: " + hero.getLocation());
+//        System.out.println(hero.getReward());
+        currReward.setText("" + hero.getReward());
+        currLocation.setText("" + hero.getLocation()/70);
     }
 
     public void gravity(ImageView node, boolean isGravity, int speed) {
@@ -317,7 +333,6 @@ public class Game implements Initializable {
     @FXML
     public void pause(MouseEvent pause) {
         StaticFunction.clickResponse(this.pauseIcon);
-
         Node node=(Node) pause.getSource();
         VBox vBox=(VBox)node.getScene().getRoot();
         StackPane stackPane = (StackPane) vBox.getChildren().get(0);

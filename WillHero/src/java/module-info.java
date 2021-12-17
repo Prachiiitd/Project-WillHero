@@ -2,6 +2,8 @@ module willhero.willhero {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
+    requires javafx.graphics;
+    requires javafx.media;
 
 //    requires org.controlsfx.controlsfx;
     requires com.dlsc.formsfx;

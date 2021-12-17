@@ -1,6 +1,7 @@
 package WillHero;
 
 import javafx.animation.*;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.transform.Rotate;
@@ -8,103 +9,98 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public abstract class Orc {
     private final int jumpHeight;
     private int jumpSpeed;
-    private double height;
+    private double fromHeight;
     private final ImageView orc;
-    private final Timeline tl;
 
     public Orc(int x, int y) {
-        this.orc = setOrc(x,y);
-        this.jumpHeight = 150;
-        this.jumpSpeed = 4;
-        this.height = 300;
-        this.motion();
-        this.tl = new Timeline(new KeyFrame(Duration.millis(5), e -> motion()));
+        Random random = new Random();
+        this.orc = setOrc(x, y);
+        this.jumpHeight = random.nextInt(120, 170);
+        this.jumpSpeed = 1;
+        this.fromHeight = random.nextInt(150, 300);
+
+        Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
 
 
-
-    private void motion() {
+    public void jump() {
         this.orc.setY(orc.getY() + jumpSpeed);
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.addAll(Game.getPlatformList());
+//        objects.addAll(Game.getHero());
 
-        for(Platform platform : Game.getPlatformList()){
-            if((orc.getX() < Game.getHero().getHero().getX() + Game.getHero().getHero().getFitWidth()
-                    && orc.getX() + orc.getFitWidth() > Game.getHero().getHero().getX()
-                    && orc.getY() + orc.getFitHeight() > Game.getHero().getHero().getY())
-                    || collision(platform)) {
+        if(orc.getY() < fromHeight-jumpHeight){
+            jumpSpeed = 1;
+        }
+
+        for(Object object : objects){
+            if(collision(object)){
                 jumpSpeed = -1;
                 break;
             }
-
-            if(orc.getY() < height-jumpHeight && !collision(platform)) {
-                jumpSpeed = 1;
-                break;
-            }
-
-            if(orc.getY() - Game.getHero().getHero().getY() < height-jumpHeight && collision(platform)) {
-                System.out.println("Collision on the top");
-                jumpSpeed = 1;
-                break;
-            }
-
         }
+
+
     }
 
     public ImageView getOrc() {
         return orc;
     }
 
-    public abstract  ImageView setOrc(int x,int y);
+    public abstract ImageView setOrc(int x, int y);
 
-    public boolean collision(Object object) {
-
-        if (object instanceof Hero hero) {
-            if (orc.getBoundsInParent().intersects(hero.getHero().getBoundsInParent())) {
-                System.out.println("Collision");
-
-                if (orc.getY() + orc.getFitHeight() >= hero.getHero().getY() && orc.getY() + orc.getFitHeight() <= hero.getHero().getY() + hero.getHero().getFitHeight()) { //collision on the bottom
-                    System.out.println("Collision on the bottom" + hero.getHero().getY() + " " + (orc.getY()  + orc.getFitHeight()));
-                    height = Math.min(hero.getHero().getY(), height);
-                    hero.setAlive(false);
-                    return true;
-                }
-            }
-        }
+    public boolean collision(Object object){
 
         if(object instanceof Platform platform){
-            if (orc.getBoundsInParent().intersects(platform.getIsLand().getBoundsInParent())) {
-                height = Math.min(platform.getIsLand().getY(), height);
+//            top side collision with platform
+            if(StaticFunction.topCollision(platform.getIsLand(), orc, 2)){
+                System.out.println(" top coliision with plATFOR in orc");
+                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
         }
+
+        if(object instanceof Hero hero){
+//            top side collision with hero
+            if(StaticFunction.topCollision(hero.getHero(), orc, 2)) {
+                System.out.println(" top collision with hero in orc");
+//                fromHeight = hero.getHero().getBoundsInLocal().getMinY();
+                return true;
+            }
+        }
+
         return false;
     }
 }
 
 
 class RedOrc extends Orc {
-    private  ImageView redOrc;
-    public RedOrc(int x, int y){
-        super(x,y);
-//        super.
-        this.redOrc=super.getOrc();
+    private ImageView redOrc;
+
+    public RedOrc(int x, int y) {
+        super(x, y);
+//    
+        this.redOrc = super.getOrc();
     }
+
     @Override
     public ImageView setOrc(int x, int y) throws NullPointerException {
         ImageView redorc;
         try {
             redorc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("red.png"))));
-            redorc.setFitWidth(50);
+            redorc.setFitWidth(35);
             redorc.setPreserveRatio(true);
             redorc.setX(x);
             redorc.setY(y);
             return redorc;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new NullPointerException("Coin couldn't be loaded");
         }
     }
@@ -115,15 +111,15 @@ class RedOrc extends Orc {
 }
 
 
-
-
 class GreenOrc extends Orc {
 
-    private  ImageView greenOrc;
+    private ImageView greenOrc;
+
     public GreenOrc(int x, int y) {
-        super(x,y);
+        super(x, y);
 
     }
+
     @Override
     public ImageView setOrc(int x, int y) throws NullPointerException {
         ImageView greenorc;
@@ -134,7 +130,7 @@ class GreenOrc extends Orc {
             greenorc.setX(x);
             greenorc.setY(y);
             return greenorc;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new NullPointerException("Coin couldn't be loaded");
         }
     }
@@ -151,7 +147,6 @@ class GreenOrc extends Orc {
 
 
 }
-
 
 
 class BossOrc extends Orc {

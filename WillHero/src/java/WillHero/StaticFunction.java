@@ -6,6 +6,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
+import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 
 import javafx.scene.Parent;
@@ -126,31 +127,42 @@ public class StaticFunction {
         label.setText(String.valueOf(location));
     }
 
-    static boolean topCollision(Node node1, Node node2) {
-//        top side collision of node1 with node2 bottom side
+    static boolean bottomCollision(ImageView node1, ImageView node2, double margin) {
+//        node1 ka bottom collides with node2 ka top
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxY() >= node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMinY() <= node2.getBoundsInParent().getMaxY();
+                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMaxY() < node2.getBoundsInParent().getMaxY() &&
+                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX();
     }
 
-    static boolean bottomCollision(Node node1, Node node2) {
-//        bottom side collision of node1 with node2 bottom side
+    static boolean topCollision(ImageView node1, ImageView node2, double margin) {
+//        node1 ka top collides with node2 ka bottom
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMinY() <= node2.getBoundsInParent().getMaxY() &&
-                node1.getBoundsInParent().getMaxY() >= node2.getBoundsInParent().getMinY();
+                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMaxY() < node2.getBoundsInParent().getMaxY() &&
+                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX();
     }
 
-    static boolean leftCollision(Node node1, Node node2) {
-//        left side collision of node1 with node2 bottom side
+    static boolean leftCollision(Node node1, Node node2, double margin) {
+//        node1 ka left collides with node2 ka right
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxX() >= node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMinX() <= node2.getBoundsInParent().getMaxX();
+                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
     }
 
-    static boolean rightCollision(Node node1, Node node2) {
-//        right side collision of node1 with node2 bottom side
+    static boolean rightCollision(Node node1, Node node2, double margin) {
+//        node1 ka right collides with node2 ka left
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMinX() <= node2.getBoundsInParent().getMaxX() &&
-                node1.getBoundsInParent().getMaxX() >= node2.getBoundsInParent().getMinX();
+                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
     }
+
 }
