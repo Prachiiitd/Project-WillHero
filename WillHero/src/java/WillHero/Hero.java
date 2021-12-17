@@ -127,7 +127,7 @@ public class Hero {
 
         if(object instanceof Platform platform){
 //            top side collision with platform
-            if(StaticFunction.topCollision(platform.getIsLand(), hero, 2)){
+            if(StaticFunction.bottomCollision( hero, platform.getIsLand(), 0)){
                 System.out.println("top collision with platform");
                 fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;

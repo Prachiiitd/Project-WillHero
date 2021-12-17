@@ -60,7 +60,7 @@ public abstract class Orc {
 
         if(object instanceof Platform platform){
 //            top side collision with platform
-            if(StaticFunction.topCollision(platform.getIsLand(), orc, 2)){
+            if(StaticFunction.bottomCollision( orc, platform.getIsLand(), 2)){
                 System.out.println(" top coliision with plATFOR in orc");
                 fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
