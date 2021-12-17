@@ -101,6 +101,9 @@ public class Hero {
         return isAlive;
     }
 
+    public Helmet getHelmet() {
+        return helmet;
+    }
 
     public void jump() {
         this.hero.setY(hero.getY() + jumpSpeed);

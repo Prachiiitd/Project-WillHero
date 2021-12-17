@@ -1,6 +1,9 @@
 package WillHero;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.util.Objects;
 
 public abstract class Weapon {
 
@@ -9,11 +12,13 @@ public abstract class Weapon {
     private final int range;
     private boolean active = false;
 
-    public Weapon(ImageView weaponImage, int damage, int range) {
-        this.weaponImage = weaponImage;
+    public Weapon(int damage, int range) {
+        this.weaponImage = setWeaponImage();
         this.damage = damage;
         this.range = range;
     }
+
+    public abstract ImageView setWeaponImage();
 
     public ImageView getWeaponImage() {
         return weaponImage;
@@ -48,7 +53,12 @@ public abstract class Weapon {
 class Weapon1 extends Weapon {
 
     public Weapon1() {
-        super(new ImageView("weapon1.png"), 10, 10);
+        super(1, 1);
+    }
+
+    @Override
+    public ImageView setWeaponImage() {
+        return new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
     }
 
     @Override
@@ -62,11 +72,15 @@ class Weapon1 extends Weapon {
     }
 }
 
-
 class Weapon2 extends Weapon {
 
-    public Weapon2(ImageView weaponImage, int damage, int range) {
-        super(weaponImage, damage, range);
+    public Weapon2() {
+        super(1, 1);
+    }
+
+    @Override
+    public ImageView setWeaponImage() {
+        return new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
     }
 
     @Override

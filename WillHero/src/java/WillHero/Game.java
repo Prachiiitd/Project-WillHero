@@ -77,6 +77,7 @@ public class Game implements Initializable {
     private static ArrayList<Hero> heroWrap;
     private static ArrayList<Platform> platforms;
     private static ArrayList<Orc> orcs;
+    private ArrayList<Chest> chests;
     private ArrayList<Coin> coins;
     private static Timeline tl;
     Camera camera;
@@ -99,6 +100,7 @@ public class Game implements Initializable {
         platforms = new ArrayList<>();
         coins = new ArrayList<>();
         orcs = new ArrayList<>();
+        chests = new ArrayList<>();
         heroWrap = new ArrayList<>();
         heroWrap.add(hero);
         stage.getScene().setCamera(camera);
@@ -109,7 +111,7 @@ public class Game implements Initializable {
             @Override
             public void handle(KeyEvent event)
             {
-                gravity(hero.getHero(), false, 0);
+//                gravity(hero.getHero(), false, 0);
 
                 Node node=(Node) event.getSource();
                 VBox vBox=(VBox) node.getScene().getRoot();
@@ -132,8 +134,6 @@ public class Game implements Initializable {
 //                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
                         imageView.setX(imageView.getX() + 100 );
                     }
-
-
 
                 if(event.getCode().isDigitKey()){
 //                    hero.getHero().setX(hero.getHero().getX() + 100);
@@ -198,23 +198,23 @@ public class Game implements Initializable {
 
         Group platform = getPlatforms(platforms);
 //        GreenOrc g=new GreenOrc(1450,250);
-        CoinChest co=new CoinChest(1850,300);
+        Chest co=new CoinChest(650,200);
+        chests.add(co);
 
         //Add orc manually
         Orc r=new RedOrc(2500,250);
         orcs.add(r);
 
         WindMill windMill = new WindMill(platforms.get(5).getIsLand().getX() + platforms.get(5).getIsLand().getBoundsInParent().getWidth() / 2, platforms.get(5).getIsLand().getY() - 300);
+        screenObj.getChildren().addAll(windMill.getWindMill().getChildren());
         screenObj.getChildren().add(r.getOrc());
         screenObj.getChildren().add(co.getChest());
         screenObj.getChildren().addAll(platform.getChildren());
-        screenObj.getChildren().addAll(windMill.getWindMill().getChildren());
 
         gameAnchorPane.getChildren().addAll(screenObj);
         gameAnchorPane.getChildren().add( hero.getHero());
         hero.setScoreLabel(currReward,currLocation);
     }
-
 
 
     private Group getPlatforms(ArrayList<Platform> platforms) {
@@ -294,9 +294,7 @@ public class Game implements Initializable {
 
     private void entityCollision() {
         coins.removeIf(coin -> coin.collision(hero));
-//        for(Orc orc:orcs){
-//            if(StaticFunction.topCollision());
-//        }
+        for(Chest chest : chests) chest.collision(hero);
     }
 
     private void setScoreLabel() {

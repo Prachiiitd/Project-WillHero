@@ -20,8 +20,8 @@ public abstract class Orc {
     public Orc(int x, int y) {
         Random random = new Random();
         this.orc = setOrc(x, y);
-        this.jumpHeight = random.nextInt(120, 170);
         this.jumpSpeed = 1;
+        this.jumpHeight = random.nextInt(120, 170);
         this.fromHeight = random.nextInt(150, 300);
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
@@ -32,9 +32,7 @@ public abstract class Orc {
 
     public void jump() {
         this.orc.setY(orc.getY() + jumpSpeed);
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.addAll(Game.getPlatformList());
-//        objects.addAll(Game.getHero());
+        ArrayList<Object> objects = new ArrayList<>(Game.getPlatformList());
 
         if(orc.getY() < fromHeight-jumpHeight){
             jumpSpeed = 1;
@@ -61,7 +59,7 @@ public abstract class Orc {
         if(object instanceof Platform platform){
 //            top side collision with platform
             if(StaticFunction.bottomCollision( orc, platform.getIsLand(), 2)){
-                System.out.println(" top coliision with plATFOR in orc");
+                System.out.println(" top collision with platform in orc");
                 fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
@@ -86,7 +84,6 @@ class RedOrc extends Orc {
 
     public RedOrc(int x, int y) {
         super(x, y);
-//    
         this.redOrc = super.getOrc();
     }
 

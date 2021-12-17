@@ -30,6 +30,7 @@ import javafx.util.Duration;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class StaticFunction {
@@ -73,7 +74,6 @@ public class StaticFunction {
         stage.getIcons().add(icon);
         Parent root =  FXMLLoader.load(toFrame);
 
-
         Scene scene = new Scene(root);
 
         ((AnchorPane) scene.getRoot()).setBackground(defaultBackground());
@@ -106,12 +106,12 @@ public class StaticFunction {
 
     static Background defaultBackground(){
         return new Background(new BackgroundFill(
-                new LinearGradient(
-                        0, 0, 0 , 1, true,                  //sizing
-                        CycleMethod.NO_CYCLE,                 //cycling
-                        new Stop(0, Color.web("#01D9F8FF")),    //colors
-                        new Stop(1, Color.web("#C4F4FEFF"))
-                ),  CornerRadii.EMPTY, Insets.EMPTY)
+            new LinearGradient(
+                    0, 0, 0 , 1, true,                  //sizing
+                    CycleMethod.NO_CYCLE,                 //cycling
+                    new Stop(0, Color.web("#01D9F8FF")),    //colors
+                    new Stop(1, Color.web("#C4F4FEFF"))
+            ),  CornerRadii.EMPTY, Insets.EMPTY)
         );
     }
 
@@ -139,30 +139,45 @@ public class StaticFunction {
 
     static boolean topCollision(ImageView node1, ImageView node2, double margin) {
 //        node1 ka top collides with node2 ka bottom
-        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMaxY() < node2.getBoundsInParent().getMaxY() &&
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX();
+        return bottomCollision(node2, node1, margin);
     }
 
     static boolean leftCollision(Node node1, Node node2, double margin) {
 //        node1 ka left collides with node2 ka right
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
                 node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMinX() > node2.getBoundsInParent().getMinX() &&
                 node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
                 node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
     }
 
     static boolean rightCollision(Node node1, Node node2, double margin) {
 //        node1 ka right collides with node2 ka left
-        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX() &&
-                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
+        return leftCollision(node1, node2, margin);
     }
 
+
+//    static void animatedMotion(Node node, ) {
+//
+//        this.hero.setY(hero.getY() + jumpSpeed);
+//        ArrayList<Object> objects = new ArrayList<>();
+//        objects.addAll(Game.getPlatformList());
+//        objects.addAll(Game.getOrcList());
+//        for(Object object : objects){
+//            if(collision(object)){
+//                if (isAlive)
+//                    jumpSpeed = -1;
+//                else
+//                    jumpSpeed = 0;
+//                break;
+//            }
+//
+//            if(hero.getY() < fromHeight-jumpHeight){
+//                jumpSpeed = 1;
+//                break;
+//            }
+//        }
+//
+//    }
 }

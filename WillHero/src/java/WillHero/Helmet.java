@@ -6,10 +6,17 @@ public class Helmet {
     private final ArrayList<Weapon> weapons;
 
     public Helmet(){
-        weapons = new ArrayList<>();
+        weapons = setWeapons();
     }
 
-    public void addWeapon(Weapon weapon){
+    private ArrayList<Weapon> setWeapons() {
+        ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+        weapons.add(new Weapon1());
+        weapons.add(new Weapon2());
+        return weapons;
+    }
+
+    public void upgradeWeapon(Weapon weapon){
         weapons.add(weapon);
     }
 
