@@ -58,7 +58,7 @@ class Weapon1 extends Weapon {
 
     @Override
     public ImageView setWeaponImage() {
-        return new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
+        return new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Shuriken.png"))));
     }
 
     @Override

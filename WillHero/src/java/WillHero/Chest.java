@@ -36,7 +36,7 @@ public abstract class Chest  {
             chest.setY(y);
             return chest;
         }  catch (Exception e) {
-            throw new NullPointerException("Coin couldn't be loaded");
+            throw new NullPointerException("Closed chest couldn't be loaded");
         }
     }
 
