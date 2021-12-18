@@ -142,13 +142,18 @@ class WeaponChest extends  Chest{
 
     @Override
     public void getContent(Hero hero) {
+
         if(weapon instanceof Weapon1){
             hero.getHelmet().setChoice(0);
-            hero.getHelmet().getWeapon(0).setActivate(true);
+            hero.getHelmet().getWeapon(0).setActivate(true, true);
+            hero.getHelmet().getWeapon(0).getWeaponImage().setX(hero.getHero().getX());
+            hero.getHelmet().getWeapon(0).getWeaponImage().setY(hero.getHero().getY());
         }
         if(weapon instanceof Weapon2){
             hero.getHelmet().setChoice(1);
-            hero.getHelmet().getWeapon(1).setActivate(true);
+            hero.getHelmet().getWeapon(1).setActivate(true, true);
+            hero.getHelmet().getWeapon(1).getWeaponImage().setX(hero.getHero().getX());
+            hero.getHelmet().getWeapon(1).getWeaponImage().setY(hero.getHero().getY());
         }
     }
 }

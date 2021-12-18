@@ -138,7 +138,7 @@ public class Game implements Initializable {
                 if(event.getCode().isDigitKey()){
 //                    hero.getHero().setX(hero.getHero().getX() + 100);
 //                    camera.translateXProperty().set(hero.getHero().getX() + 100);
-//                    hero.useWeapon();
+                    hero.useWeapon();
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
                         imageView.setX(imageView.getX() -100);
@@ -214,7 +214,7 @@ public class Game implements Initializable {
         screenObj.getChildren().addAll(platform.getChildren());
 
         gameAnchorPane.getChildren().addAll(screenObj);
-        gameAnchorPane.getChildren().add( hero.getHero());
+        gameAnchorPane.getChildren().addAll( hero.getHero(), hero.getHelmet().getWeapon(0).getWeaponImage(), hero.getHelmet().getWeapon(1).getWeaponImage());
         hero.setScoreLabel(currReward,currLocation);
     }
 
@@ -301,6 +301,7 @@ public class Game implements Initializable {
 
     private void setScoreLabel() {
 //        System.out.println(hero.getReward());
+        progressBar.setProgress(hero.getLocation()/1400.0); ///not working
         currReward.setText("" + hero.getReward());
         currLocation.setText("" + hero.getLocation()/70);
     }

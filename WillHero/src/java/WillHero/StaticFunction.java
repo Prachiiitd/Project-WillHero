@@ -1,5 +1,6 @@
 package WillHero;
 
+import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
@@ -97,6 +98,7 @@ public class StaticFunction {
         RotateTransition trFloatingName= new RotateTransition();
         trFloatingName.setNode(node);
         trFloatingName.setAxis(Rotate.Z_AXIS);
+        trFloatingName.setInterpolator(Interpolator.LINEAR);
         trFloatingName.setDuration(Duration.millis(duration));
         trFloatingName.setCycleCount(cycle);
         trFloatingName.setByAngle(angle);
@@ -154,8 +156,9 @@ public class StaticFunction {
 
     static boolean rightCollision(Node node1, Node node2, double margin) {
 //        node1 ka right collides with node2 ka left
-        return leftCollision(node1, node2, margin);
+        return leftCollision(node2, node1, margin);
     }
+
 
 
 //    static void animatedMotion(Node node, ) {

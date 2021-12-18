@@ -27,7 +27,7 @@ public class Hero {
 
     private double fromHeight;
     private boolean isAlive;
-    private double jumpSpeed;
+    private double vJumpSpeed;
     private int location;
     private int reward;
 
@@ -36,7 +36,7 @@ public class Hero {
         this.name = name;
         this.jumpHeight = 120;
         this.fromHeight = 400;
-        this.jumpSpeed = 0.8;
+        this.vJumpSpeed = 0.8;
         this.location = location;
         this.hero = setHero();
         this.helmet = new Helmet();
@@ -65,7 +65,9 @@ public class Hero {
     }
 
     public void useWeapon() {
-        helmet.getWeapon(helmet.getChoice()).attack(this);
+        if(helmet.getWeapon(helmet.getChoice()).isActive()) {
+            helmet.getWeapon(helmet.getChoice()).attack(this);
+        }
     }
 
     public Label getName() {
@@ -116,7 +118,9 @@ public class Hero {
 
     // Jumping
     public void jump() {
-        this.hero.setY(hero.getY() + jumpSpeed);
+        this.hero.setY(hero.getY() + vJumpSpeed);
+        this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + vJumpSpeed);
+        this.helmet.getWeapon(1).getWeaponImage().setY(hero.getY() + vJumpSpeed);
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getOrcList());
@@ -124,17 +128,17 @@ public class Hero {
         for(Object object : objects){
             if(collision(object)){
                 if (isAlive) {
-                    jumpSpeed = jumpSpeed > 0? -jumpSpeed : jumpSpeed;
+                    vJumpSpeed = vJumpSpeed > 0? -vJumpSpeed : vJumpSpeed;
                 }
                 else {
-                    jumpSpeed = 0;
+                    vJumpSpeed = 0;
                 }
                 break;
             }
         }
 
         if(hero.getY() < fromHeight-jumpHeight){
-            jumpSpeed = jumpSpeed > 0? jumpSpeed : -jumpSpeed;
+            vJumpSpeed = vJumpSpeed > 0? vJumpSpeed : -vJumpSpeed;
 //            System.out.println("fromHeight: " + fromHeight);
         }
     }
@@ -149,7 +153,6 @@ public class Hero {
             // Hero's base collide with top the top edge of Platform
             if(StaticFunction.bottomCollision( hero, platform.getIsLand(), 0)){
                 fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
-//                jumpSpeed = 1;
                 return true;
             }
 
@@ -165,28 +168,28 @@ public class Hero {
             }
         }
 
-        // Collision ith orc
+        // Collision with orc
         if(object instanceof Orc orc){
 
-            // Left side collision of hero with orc right
-            if(StaticFunction.leftCollision( hero, orc.getOrc(),0)) {
-                System.out.println("Left side collision of hero with orc right");
-//                isAlive = false;
+            // Bottom side collision of hero with orc top
+            if(StaticFunction.bottomCollision(hero, orc.getOrc(), 0)) {
+                System.out.println("Bottom side collision of hero with orc right");
+                fromHeight = orc.getOrc().getBoundsInLocal().getMinY();
+                vJumpSpeed = 1;
+                return true;
             }
 
             // Right side collision of hero with orc left
             if(StaticFunction.rightCollision(hero, orc.getOrc(),0)) {
                 System.out.println("Right side collision of hero with orc right");
                 orc.getOrc().setX(orc.getOrc().getX() + 5);
-                return false;
+
             }
 
-            // Bottom side collision of hero with orc top
-            if(StaticFunction.bottomCollision(hero, orc.getOrc(), 0)) {
-                System.out.println("Bottom side collision of hero with orc right");
-                fromHeight = orc.getOrc().getBoundsInLocal().getMinY();
-                jumpSpeed = 1;
-                return true;
+            // Left side collision of hero with orc right
+            if(StaticFunction.leftCollision( hero, orc.getOrc(),0)) {
+                System.out.println("Left side collision of hero with orc right");
+                orc.getOrc().setX(orc.getOrc().getX() - 5);
             }
 
             // Top side collision of hero with orc bottom
@@ -196,7 +199,6 @@ public class Hero {
                 return true;
             }
         }
-
 
         return false;
     }

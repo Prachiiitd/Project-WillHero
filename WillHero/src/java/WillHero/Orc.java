@@ -20,7 +20,7 @@ public abstract class Orc {
     public Orc(int x, int y) {
         Random random = new Random();
         this.orc = setOrc(x, y);
-        this.jumpSpeed = 0;
+        this.jumpSpeed = 0.5;
         this.jumpHeight = random.nextInt(120, 170);
         this.fromHeight = random.nextInt(200, 300);
 
@@ -66,32 +66,32 @@ public abstract class Orc {
         if(object instanceof Hero hero){
 
             // Left side collision of orc with hero right
-            if(StaticFunction.leftCollision(orc, hero.getHero(),0)) {
-                System.out.println("hckh Left side collision of hero with orc right");
-                orc.setX(orc.getX() + 5);
-                return true;
-            }
+//            if(StaticFunction.leftCollision(orc, hero.getHero(),0)) {
+//                System.out.println("hckh Left side collision of orc with hero right");
+//                orc.setX(orc.getX() + 5);
+//                return true;
+//            }
 
             // Right side collision of orc with hero left
-            if(StaticFunction.rightCollision(orc, hero.getHero(),0)) {
-                System.out.println("khfb Right side collision of hero with orc right");
-                orc.setX(orc.getX() - 5);
+//            if(StaticFunction.rightCollision(orc, hero.getHero(),0)) {
+//                System.out.println("khfb Right side collision of hero with orc right");
+//                orc.setX(orc.getX() - 5);
+//                return true;
+//            }
+
+            // Bottom side collision of orc with hero top
+            if(StaticFunction.bottomCollision(orc, hero.getHero(), 0)) {
+                System.out.println("Bottom side collision of orc with hero right");
+                fromHeight = hero.getHero().getBoundsInLocal().getMinY();
+                jumpSpeed = 1;
                 return true;
             }
 
-            // Bottom side collision of hero with orc top
-            if(StaticFunction.bottomCollision(orc, hero.getHero(), 0)) {
-                System.out.println("Bottom side collision of hero with orc right");
-//                fromHeight = orc.getBoundsInLocal().getMinY();
-//                jumpSpeed = 1;
+            // Top side collision of orc with hero bottom
+//            if(StaticFunction.topCollision(orc, hero.getHero(),  0)) {
+//                System.out.println("Top side collision of hero with orc bottom");
 //                return true;
-            }
-
-            // Top side collision of hero with orc bottom
-            if(StaticFunction.topCollision(orc, hero.getHero(),  0)) {
-                System.out.println("Top side collision of hero with orc bottom");
-//                return true;
-            }
+//            }
         }
 
         return false;

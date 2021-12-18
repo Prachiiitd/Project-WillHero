@@ -2,6 +2,9 @@ package WillHero;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.transform.Translate;
+
+import java.time.Duration;
 import java.util.Objects;
 
 public abstract class Weapon implements Cloneable{
@@ -37,7 +40,8 @@ public abstract class Weapon implements Cloneable{
         return true;
     }
 
-    public void setActivate(boolean active) {
+    public void setActivate(boolean active, boolean visible) {
+        this.getWeaponImage().setVisible(visible);
         this.active = active;
     }
 
@@ -68,29 +72,23 @@ class Weapon1 extends Weapon {
     @Override
     public ImageView setWeaponImage() {
 
-//        try {
-//             = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Shuriken.png"))));
-//            chest.setFitWidth(50);
-//            chest.setPreserveRatio(true);
-//            chest.setX(x);
-//            chest.setY(y);
-//            return chest;
-//        }  catch (Exception e) {
-//            throw new NullPointerException("Closed chest couldn't be loaded");
-//        }
-        return null;
+        try {
+            ImageView weapon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Shuriken.png"))));
+            weapon.setFitWidth(25);
+            weapon.setPreserveRatio(true);
+            weapon.setVisible(false);
+            return weapon;
+        }  catch (Exception e) {
+            throw new NullPointerException("Closed chest couldn't be loaded");
+        }
     }
 
     @Override
     public void attack(Hero hero) {
         System.out.println("Weapon 1 attack");
-        Weapon1 c_weapon = (Weapon1) this.clone();
-        c_weapon.getWeaponImage().setX(hero.getHero().getX());
-        c_weapon.getWeaponImage().setY(hero.getHero().getY());
+        Weapon1 c_weapon = this;
+        StaticFunction.setTranslation(c_weapon.getWeaponImage(), getRange(), 0, 10000, 5, false);
         StaticFunction.setRotation(c_weapon.getWeaponImage(), 360, 500, -1, false);
-        StaticFunction.setTranslation(c_weapon.getWeaponImage(), getRange(), 0, 500, 1, false);
-        c_weapon.setActivate(false);
-        c_weapon.setWeaponImage().setVisible(false);
     }
 
     @Override
@@ -107,7 +105,16 @@ class Weapon2 extends Weapon {
 
     @Override
     public ImageView setWeaponImage() {
-        return new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
+
+        try {
+            ImageView weapon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Shuriken.png"))));
+            weapon.setFitWidth(50);
+            weapon.setPreserveRatio(true);
+            weapon.setVisible(false);
+            return weapon;
+        }  catch (Exception e) {
+            throw new NullPointerException("Closed chest couldn't be loaded");
+        }
     }
 
     @Override
