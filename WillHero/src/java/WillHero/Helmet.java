@@ -4,9 +4,18 @@ import java.util.ArrayList;
 
 public class Helmet {
     private final ArrayList<Weapon> weapons;
+    int choice = 0;
 
     public Helmet(){
         weapons = setWeapons();
+    }
+
+    public int getChoice() {
+        return choice;
+    }
+
+    public void setChoice(int choice) {
+        this.choice = choice;
     }
 
     private ArrayList<Weapon> setWeapons() {

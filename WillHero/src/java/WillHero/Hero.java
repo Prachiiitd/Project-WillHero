@@ -23,21 +23,21 @@ public class Hero {
     private final ImageView hero;
     private final Helmet helmet;
     private final int jumpHeight;
-    private int jumpSpeed;
     private final Timeline tl;
 
+    private double fromHeight;
     private boolean isAlive;
-    private int reward;
+    private double jumpSpeed;
     private int location;
-    public double fromHeight;
+    private int reward;
 
     public Hero(Label name, int location) {
-        isAlive = true;
+        this.isAlive = true;
         this.name = name;
-        this.jumpHeight = 150;
-        this.jumpSpeed = 1;
+        this.jumpHeight = 120;
         this.fromHeight = 400;
-        this.location=location;
+        this.jumpSpeed = 0.8;
+        this.location = location;
         this.hero = setHero();
         this.helmet = new Helmet();
 
@@ -64,14 +64,19 @@ public class Hero {
         return hero;
     }
 
+    public void useWeapon() {
+        helmet.getWeapon(helmet.getChoice()).attack(this);
+    }
+
     public Label getName() {
         return name;
     }
 
-    public ImageView getHero() throws NullPointerException {
+    public ImageView getHero() {
         return hero;
     }
 
+    // Setting up game Stats
     public int getLocation() {
         return location;
     }
@@ -92,7 +97,9 @@ public class Hero {
         reward.setText(String.valueOf(this.reward));
         location.setText(String.valueOf(this.location));
     }
+    // End of game stats
 
+    // Life and Death
     public void setAlive(boolean alive) {
         isAlive = alive;
     }
@@ -100,64 +107,98 @@ public class Hero {
     public boolean isAlive() {
         return isAlive;
     }
+    // End of life and death
+
 
     public Helmet getHelmet() {
         return helmet;
     }
 
+    // Jumping
     public void jump() {
         this.hero.setY(hero.getY() + jumpSpeed);
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getOrcList());
+
         for(Object object : objects){
             if(collision(object)){
-                if (isAlive)
-                    jumpSpeed = -1;
-                else
+                if (isAlive) {
+                    jumpSpeed = jumpSpeed > 0? -jumpSpeed : jumpSpeed;
+                }
+                else {
                     jumpSpeed = 0;
-                break;
-            }
-
-            if(hero.getY() < fromHeight-jumpHeight){
-                jumpSpeed = 1;
+                }
                 break;
             }
         }
-    }
 
+        if(hero.getY() < fromHeight-jumpHeight){
+            jumpSpeed = jumpSpeed > 0? jumpSpeed : -jumpSpeed;
+//            System.out.println("fromHeight: " + fromHeight);
+        }
+    }
+    // End of jumping
+
+    // Collision
     private boolean collision(Object object){
 
+        // Hero's Collision with Platform
         if(object instanceof Platform platform){
-//            top side collision with platform
+
+            // Hero's base collide with top the top edge of Platform
             if(StaticFunction.bottomCollision( hero, platform.getIsLand(), 0)){
-                System.out.println("top collision with platform");
+                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
+//                jumpSpeed = 1;
+                return true;
+            }
+
+            // Hero's right collides with the left edge of Platform
+            if(StaticFunction.rightCollision( hero, platform.getIsLand(), 0)){
                 fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
+
+            // Hero's left collides with the right edge of Platform
+            if(StaticFunction.leftCollision( hero, platform.getIsLand(), 0)){
+
+            }
         }
 
+        // Collision ith orc
         if(object instanceof Orc orc){
-//            top side collision of hero with orc bottom
-            if(StaticFunction.topCollision(orc.getOrc(), hero, 0)) {
-                System.out.println((orc.getOrc().getY() + " hero " +  hero.getY()));
-                System.out.println("You are dead by hero class");
+
+            // Left side collision of hero with orc right
+            if(StaticFunction.leftCollision( hero, orc.getOrc(),0)) {
+                System.out.println("Left side collision of hero with orc right");
+//                isAlive = false;
+            }
+
+            // Right side collision of hero with orc left
+            if(StaticFunction.rightCollision(hero, orc.getOrc(),0)) {
+                System.out.println("Right side collision of hero with orc right");
+                orc.getOrc().setX(orc.getOrc().getX() + 5);
+                return false;
+            }
+
+            // Bottom side collision of hero with orc top
+            if(StaticFunction.bottomCollision(hero, orc.getOrc(), 0)) {
+                System.out.println("Bottom side collision of hero with orc right");
+                fromHeight = orc.getOrc().getBoundsInLocal().getMinY();
+                jumpSpeed = 1;
+                return true;
+            }
+
+            // Top side collision of hero with orc bottom
+            if(StaticFunction.topCollision(hero, orc.getOrc(),  0)) {
+                System.out.println("Top side collision of hero with orc bottom");
                 isAlive = false;
                 return true;
             }
-
-            if(StaticFunction.topCollision(orc.getOrc(), hero, 2)) {
-                System.out.println("top collision with orc in hero");
-                fromHeight = Math.min(fromHeight, Math.max(orc.getOrc().getBoundsInLocal().getMinY(), 200));
-                return true;
-            }
         }
+
 
         return false;
     }
-
-    public double getSpeed() {
-        return -1;
-    }
-
+    // End of collision
 }

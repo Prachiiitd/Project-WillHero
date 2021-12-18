@@ -138,6 +138,7 @@ public class Game implements Initializable {
                 if(event.getCode().isDigitKey()){
 //                    hero.getHero().setX(hero.getHero().getX() + 100);
 //                    camera.translateXProperty().set(hero.getHero().getX() + 100);
+//                    hero.useWeapon();
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
                         imageView.setX(imageView.getX() -100);
@@ -198,8 +199,9 @@ public class Game implements Initializable {
 
         Group platform = getPlatforms(platforms);
 //        GreenOrc g=new GreenOrc(1450,250);
-        Chest co=new CoinChest(650,200);
-        chests.add(co);
+        Chest co1 = new WeaponChest(650,200);
+        Chest co2 = new CoinChest(1850,200);
+        chests.add(co1); chests.add(co2);
 
         //Add orc manually
         Orc r=new RedOrc(2500,250);
@@ -208,7 +210,7 @@ public class Game implements Initializable {
         WindMill windMill = new WindMill(platforms.get(5).getIsLand().getX() + platforms.get(5).getIsLand().getBoundsInParent().getWidth() / 2, platforms.get(5).getIsLand().getY() - 300);
         screenObj.getChildren().addAll(windMill.getWindMill().getChildren());
         screenObj.getChildren().add(r.getOrc());
-        screenObj.getChildren().add(co.getChest());
+        screenObj.getChildren().addAll(co1.getChest(), co2.getChest());
         screenObj.getChildren().addAll(platform.getChildren());
 
         gameAnchorPane.getChildren().addAll(screenObj);

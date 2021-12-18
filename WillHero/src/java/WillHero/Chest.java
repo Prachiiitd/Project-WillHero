@@ -137,13 +137,18 @@ class WeaponChest extends  Chest{
         super(x, y);
         Random random = new Random();
         Weapon[] weaponList = {new Weapon1(), new Weapon2()};
-        weapon = weaponList[random.nextInt(weaponList.length)];
+        weapon = weaponList[random.nextInt(0, 1)];
     }
 
     @Override
     public void getContent(Hero hero) {
         if(weapon instanceof Weapon1){
-            hero.getHelmet().getWeapon(1).setActivate();
+            hero.getHelmet().setChoice(0);
+            hero.getHelmet().getWeapon(0).setActivate(true);
+        }
+        if(weapon instanceof Weapon2){
+            hero.getHelmet().setChoice(1);
+            hero.getHelmet().getWeapon(1).setActivate(true);
         }
     }
 }
