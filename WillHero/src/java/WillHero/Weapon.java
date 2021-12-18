@@ -1,13 +1,15 @@
 package WillHero;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.transform.Translate;
+import javafx.util.Duration;
 
-import java.time.Duration;
 import java.util.Objects;
 
-public abstract class Weapon implements Cloneable{
+public abstract class Weapon implements Cloneable {
 
     private final ImageView weaponImage;
     private boolean active = false;
@@ -34,10 +36,16 @@ public abstract class Weapon implements Cloneable{
         return range;
     }
 
-    public boolean collision(ImageView object){
-        //to  implemented
+    public boolean collision(Orc orc) {
 
-        return true;
+        if (orc.getOrc().getBoundsInParent().intersects(weaponImage.getBoundsInParent())) {
+            System.out.println("Collision with Weapon");
+//                orc.setHealth(orc.getHealth() - damage);
+            orc.setAlive(false);
+            return true;
+        }
+
+        return false;
     }
 
     public void setActivate(boolean active, boolean visible) {
@@ -45,9 +53,10 @@ public abstract class Weapon implements Cloneable{
         this.active = active;
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active;
     }
+
     public abstract void attack(Hero hero);
 
     public abstract void upgrade(ImageView character);
@@ -78,7 +87,8 @@ class Weapon1 extends Weapon {
             weapon.setPreserveRatio(true);
             weapon.setVisible(false);
             return weapon;
-        }  catch (Exception e) {
+
+        } catch (Exception e) {
             throw new NullPointerException("Closed chest couldn't be loaded");
         }
     }
@@ -87,8 +97,8 @@ class Weapon1 extends Weapon {
     public void attack(Hero hero) {
         System.out.println("Weapon 1 attack");
         Weapon1 c_weapon = this;
-        StaticFunction.setTranslation(c_weapon.getWeaponImage(), getRange(), 0, 10000, 5, false);
-        StaticFunction.setRotation(c_weapon.getWeaponImage(), 360, 500, -1, false);
+        StaticFunction.setTranslation(getWeaponImage(), getRange(), 0, 10000, 5, false);
+        StaticFunction.setRotation(getWeaponImage(), 360, 500, -1, false);
     }
 
     @Override
@@ -98,21 +108,31 @@ class Weapon1 extends Weapon {
 }
 
 class Weapon2 extends Weapon {
+    private final int defaultWidth;
+    private final int defaultHeight;
+    private Timeline fTimeline;
+    private Timeline bTimeline;
 
     public Weapon2() {
         super(1, 1);
+        this.fTimeline = null;
+        this.bTimeline = null;
+        this.defaultWidth = 50;
+        this.defaultHeight = 10;
     }
 
     @Override
     public ImageView setWeaponImage() {
 
         try {
-            ImageView weapon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Shuriken.png"))));
-            weapon.setFitWidth(50);
-            weapon.setPreserveRatio(true);
+            ImageView weapon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Lance.png"))));
+            weapon.setFitWidth(50); // 150 the max scaling
+            weapon.setFitHeight(10); // 10 the max scaling
+
             weapon.setVisible(false);
             return weapon;
-        }  catch (Exception e) {
+
+        } catch (Exception e) {
             throw new NullPointerException("Closed chest couldn't be loaded");
         }
     }
@@ -120,6 +140,32 @@ class Weapon2 extends Weapon {
     @Override
     public void attack(Hero hero) {
 
+        System.out.println("Weapon 2 attack attack");
+        Weapon2 c_weapon = this;
+
+        if (fTimeline != null && fTimeline.getStatus() == Animation.Status.RUNNING) {
+            fTimeline.stop();
+        }
+        if (bTimeline != null && bTimeline.getStatus() == Animation.Status.RUNNING) {
+            bTimeline.stop();
+        }
+
+        c_weapon.getWeaponImage().setFitWidth(50);
+
+        fTimeline = (new Timeline(new KeyFrame(Duration.millis(0.8), fEvent -> attackAnimation(c_weapon, 1))));
+        fTimeline.setCycleCount(150);
+        fTimeline.setOnFinished(e -> {
+                    bTimeline = new Timeline(new KeyFrame(Duration.millis(0.8), bEvent -> attackAnimation(c_weapon, -1)));
+                    bTimeline.setCycleCount(150);
+                    bTimeline.play();
+                });
+
+        fTimeline.play();
+    }
+
+    private void attackAnimation(Weapon c_weapon, int i) {
+        System.out.println("Weapon 2 attack in progress");
+        c_weapon.getWeaponImage().setFitWidth(c_weapon.getWeaponImage().getFitWidth() + i);
     }
 
     @Override

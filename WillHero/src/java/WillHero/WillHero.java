@@ -43,7 +43,7 @@ public class WillHero extends Application {
         stage.setScene(scene);
         stage.show();
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        PauseTransition delay = new PauseTransition(Duration.seconds(0));
         delay.setOnFinished( event -> {
             stage.close();
 

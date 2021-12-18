@@ -144,7 +144,7 @@ public class StaticFunction {
         return bottomCollision(node2, node1, margin);
     }
 
-    static boolean leftCollision(Node node1, Node node2, double margin) {
+    static boolean leftCollision(ImageView node1, ImageView node2, double margin) {
 //        node1 ka left collides with node2 ka right
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
                 node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX() &&
@@ -154,7 +154,7 @@ public class StaticFunction {
                 node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
     }
 
-    static boolean rightCollision(Node node1, Node node2, double margin) {
+    static boolean rightCollision(ImageView node1, ImageView node2, double margin) {
 //        node1 ka right collides with node2 ka left
         return leftCollision(node2, node1, margin);
     }

@@ -119,8 +119,9 @@ public class Hero {
     // Jumping
     public void jump() {
         this.hero.setY(hero.getY() + vJumpSpeed);
-        this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + vJumpSpeed);
-        this.helmet.getWeapon(1).getWeaponImage().setY(hero.getY() + vJumpSpeed);
+//        this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + 5 + vJumpSpeed);
+        this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + vJumpSpeed);
+
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getOrcList());
@@ -175,7 +176,7 @@ public class Hero {
             if(StaticFunction.bottomCollision(hero, orc.getOrc(), 0)) {
                 System.out.println("Bottom side collision of hero with orc right");
                 fromHeight = orc.getOrc().getBoundsInLocal().getMinY();
-                vJumpSpeed = 1;
+                vJumpSpeed = vJumpSpeed * 1.25;
                 return true;
             }
 
@@ -183,7 +184,6 @@ public class Hero {
             if(StaticFunction.rightCollision(hero, orc.getOrc(),0)) {
                 System.out.println("Right side collision of hero with orc right");
                 orc.getOrc().setX(orc.getOrc().getX() + 5);
-
             }
 
             // Left side collision of hero with orc right

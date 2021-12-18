@@ -1,10 +1,8 @@
 package WillHero;
 
 import javafx.animation.*;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -16,23 +14,43 @@ public abstract class Orc {
     private double jumpSpeed;
     private double fromHeight;
     private final ImageView orc;
+    private boolean isAlive;
+    private Timeline tl ;
 
     public Orc(int x, int y) {
         Random random = new Random();
         this.orc = setOrc(x, y);
-        this.jumpSpeed = 0.5;
+        this.jumpSpeed = 0.6;
         this.jumpHeight = random.nextInt(120, 170);
         this.fromHeight = random.nextInt(200, 300);
+        this.isAlive = true;
 
-        Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
+        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    public void setJumpSpeed(double jumpSpeed) {
+        this.jumpSpeed = jumpSpeed;
+    }
+
+    public Timeline getTimeline() {
+        return tl;
+    }
 
     public void jump() {
         this.orc.setY(orc.getY() + jumpSpeed);
-        ArrayList<Object> objects = new ArrayList<>(Game.getPlatformList());
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.addAll(Game.getPlatformList());
+        objects.addAll(Game.getChestList());
 
         if(orc.getY() < fromHeight-jumpHeight){
             jumpSpeed = jumpSpeed > 0? jumpSpeed : -jumpSpeed;
@@ -44,6 +62,20 @@ public abstract class Orc {
                 break;
             }
         }
+    }
+
+    public void destroy(){
+        if(tl != null && tl.getStatus() == Animation.Status.RUNNING) this.tl.stop();
+
+        Image image = new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("marneKeBad.png")));
+        this.orc.setImage(image);
+        StaticFunction.setRotation(this.orc, 360, 500, -1, false);
+        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> {
+            this.orc.setY(this.orc.getY() + 1);
+            this.orc.setX(this.orc.getX() + 0.5);
+        }));
+        tl.setCycleCount(Timeline.INDEFINITE);
+        tl.play();
     }
 
     public ImageView getOrc() {
@@ -59,6 +91,37 @@ public abstract class Orc {
             if(StaticFunction.bottomCollision( orc, platform.getIsLand(), 2)){
 //                System.out.println(" top collision with platform in orc");
                 fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
+                return true;
+            }
+
+        }
+        if(object instanceof Chest chest){
+
+            // Bottom side collision of hero with orc top
+            if(StaticFunction.bottomCollision(orc, chest.getChest(), 0)) {
+                System.out.println("Bottom side collision of orc with chest right");
+                fromHeight =chest.getChest().getBoundsInLocal().getMinY();
+//                jumpSpeed = 1;
+                return true;
+            }
+
+            // Right side collision of hero with orc left
+            if(StaticFunction.rightCollision(orc, chest.getChest(),0)) {
+                System.out.println("Right side collision of orc with chest right");
+                chest.getChest().setX(chest.getChest().getX() + 5);
+
+            }
+
+            // Left side collision of hero with orc right
+            if(StaticFunction.leftCollision( orc, chest.getChest(),0)) {
+                System.out.println("Left side collision of orc with chest right");
+                chest.getChest().setX(chest.getChest().getX() - 5);
+            }
+
+            // Top side collision of hero with orc bottom
+            if(StaticFunction.topCollision(orc,chest.getChest(),  0)) {
+                System.out.println("not possible");
+//                isAlive = false;
                 return true;
             }
         }
@@ -96,6 +159,7 @@ public abstract class Orc {
 
         return false;
     }
+
 }
 
 
@@ -177,4 +241,3 @@ class BossOrc extends Orc {
         return null;
     }
 }
-

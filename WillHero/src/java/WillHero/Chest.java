@@ -137,7 +137,7 @@ class WeaponChest extends  Chest{
         super(x, y);
         Random random = new Random();
         Weapon[] weaponList = {new Weapon1(), new Weapon2()};
-        weapon = weaponList[random.nextInt(0, 1)];
+        weapon = weaponList[random.nextInt(1, 2)];
     }
 
     @Override
@@ -146,14 +146,15 @@ class WeaponChest extends  Chest{
         if(weapon instanceof Weapon1){
             hero.getHelmet().setChoice(0);
             hero.getHelmet().getWeapon(0).setActivate(true, true);
-            hero.getHelmet().getWeapon(0).getWeaponImage().setX(hero.getHero().getX());
-            hero.getHelmet().getWeapon(0).getWeaponImage().setY(hero.getHero().getY());
+            hero.getHelmet().getWeapon(0).getWeaponImage().setX(hero.getHero().getX() + 5);
+            hero.getHelmet().getWeapon(0).getWeaponImage().setY(hero.getHero().getY() + 5);
         }
+
         if(weapon instanceof Weapon2){
             hero.getHelmet().setChoice(1);
             hero.getHelmet().getWeapon(1).setActivate(true, true);
             hero.getHelmet().getWeapon(1).getWeaponImage().setX(hero.getHero().getX());
-            hero.getHelmet().getWeapon(1).getWeaponImage().setY(hero.getHero().getY());
+            hero.getHelmet().getWeapon(1).getWeaponImage().setY(hero.getHero().getBoundsInParent().getMaxY() - 15);
         }
     }
 }

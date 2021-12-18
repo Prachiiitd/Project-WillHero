@@ -77,12 +77,11 @@ public class Game implements Initializable {
     private static ArrayList<Hero> heroWrap;
     private static ArrayList<Platform> platforms;
     private static ArrayList<Orc> orcs;
-    private ArrayList<Chest> chests;
+    private static ArrayList<Chest> chests;
     private ArrayList<Coin> coins;
     private static Timeline tl;
     Camera camera;
 
-    
 
 
     public void start(Stage stage, Label nameLabel, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane, AnchorPane screenAnchorPane) throws IOException {
@@ -184,6 +183,9 @@ public class Game implements Initializable {
     }
     public static ArrayList<Platform> getPlatformList() {
         return platforms;
+    }
+    public static ArrayList<Chest> getChestList() {
+        return chests;
     }
 
     @FXML
@@ -287,16 +289,18 @@ public class Game implements Initializable {
     }
 
 
-    private void activateJump(){
-//        for(Orc orc : orcs){
-//            orc.jump(hero, platforms);
-//        }
-    }
-
-
     private void entityCollision() {
         coins.removeIf(coin -> coin.collision(hero));
         for(Chest chest : chests) chest.collision(hero);
+        for(Orc orc : orcs) {
+            hero.getHelmet().getWeapon(hero.getHelmet().getChoice()).collision(orc);
+            if(!orc.isAlive()){
+                orc.destroy();
+//                if(orc.getOrc().getY() > 800) {
+//                    orcs.remove(orc);
+//                }
+            }
+        }
     }
 
     private void setScoreLabel() {
@@ -330,6 +334,7 @@ public class Game implements Initializable {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     public void pause(MouseEvent pause) {
