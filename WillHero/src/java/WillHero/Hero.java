@@ -22,21 +22,22 @@ public class Hero {
     private final Label name;
     private final ImageView hero;
     private final Helmet helmet;
-    private final int jumpHeight;
+    private final double jumpHeight;
+    private final double dy;
+    private double jumpSpeed;
     private final Timeline tl;
 
-    private double fromHeight;
     private boolean isAlive;
-    private double vJumpSpeed;
     private int location;
     private int reward;
 
     public Hero(Label name, int location) {
         this.isAlive = true;
         this.name = name;
-        this.jumpHeight = 120;
-        this.fromHeight = 400;
-        this.vJumpSpeed = 0.8;
+        this.jumpHeight = 1.5;
+        this.jumpSpeed = 0;
+        this.dy = 0.01;
+
         this.location = location;
         this.hero = setHero();
         this.helmet = new Helmet();
@@ -51,8 +52,8 @@ public class Hero {
         try {
             hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
             hero.setPreserveRatio(true);
-            hero.setFitWidth(30);
-            hero.setX(410);
+            hero.setFitHeight(40);
+            hero.setX(400);
             hero.setY(150);
 
         } catch (FileNotFoundException | NullPointerException e) {
@@ -118,29 +119,26 @@ public class Hero {
 
     // Jumping
     public void jump() {
-        this.hero.setY(hero.getY() + vJumpSpeed);
-//        this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + 5 + vJumpSpeed);
-        this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + vJumpSpeed);
+        this.hero.setY(hero.getY() + jumpSpeed);
+        this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + jumpSpeed);
+        jumpSpeed += dy;
+//        this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + 5 + jumpSpeed);
 
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getOrcList());
 
-        for(Object object : objects){
-            if(collision(object)){
+        for (Object object : objects) {
+            if (collision(object)) {
+                jumpSpeed = jumpHeight;
                 if (isAlive) {
-                    vJumpSpeed = vJumpSpeed > 0? -vJumpSpeed : vJumpSpeed;
-                }
-                else {
-                    vJumpSpeed = 0;
+                    StaticFunction.setScaling(hero,0,-0.1,100,2,true);
+                    jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;
+                } else {
+                    jumpSpeed = 0;
                 }
                 break;
             }
-        }
-
-        if(hero.getY() < fromHeight-jumpHeight){
-            vJumpSpeed = vJumpSpeed > 0? vJumpSpeed : -vJumpSpeed;
-//            System.out.println("fromHeight: " + fromHeight);
         }
     }
     // End of jumping
@@ -153,13 +151,11 @@ public class Hero {
 
             // Hero's base collide with top the top edge of Platform
             if(StaticFunction.bottomCollision( hero, platform.getIsLand(), 0)){
-                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
 
             // Hero's right collides with the left edge of Platform
             if(StaticFunction.rightCollision( hero, platform.getIsLand(), 0)){
-                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
 
@@ -175,8 +171,6 @@ public class Hero {
             // Bottom side collision of hero with orc top
             if(StaticFunction.bottomCollision(hero, orc.getOrc(), 0)) {
                 System.out.println("Bottom side collision of hero with orc right");
-                fromHeight = orc.getOrc().getBoundsInLocal().getMinY();
-                vJumpSpeed = vJumpSpeed * 1.25;
                 return true;
             }
 

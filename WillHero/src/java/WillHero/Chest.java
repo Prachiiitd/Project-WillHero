@@ -12,25 +12,27 @@ import java.util.Random;
 public abstract class Chest  {
     private ImageView chest;
     private boolean isClose;
-    private int jumpSpeed;
-    private double fromHeight;
+    private final double jumpHeight;
+    private final double dy;
+    private double jumpSpeed;
     private final Timeline timeline;
 
     public Chest(int x, int y) {
         this.chest = setChest(x, y);
         this.isClose = true;
-        this.jumpSpeed = 1;
-        this.fromHeight = 300;
+        this.jumpHeight = 0.4;
+        this.jumpSpeed = 0;
+        this.dy = 0.01;
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.getKeyFrames().add(new javafx.animation.KeyFrame(Duration.millis(10), e -> motion()));
+        timeline.getKeyFrames().add(new javafx.animation.KeyFrame(Duration.millis(5), e -> motion()));
         timeline.play();
     }
 
     public ImageView setChest(double x, double y) throws NullPointerException {
         try {
             chest = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestClosed.png"))));
-            chest.setFitWidth(50);
+            chest.setFitHeight(50);
             chest.setPreserveRatio(true);
             chest.setX(x);
             chest.setY(y);
@@ -75,7 +77,6 @@ public abstract class Chest  {
         if(object instanceof Platform platform) {
 
             if (StaticFunction.bottomCollision(chest, platform.getIsLand(), 0)) {
-                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
                 return true;
             }
         }
@@ -85,19 +86,16 @@ public abstract class Chest  {
 
     public void motion(){
         this.chest.setY(chest.getY() + jumpSpeed);
+        jumpSpeed += dy;
 
         for(Platform object : Game.getPlatformList()){
             if(collision(object)){
+                jumpSpeed = jumpHeight;
                 if (isClose) {
-                    jumpSpeed = -1;
+                    jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;
                 }
                 else
                     jumpSpeed = 0;
-                break;
-            }
-
-            if(chest.getY() < fromHeight - 28){
-                jumpSpeed = 1;
                 break;
             }
         }

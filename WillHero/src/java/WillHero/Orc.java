@@ -10,20 +10,23 @@ import java.util.Objects;
 import java.util.Random;
 
 public abstract class Orc {
-    private final int jumpHeight;
-    private double jumpSpeed;
-    private double fromHeight;
+
     private final ImageView orc;
+    private final double jumpHeight;
+    private final double dy;
+    private double jumpSpeed;
+
     private boolean isAlive;
-    private Timeline tl ;
+    private Timeline tl;
 
     public Orc(int x, int y) {
         Random random = new Random();
-        this.orc = setOrc(x, y);
-        this.jumpSpeed = 0.6;
-        this.jumpHeight = random.nextInt(120, 170);
-        this.fromHeight = random.nextInt(200, 300);
+
         this.isAlive = true;
+        this.orc = setOrc(x, y);
+        this.jumpHeight = 1.2;
+        this.jumpSpeed = 0;
+        this.dy = 0.01;
 
         tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
@@ -48,18 +51,19 @@ public abstract class Orc {
 
     public void jump() {
         this.orc.setY(orc.getY() + jumpSpeed);
+        jumpSpeed += dy;
+
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getChestList());
 
-        if(orc.getY() < fromHeight-jumpHeight){
-            jumpSpeed = jumpSpeed > 0? jumpSpeed : -jumpSpeed;
-        }
-
         for(Object object : objects){
             if(collision(object)){
-                jumpSpeed = jumpSpeed > 0? -jumpSpeed : jumpSpeed;
-                break;
+                jumpSpeed = jumpHeight;
+                if (isAlive) {
+                    jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;
+                    break;
+                }
             }
         }
     }
@@ -89,8 +93,7 @@ public abstract class Orc {
         if(object instanceof Platform platform){
 //            top side collision with platform
             if(StaticFunction.bottomCollision( orc, platform.getIsLand(), 2)){
-//                System.out.println(" top collision with platform in orc");
-                fromHeight = platform.getIsLand().getBoundsInLocal().getMinY();
+                System.out.println(" top collision with platform in orc");
                 return true;
             }
 
@@ -100,8 +103,6 @@ public abstract class Orc {
             // Bottom side collision of hero with orc top
             if(StaticFunction.bottomCollision(orc, chest.getChest(), 0)) {
                 System.out.println("Bottom side collision of orc with chest right");
-                fromHeight =chest.getChest().getBoundsInLocal().getMinY();
-//                jumpSpeed = 1;
                 return true;
             }
 
@@ -121,7 +122,6 @@ public abstract class Orc {
             // Top side collision of hero with orc bottom
             if(StaticFunction.topCollision(orc,chest.getChest(),  0)) {
                 System.out.println("not possible");
-//                isAlive = false;
                 return true;
             }
         }
@@ -145,8 +145,6 @@ public abstract class Orc {
             // Bottom side collision of orc with hero top
             if(StaticFunction.bottomCollision(orc, hero.getHero(), 0)) {
                 System.out.println("Bottom side collision of orc with hero right");
-                fromHeight = hero.getHero().getBoundsInLocal().getMinY();
-                jumpSpeed = 1;
                 return true;
             }
 
@@ -164,7 +162,7 @@ public abstract class Orc {
 
 
 class RedOrc extends Orc {
-    private ImageView redOrc;
+    private final ImageView redOrc;
 
     public RedOrc(int x, int y) {
         super(x, y);
@@ -173,14 +171,15 @@ class RedOrc extends Orc {
 
     @Override
     public ImageView setOrc(int x, int y) throws NullPointerException {
-        ImageView redorc;
+        ImageView redOrc;
         try {
-            redorc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("red.png"))));
-            redorc.setFitWidth(35);
-            redorc.setPreserveRatio(true);
-            redorc.setX(x);
-            redorc.setY(y);
-            return redorc;
+            redOrc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("red.png"))));
+            redOrc.setFitHeight(40);
+            redOrc.setPreserveRatio(true);
+            redOrc.setX(x);
+            redOrc.setY(y);
+            return redOrc;
+
         } catch (Exception e) {
             throw new NullPointerException("Coin couldn't be loaded");
         }
@@ -203,14 +202,14 @@ class GreenOrc extends Orc {
 
     @Override
     public ImageView setOrc(int x, int y) throws NullPointerException {
-        ImageView greenorc;
+        ImageView greenOrc;
         try {
-            greenorc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("green.png"))));
-            greenorc.setFitWidth(50);
-            greenorc.setPreserveRatio(true);
-            greenorc.setX(x);
-            greenorc.setY(y);
-            return greenorc;
+            greenOrc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("green.png"))));
+            greenOrc.setFitHeight(40);
+            greenOrc.setPreserveRatio(true);
+            greenOrc.setX(x);
+            greenOrc.setY(y);
+            return greenOrc;
         } catch (Exception e) {
             throw new NullPointerException("Coin couldn't be loaded");
         }

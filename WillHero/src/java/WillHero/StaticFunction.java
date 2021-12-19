@@ -106,6 +106,18 @@ public class StaticFunction {
         trFloatingName.play();
     }
 
+    static void setScaling (Node node, double setByX, double setByY, int duration, int cycle, boolean reverse) {RotateTransition trFloatingName6= new RotateTransition();
+        ScaleTransition scaleTransition= new ScaleTransition();
+        scaleTransition.setDuration(Duration.millis(duration));
+        scaleTransition.setAutoReverse(reverse);
+        scaleTransition.setCycleCount(cycle);
+        scaleTransition.setByX(setByX);
+        scaleTransition.setByY(setByY);
+        scaleTransition.setNode(node);
+        scaleTransition.play();
+
+    }
+
     static Background defaultBackground(){
         return new Background(new BackgroundFill(
             new LinearGradient(
