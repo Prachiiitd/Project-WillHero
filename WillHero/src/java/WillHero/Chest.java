@@ -18,9 +18,13 @@ public abstract class Chest implements Serializable {
     private final double dy;
     private double jumpSpeed;
     private transient final Timeline timeline;
+    private double x;
+    private double y;
 
     public Chest(int x, int y) {
-        this.chest = setChest(x, y);
+        this.x = x;
+        this.y = y;
+        this.chest = setChest();
         this.isClose = true;
         this.jumpHeight = 0.4;
         this.jumpSpeed = 0;
@@ -31,13 +35,13 @@ public abstract class Chest implements Serializable {
         timeline.play();
     }
 
-    public ImageView setChest(double x, double y) throws NullPointerException {
+    public ImageView setChest() throws NullPointerException {
         try {
             chest = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestClosed.png"))));
             chest.setFitHeight(50);
             chest.setPreserveRatio(true);
-            chest.setX(x);
-            chest.setY(y);
+            chest.setX(this.x);
+            chest.setY(this.y);
             return chest;
         }  catch (Exception e) {
             throw new NullPointerException("Closed chest couldn't be loaded");
@@ -46,7 +50,6 @@ public abstract class Chest implements Serializable {
 
     public void setOpenChest(ImageView imageView) throws NullPointerException {
         try {
-//            chest=new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestOpen.png"))));
             imageView.setImage(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestOpen.png"))));
 
         }  catch (Exception e) {

@@ -69,19 +69,20 @@ public class StaticFunction {
         rotate.stop();
     }
 
-    static void setScene(Stage stage, URL toFrame, String title) throws IOException {
+    static FXMLLoader setScene(Stage stage, URL toFrame, String title) throws IOException {
 
         Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
         stage.setTitle("WillHero: " + title);
         stage.getIcons().add(icon);
-        Parent root = FXMLLoader.load(toFrame);
 
+        FXMLLoader loader = new FXMLLoader(toFrame);
+        AnchorPane root = loader.load();
+        root.setBackground(defaultBackground());
         Scene scene = new Scene(root);
-
-        ((AnchorPane) scene.getRoot()).setBackground(defaultBackground());
 
         stage.setScene(scene);
         stage.show();
+        return loader;
     }
 
     static TranslateTransition setTranslation(Node node, float xMotion, float yMotion, int duration, int cycle, boolean reverse) {

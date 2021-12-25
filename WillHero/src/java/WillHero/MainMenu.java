@@ -3,7 +3,9 @@ package WillHero;
 import Exceptions.WorldNotExistException;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import javafx.scene.image.Image;
@@ -11,7 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 //import javafx.scene.media.Media;
 //import javafx.scene.media.MediaPlayer;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -104,9 +108,26 @@ public class MainMenu implements Initializable {
     public void showLeaderboard(MouseEvent leaderboardIcon) {
         StaticFunction.clickResponse(this.leaderboardIcon);
 
-        leaderBoard = new LeaderBoard();
         try {
-            leaderBoard.start(StaticFunction.getStage(leaderboardIcon));
+
+            Stage stage  = StaticFunction.getStage(leaderboardIcon);
+            URL toScene = getClass().getResource("LeaderBoard.fxml");
+            Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
+
+            FXMLLoader boardAnchor = new FXMLLoader(toScene);
+
+            AnchorPane leaderBoardPane = boardAnchor.load();
+            leaderBoardPane.setBackground(StaticFunction.defaultBackground());
+            Scene scene = new Scene(leaderBoardPane);
+
+            leaderBoard = boardAnchor.getController();
+            leaderBoard.start(stage, leaderBoardPane);
+
+            stage.setTitle("WillHero: Leader Board");
+            stage.getIcons().add(icon);
+            stage.setScene(scene);
+            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -154,14 +175,29 @@ public class MainMenu implements Initializable {
 
     public void resumeGame(MouseEvent resumeGameIcon) {
         StaticFunction.clickResponse(this.resumeGameIcon);
-        ResumeGame s= new ResumeGame();
+
         try {
-            s.start(StaticFunction.getStage(resumeGameIcon));
+            Stage stage  = StaticFunction.getStage(resumeGameIcon);
+            URL toScene = getClass().getResource("Saved.fxml");
+            Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
+
+            FXMLLoader resumeAnchor = new FXMLLoader(toScene);
+
+            AnchorPane resumeAnchorPane = resumeAnchor.load();
+            resumeAnchorPane.setBackground(StaticFunction.defaultBackground());
+            Scene scene = new Scene(resumeAnchorPane);
+
+            ResumeGame resumeGame = resumeAnchor.getController();
+            resumeGame.start(stage, resumeAnchorPane);
+
+            stage.setTitle("WillHero: Resume Game");
+            stage.getIcons().add(icon);
+            stage.setScene(scene);
+            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void setting(MouseEvent settingIcon) {

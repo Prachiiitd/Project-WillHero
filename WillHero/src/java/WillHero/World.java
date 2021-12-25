@@ -43,8 +43,6 @@ public class World {
                 FXMLLoader root_gameAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("Game.fxml")));
 
                 gameAnchorPane = root_gameAnchorPane.load();
-
-//                GameController gameController = root_gameAnchorPane.getController();
                 gameAnchorPane.setBackground(StaticFunction.defaultBackground());
                 stackPane.getChildren().add(gameAnchorPane);
 

@@ -120,7 +120,7 @@
                 </LinearGradient>
             </fill>
         </Rectangle>
-      <Button fx:id="Resurrect" layoutX="507.0" layoutY="382.0" mnemonicParsing="false" onMousePressed="#resurrect" prefHeight="84.0" prefWidth="352.0" text="RESURRECT" textOverrun="CENTER_ELLIPSIS">
+      <Button layoutX="507.0" layoutY="382.0" mnemonicParsing="false" onMousePressed="#resurrect" prefHeight="84.0" prefWidth="352.0" text="RESURRECT" textOverrun="CENTER_ELLIPSIS">
          <font>
             <Font name="DejaVu Sans Bold" size="44.0" />
          </font>

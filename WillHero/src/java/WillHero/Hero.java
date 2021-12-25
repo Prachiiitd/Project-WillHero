@@ -1,7 +1,6 @@
 package WillHero;
 
 import javafx.animation.*;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
@@ -14,9 +13,7 @@ import java.util.Objects;
 
 public class Hero implements Serializable {
 
-    private transient final Label nameLabel;
     private transient final ImageView hero;
-    private transient final Timeline tl;
     private transient final double jumpHeight;
     private transient final double dy;
 
@@ -26,20 +23,21 @@ public class Hero implements Serializable {
     private boolean isAlive;
     private int location;
     private int reward;
+    private boolean resurrected;
 
     public Hero(String name, int location) {
         this.isAlive = true;
         this.name = name;
-        this.nameLabel = new Label(name);
         this.jumpHeight = 1.5;
         this.jumpSpeed = 0;
         this.dy = 0.01;
+        this.resurrected = false;
 
         this.location = location;
         this.hero = setHero();
         this.helmet = new Helmet();
 
-        this.tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
+        Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
@@ -58,7 +56,6 @@ public class Hero implements Serializable {
             System.out.println("Failed to load hero");
             e.printStackTrace();
         }
-
         return hero;
     }
 
@@ -68,8 +65,8 @@ public class Hero implements Serializable {
         }
     }
 
-    public Label getName() {
-        return nameLabel;
+    public String getName() {
+        return name;
     }
 
     public ImageView getHero() {
@@ -93,12 +90,13 @@ public class Hero implements Serializable {
         this.reward = reward;
     }
 
-    public void setScoreLabel(Label reward, Label location) {
-
-        reward.setText(String.valueOf(this.reward));
-        location.setText(String.valueOf(this.location));
+    public void setResurrected(boolean resurrected) {
+        this.resurrected = resurrected;
     }
-    // End of game stats
+
+    public boolean isResurrected() {
+        return resurrected;
+    }
 
     // Life and Death
     public void setAlive(boolean alive) {
@@ -154,11 +152,6 @@ public class Hero implements Serializable {
             // Hero's right collides with the left edge of Platform
             if (StaticFunction.rightCollision(hero, platform.getIsLand(), 4)) {
                 return true;
-            }
-
-            // Hero's left collides with the right edge of Platform
-            if (StaticFunction.leftCollision(hero, platform.getIsLand(), 4)) {
-
             }
         }
         if (object instanceof Obstacle tnt) {

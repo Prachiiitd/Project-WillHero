@@ -1,5 +1,6 @@
 package WillHero;
 
+import Exceptions.AlreadyResurrectedException;
 import Exceptions.InsufficientCoinException;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -19,8 +20,6 @@ public class GameOver implements Initializable {
     private ImageView mainMenuIcon;
     @FXML
     private ImageView restartIcon;
-    @FXML
-    private Button Resurrect;
     @FXML
     private ProgressBar progressBar;
     @FXML
@@ -52,17 +51,15 @@ public class GameOver implements Initializable {
         StaticFunction.mainMenuFn(mainMenu, this.mainMenuIcon, timeline);
     }
 
-
-
     public void restart(MouseEvent restart) {
         StaticFunction.clickResponse(this.restartIcon);
         timeline.stop();
-        Label nameLabel = hero.getName();
+        Label nameLabel = new Label(hero.getName());
         World world = new World();
         world.start(StaticFunction.getStage(restart), nameLabel);
     }
 
-    public void resurrect(MouseEvent resurrect) {
+    public void resurrect() {
 
         try {
             resurrectHelp();
@@ -70,17 +67,23 @@ public class GameOver implements Initializable {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"InsufficientCoins, Do Restart or Back to MainMenu.", ButtonType.OK);
             alert.setTitle("Resurrect");
             alert.showAndWait();
+        } catch (AlreadyResurrectedException e) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Hero is already have been resurrected.", ButtonType.OK);
+            alert.setTitle("Resurrect");
+            alert.showAndWait();
         }
     }
 
-    private void resurrectHelp() throws InsufficientCoinException {
+    private void resurrectHelp() throws InsufficientCoinException, AlreadyResurrectedException {
         if(hero.getReward() < 5) throw new InsufficientCoinException("Insufficient Coins to Resurrect");
+        if(hero.isResurrected()) throw new AlreadyResurrectedException("Hero is already have been resurrected");
         if(timeline.getStatus() == Timeline.Status.PAUSED) {
             stackPane.getChildren().remove(loadGameOver);
             hero.setReward(hero.getReward() - 5);
             hero.getHero().setX(hero.getHero().getX() - 200);
             hero.getHero().setY(250);
             hero.setAlive(true);
+            hero.setResurrected(true);
             hero.getHero().disableProperty();
             timeline.play();
         }

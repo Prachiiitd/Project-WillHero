@@ -127,7 +127,7 @@ public class ArenaScreen implements Initializable {
     public String getFileName(String rootDirectory) throws NullPointerException {
         String playerName;
         try {
-            playerName = hero.getName().getText();
+            playerName = hero.getName();
             rootDirectory = rootDirectory.concat("/");
             rootDirectory = rootDirectory.concat(playerName);
             rootDirectory = rootDirectory.concat(".txt");
@@ -176,7 +176,7 @@ public class ArenaScreen implements Initializable {
     public void restart(MouseEvent restart) {
         StaticFunction.clickResponse(this.restartIcon);
         tl.stop();
-        Label nameLabel = hero.getName();
+        Label nameLabel = new Label(hero.getName());
         World world = new World();
         world.start(StaticFunction.getStage(restart), nameLabel);
     }

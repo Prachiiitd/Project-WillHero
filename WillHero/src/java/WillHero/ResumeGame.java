@@ -2,9 +2,9 @@ package WillHero;
 
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,21 +14,20 @@ public class ResumeGame {
 
     @FXML
     private ImageView backIcon;
-//    @FXML
-//    private ImageView play;
 
-    public void start(Stage stage) throws IOException {
+    private AnchorPane anchorPane;
 
-        URL toScene = getClass().getResource("Saved.fxml");
-        StaticFunction.setScene(stage, toScene, "WillHero: Saved");
+    public void start(Stage stage, AnchorPane anchorPane) throws IOException {
+        this.anchorPane = anchorPane;
+    }
+
+    private void resumeGame(){
+
     }
 
     public void setBack(MouseEvent backIcon) throws IOException {
         StaticFunction.clickResponse(this.backIcon);
-//        Loader loadgame = new Loader();
-//        loadgame.bringIn();
         URL toScene = getClass().getResource("MainMenu.fxml");
         StaticFunction.setScene(StaticFunction.getStage(backIcon), toScene, "WillHero: Main Menu");
     }
-
 }
