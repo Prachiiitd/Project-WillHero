@@ -41,19 +41,18 @@ public class World {
 
             try {
                 FXMLLoader root_gameAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("Game.fxml")));
-                FXMLLoader root_screenAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("ArenaScreen.fxml")));
+
                 gameAnchorPane = root_gameAnchorPane.load();
-                screenAnchorPane = root_screenAnchorPane.load();
+
+//                GameController gameController = root_gameAnchorPane.getController();
                 gameAnchorPane.setBackground(StaticFunction.defaultBackground());
                 stackPane.getChildren().add(gameAnchorPane);
-                stackPane.getChildren().add(screenAnchorPane);
+
                 Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
                 stage.setTitle("WillHero: " + nameLabel.getText());
 
                 Game gameController = root_gameAnchorPane.getController();
-                System.out.println("Game Controller: 111111111");
-                gameController.start(stage, nameLabel, vBox, stackPane, gameAnchorPane, screenAnchorPane);
-                System.out.println("Game Controller: 222222222");
+                gameController.start(stage, nameLabel, vBox, stackPane, gameAnchorPane);
 
                 stage.getIcons().add(icon);
                 vBox.getChildren().add(stackPane);

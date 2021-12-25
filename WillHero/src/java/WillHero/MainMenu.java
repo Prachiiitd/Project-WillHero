@@ -9,8 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -29,7 +29,7 @@ public class MainMenu implements Initializable {
 
     private World newGame;
     private LeaderBoard leaderBoard;
-    private MediaPlayer mediaPlayer;
+//    private MediaPlayer mediaPlayer;
 
     @FXML
     private Label bestReward;
@@ -85,19 +85,19 @@ public class MainMenu implements Initializable {
         StaticFunction.bestReward(bestReward);
 
 
-        if(mediaPlayer==null){
-//            Media sound = new Media(new File("ColorSwitch\\src\\sounds\\Background.mp3").toURI().toString());
-            Media sound = null;
-            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
-            mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.setStartTime(Duration.seconds(1));
-            mediaPlayer.setStartTime(Duration.seconds(100));
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-//            mediaPlayer.play();
-        }
-        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
-//            mediaPlayer.play();
-        }
+//        if(mediaPlayer==null){
+////            Media sound = new Media(new File("ColorSwitch\\src\\sounds\\Background.mp3").toURI().toString());
+//            Media sound = null;
+//            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
+//            mediaPlayer = new MediaPlayer(sound);
+//            mediaPlayer.setStartTime(Duration.seconds(1));
+//            mediaPlayer.setStartTime(Duration.seconds(100));
+//            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+////            mediaPlayer.play();
+//        }
+//        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
+////            mediaPlayer.play();
+//        }
 
     }
 
@@ -154,7 +154,7 @@ public class MainMenu implements Initializable {
 
     public void resumeGame(MouseEvent resumeGameIcon) {
         StaticFunction.clickResponse(this.resumeGameIcon);
-       ResumeGame s= new ResumeGame();
+        ResumeGame s= new ResumeGame();
         try {
             s.start(StaticFunction.getStage(resumeGameIcon));
         } catch (IOException e) {
@@ -180,7 +180,6 @@ public class MainMenu implements Initializable {
         exit(StaticFunction.getStage(exit));
     }
 }
-
 
 
 

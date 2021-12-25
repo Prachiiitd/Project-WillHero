@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane accessibleRole="NODE" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
+<AnchorPane accessibleRole="NODE" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.GameOver">
 
     <children>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="102.0" layoutX="-8.0" layoutY="568.0" strokeType="INSIDE" width="1376.0">
@@ -83,7 +83,7 @@
             </effect>
         </ImageView>
         <Group />
-        <Rectangle arcHeight="5.0" arcWidth="5.0" height="102.0" layoutX="574.0" layoutY="119.0" strokeType="INSIDE" width="200.0">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" height="102.0" layoutX="574.0" layoutY="119.0" strokeType="INSIDE" width="220.0">
             <effect>
                 <DropShadow />
             </effect>
@@ -147,7 +147,7 @@
          </textFill>
       </Button>
       <ProgressBar fx:id="progressBar" layoutX="321.0" layoutY="302.0" prefHeight="23.0" prefWidth="706.0" progress="0.0" />
-      <Label fx:id="currLocation" layoutX="643.0" layoutY="135.0" prefHeight="69.0" prefWidth="83.0" text="43">
+      <Label fx:id="currLocation" layoutX="646.0" layoutY="135.0" prefHeight="69.0" prefWidth="221.0" text="43" textAlignment="JUSTIFY">
          <font>
             <Font size="52.0" />
          </font>

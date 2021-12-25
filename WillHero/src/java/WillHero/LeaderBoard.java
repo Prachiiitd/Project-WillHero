@@ -15,7 +15,7 @@ import java.net.URL;
 
 public class LeaderBoard {
 
-    private TableView<Hero> table = new TableView<>();
+    private final TableView<Hero> table = new TableView<>();
 
     @FXML
     private ImageView backIcon;

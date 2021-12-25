@@ -17,10 +17,10 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="screenAnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
+<AnchorPane fx:id="screenAnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.ArenaScreen">
     <children>
         <Region layoutX="-1.0" onMousePressed="#resumeGame" prefHeight="768.0" prefWidth="1368.0" />
-        <Rectangle arcHeight="5.0" arcWidth="5.0" height="70.0" layoutY="599.0" strokeType="INSIDE" width="1370.0">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" height="94.0" layoutY="599.0" strokeType="INSIDE" width="1370.0">
             <stroke>
                 <LinearGradient>
                     <stops>
@@ -71,7 +71,7 @@
                 <DropShadow offsetX="-3.0" offsetY="3.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="restartIcon" accessibleRole="BUTTON" fitHeight="74.0" fitWidth="64.0" layoutX="643.0" layoutY="602.0" onMousePressed="#restart" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="restartIcon" accessibleRole="BUTTON" fitHeight="74.0" fitWidth="64.0" layoutX="652.0" layoutY="607.0" pickOnBounds="true" preserveRatio="true" onMousePressed="#restart">
             <image>
                 <Image url="@play.png" />
             </image>
@@ -100,7 +100,7 @@
                 <Image url="@handPoint.gif" />
             </image>
         </ImageView>
-        <ImageView fx:id="saveIcon" fitHeight="60.0" fitWidth="64.0" layoutX="945.0" layoutY="603.0" onMousePressed="#save" preserveRatio="true">
+        <ImageView fx:id="saveIcon" fitHeight="120.0" fitWidth="60.0" layoutX="946.0" layoutY="616.0" onMousePressed="#save" preserveRatio="true">
             <image>
                 <Image url="@save.png" />
             </image>

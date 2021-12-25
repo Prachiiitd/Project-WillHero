@@ -1,141 +1,202 @@
 package WillHero;
 
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransition;
-import javafx.event.EventHandler;
-import javafx.geometry.Point3D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
+import javafx.animation.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.transform.Rotate;
-import javafx.stage.Stage;
-
+import javafx.util.Duration;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class Obstacle {
+public abstract class Obstacle implements Serializable {
 
+    private transient final ImageView obstacle;
+
+    public Obstacle(double x, double y) {
+        obstacle= setObstacle(x, y);
+    }
+
+    public  ImageView getObstacle() {
+        return obstacle;
+    }
+
+    public abstract ImageView setObstacle(double x, double y);
 
 }
 
-class WindMill extends Obstacle {
+class Tnt extends Obstacle {
 
-    Group windMill;
-    static ImageView blade1;
-    static ImageView blade2;
-    static ImageView blade3;
-    ImageView building;
+    private transient final double jumpHeight;
+    private transient final double dx;
+    private transient final ImageView tnt;
+    private boolean blast;
+    private double vJumpSpeed;
+    private double hJumpSpeed;
+    private transient final Timeline tl;
+    private long blastTime;
+    private double dy;
+    private int hitCount;
 
+    public Tnt(double x, double y) {
+        super(x, y);
+        this.tnt = setObstacle(x, y);
+        this.jumpHeight = 1;
+        this.vJumpSpeed = 0;
+        this.hJumpSpeed = 0;
+        this.blastTime=0;
+        this.hitCount = 0;
+        this.dy = 0.01;
+        this.dx = 0.01;
+        this.blast=false;
 
-    public WindMill(double x, double y) {
-        windMill = createChakki(x, y);
-
+        this.tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
+        this.tl.setCycleCount(Timeline.INDEFINITE);
+        this.tl.play();
     }
 
-    private Group createChakki(double x, double y){
-        blade1 = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
-        blade2 = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
-        blade3 = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("blade.png"))));
-        building = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("building.png"))));
-
-        blade1.setPreserveRatio(true);
-        blade2.setPreserveRatio(true);
-        blade3.setPreserveRatio(true);
-
-        blade1.setRotate(90);
-        blade2.setRotate(210);
-        blade3.setRotate(-30);
-
-        imageViewSet(blade1, x-40, y+125);
-        imageViewSet(blade2, x-125, y-23);
-        imageViewSet(blade3, x+47, y-22);
-
-        building.setFitWidth(100);
-        building.setFitHeight(300);
-        building.setX(x); building.setY(y);
-
-        Group blades = new Group();
-        blades.getChildren().addAll (blade1, blade2, blade3);
-        blades.setAutoSizeChildren(true);
-        setRotation(blades, x, y);
-
-        Group chakki = new Group();
-        chakki.getChildren().addAll(building,blade3,blade2,blade1);
-//        chakki.getChildren().addAll(blades);
-
-        return chakki;
+    public int getHitCount() {
+        return hitCount;
     }
 
-    public void setRotation(Node node, double x, double y){
-        RotateTransition rotateTransition = new RotateTransition(javafx.util.Duration.millis(1000), node);
-        rotateTransition.setNode(node);
-        rotateTransition.setAxis(Rotate.Z_AXIS);
-
-        rotateTransition.setInterpolator(Interpolator.LINEAR);
-        rotateTransition.setByAngle(360);
-        rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
-        rotateTransition.play();
+    public void setHitCount(int hitCount) {
+        this.hitCount = hitCount;
     }
 
-    private void imageViewSet(ImageView node, double x, double y) {
-        node.setX(x);
-        node.setY(y);
-        node.setFitHeight(40);
+    public boolean isBlast() {
+        return blast;
     }
 
-    public Group getWindMill() {
-        return windMill;
+    @Override
+    public ImageView setObstacle(double x, double y) throws NullPointerException {
+        ImageView tnt;
+        try {
+            tnt = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("tnt.png"))));
+            tnt.setFitHeight(40);
+            tnt.setPreserveRatio(true);
+            tnt.setX(x);
+            tnt.setY(y);
+            return tnt;
+        } catch (Exception e) {
+            throw new NullPointerException("Obstacle couldn't be loaded");
+        }
     }
 
-    public void start(Stage stage) {
-        AnchorPane anchorPane = new AnchorPane();
-//        anchorPane.setPrefSize(1360,768);
-        WindMill windMill = new WindMill(200,200);
-        Group mill = windMill.getWindMill();
-        anchorPane.getChildren().add(mill);
-        Scene scene = new Scene(anchorPane);
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+    private void jump() {
+        if( hitCount>0 && !blast){
+            if(blastTime>=5000)
+                setBlast();
+            blastTime+=5;
 
-            @Override
-            public void handle(KeyEvent event)
-            {
-                System.out.println("blade1: " + blade3.getX() + " 3 " + blade3.getY());
-                if(event.getCode() == KeyCode.RIGHT)
-                    blade3.setX(blade3.getX() + 1);
-                if(event.getCode() == KeyCode.LEFT)
-                    blade3.setX(blade3.getX() - 1);
-                if(event.getCode() == KeyCode.UP)
-                    blade3.setY(blade3.getY() + 1);
-                if(event.getCode() == KeyCode.DOWN)
-                    blade3.setY(blade3.getY() - 1);
+        }
+        if(hitCount==0){
+            vJumpSpeed=0.4;
+            hJumpSpeed=0;
+        }
+        else if(hitCount==1 ){
+
+            dy=0.05;
+            hJumpSpeed=0;
+            vJumpSpeed+=dy;
+        }
+        else if(hitCount==2){
+            dy=0.01;
+            vJumpSpeed+=dy;
+            hJumpSpeed+=dx;
+        }
+        super.getObstacle().setY(super.getObstacle().getY()+ vJumpSpeed);
+        super.getObstacle().setX(super.getObstacle().getX() +hJumpSpeed);
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.addAll(Game.getPlatformList());
+        objects.addAll(Game.getChestList());
+
+        for(Object object : objects){
+            if(collision(object)){
+
+                if(hitCount==1) {
+                    vJumpSpeed = jumpHeight * 2/3;
+                }
+                else if(hitCount==2) {
+                    vJumpSpeed = jumpHeight;
+                }
+                vJumpSpeed = vJumpSpeed > 0 ? -vJumpSpeed : vJumpSpeed;
+                break;
             }
-        });
+        }
+    }
 
 
-        stage.setScene(scene);
-        stage.show();
+    public void setBlast(){
+        try {
+            super.getObstacle().setImage(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("blast.gif"))));
+            blast=true;
+            PauseTransition delay = new PauseTransition(Duration.seconds(3));
+            delay.setOnFinished( event -> {
+                super.getObstacle().setVisible(false);
+                blast=false;
+                tl.stop();
+            });
+            delay.play();
+
+        }  catch (NullPointerException e) {
+            throw new NullPointerException("OpenChest couldn't be loaded");
+        }
 
     }
 
-    //
-//    public int getRotation() {
-//        return rotation;
-//    }
-//
-//    public int getSpeed() {
-//        return speed;
-//    }
-//
-//    public int getDirection() {
-//        return direction;
-//    }
+
+    private boolean collision(Object object) {
+
+        if (object instanceof Platform platform) {
+//          top side collision with platform
+            if (StaticFunction.bottomCollision(super.getObstacle(), platform.getIsLand(), 7)) {
+
+                if (hitCount == 0) {
+                    super.getObstacle().setY(platform.getIsLand().getBoundsInParent().getMinY() - super.getObstacle().getFitHeight());
+                }
+
+                if (hitCount == 2) {
+                    hitCount = 1;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        if (object instanceof Hero || object instanceof Orc) {
+            ImageView objectImage;
+            if (object instanceof Hero) {
+                objectImage = ((Hero) object).getHero();
+            } else {
+                objectImage = ((Orc) object).getOrc();
+            }
+
+            if (StaticFunction.bottomCollision(super.getObstacle(),objectImage,3) && blast) {
+                objectImage.setVisible(false);
+            }
+        }
+
+        if (object instanceof Chest chest) {
+            // Bottom side collision of hero with orc top
+            if (StaticFunction.bottomCollision(super.getObstacle(), chest.getChest(), 0)) {
+                return true;
+            }
+
+            // Right side collision of hero with orc left
+            if (StaticFunction.rightCollision(super.getObstacle(), chest.getChest(), 0)) {
+                chest.getChest().setX(chest.getChest().getX() + 5);
+            }
+
+            // Left side collision of hero with orc right
+            if (StaticFunction.leftCollision(super.getObstacle(), chest.getChest(), 0)) {
+                chest.getChest().setX(chest.getChest().getX() - 5);
+            }
+
+            // Top side collision of hero with orc bottom
+            return StaticFunction.topCollision(super.getObstacle(), chest.getChest(), 0);
+        }
+        return false;
+    }
 
 
 }

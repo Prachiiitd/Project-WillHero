@@ -5,17 +5,19 @@ import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class Chest  {
-    private ImageView chest;
+public abstract class Chest implements Serializable {
+    private transient ImageView chest;
     private boolean isClose;
     private final double jumpHeight;
     private final double dy;
     private double jumpSpeed;
-    private final Timeline timeline;
+    private transient final Timeline timeline;
 
     public Chest(int x, int y) {
         this.chest = setChest(x, y);
@@ -44,7 +46,9 @@ public abstract class Chest  {
 
     public void setOpenChest(ImageView imageView) throws NullPointerException {
         try {
+//            chest=new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestOpen.png"))));
             imageView.setImage(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestOpen.png"))));
+
         }  catch (Exception e) {
             throw new NullPointerException("OpenChest couldn't be loaded");
         }
@@ -61,12 +65,10 @@ public abstract class Chest  {
     public boolean collision(Object object) {
 
         if (object instanceof Hero hero) {
-//            System.out.println("collision with chest called");
+
             if (hero.getHero().getBoundsInParent().intersects(chest.getBoundsInParent())) {
-                System.out.println("collision with chest");
                 if(isClose) {
                     isClose = false;
-                    timeline.stop();
                     setOpenChest(chest);
                     this.getContent(hero);
                     return true;
@@ -76,7 +78,10 @@ public abstract class Chest  {
 
         if(object instanceof Platform platform) {
 
-            if (StaticFunction.bottomCollision(chest, platform.getIsLand(), 0)) {
+            if (StaticFunction.bottomCollision(chest, platform.getIsLand(), 4)) {
+                if(!isClose) {
+
+                }
                 return true;
             }
         }
@@ -94,8 +99,7 @@ public abstract class Chest  {
                 if (isClose) {
                     jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;
                 }
-                else
-                    jumpSpeed = 0;
+
                 break;
             }
         }
@@ -135,7 +139,7 @@ class WeaponChest extends  Chest{
         super(x, y);
         Random random = new Random();
         Weapon[] weaponList = {new Weapon1(), new Weapon2()};
-        weapon = weaponList[random.nextInt(1, 2)];
+        weapon = weaponList[random.nextInt(1,2)];
     }
 
     @Override

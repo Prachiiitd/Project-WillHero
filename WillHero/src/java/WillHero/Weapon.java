@@ -6,15 +6,15 @@ import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Weapon implements Cloneable {
+public abstract class Weapon implements Serializable {
 
-    private final ImageView weaponImage;
+    private transient final ImageView weaponImage;
     private boolean active = false;
-    private final int damage;
-    private final int range;
+    private int damage;
+    private int range;
 
     public Weapon(int damage, int range) {
         this.weaponImage = setWeaponImage();
@@ -32,20 +32,22 @@ public abstract class Weapon implements Cloneable {
         return damage;
     }
 
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public int getRange() {
         return range;
     }
 
-    public boolean collision(Orc orc) {
+    public void setRange(int range){
+        this.range = range;
+    }
 
+    public void collision(Orc orc) {
         if (orc.getOrc().getBoundsInParent().intersects(weaponImage.getBoundsInParent())) {
-            System.out.println("Collision with Weapon");
-//                orc.setHealth(orc.getHealth() - damage);
-            orc.setAlive(false);
-            return true;
+            orc.setHp(orc.getHp() - damage);
         }
-
-        return false;
     }
 
     public void setActivate(boolean active, boolean visible) {
@@ -60,6 +62,18 @@ public abstract class Weapon implements Cloneable {
     public abstract void attack(Hero hero);
 
     public abstract void upgrade(ImageView character);
+}
+
+class Weapon1 extends Weapon implements Cloneable{
+
+    private transient Timeline fTimeline;
+    private transient Timeline bTimeline;
+    public Weapon1() {
+        super(5, 100);
+        this.fTimeline = null;
+        this.bTimeline = null;
+    }
+
 
     @Override
     public Weapon clone() {
@@ -70,14 +84,6 @@ public abstract class Weapon implements Cloneable {
             throw new AssertionError();
         }
     }
-}
-
-class Weapon1 extends Weapon {
-
-    public Weapon1() {
-        super(10, 500);
-    }
-
     @Override
     public ImageView setWeaponImage() {
 
@@ -95,30 +101,49 @@ class Weapon1 extends Weapon {
 
     @Override
     public void attack(Hero hero) {
-        System.out.println("Weapon 1 attack");
-        Weapon1 c_weapon = this;
-        StaticFunction.setTranslation(getWeaponImage(), getRange(), 0, 10000, 5, false);
-        StaticFunction.setRotation(getWeaponImage(), 360, 500, -1, false);
+
+        Weapon1 c_weapon = (Weapon1) this.clone();
+
+        if (fTimeline != null && fTimeline.getStatus() == Animation.Status.RUNNING) {
+            fTimeline.stop();
+        }
+        if (bTimeline != null && bTimeline.getStatus() == Animation.Status.RUNNING) {
+            bTimeline.stop();
+        }
+
+        c_weapon.getWeaponImage().setFitWidth(25);
+
+        fTimeline = (new Timeline(new KeyFrame(Duration.millis(0.8), fEvent -> attackAnimation(c_weapon, 1))));
+        fTimeline.setCycleCount(getRange());
+        fTimeline.setOnFinished(e -> {
+            bTimeline = new Timeline(new KeyFrame(Duration.millis(0.8), bEvent -> attackAnimation(c_weapon, -1)));
+            bTimeline.setCycleCount(getRange());
+            bTimeline.play();
+        });
+
+        fTimeline.play();
     }
 
     @Override
     public void upgrade(ImageView character) {
+        super.setRange(getRange()+1);
+        super.setDamage(getDamage()+1);
 
+    }
+    private void attackAnimation(Weapon c_weapon, int i) {
+        System.out.println("Weapon 1 attack in progress");
+        c_weapon.getWeaponImage().setX(c_weapon.getWeaponImage().getX() + i);
     }
 }
 
 class Weapon2 extends Weapon {
-    private final int defaultWidth;
-    private final int defaultHeight;
-    private Timeline fTimeline;
-    private Timeline bTimeline;
+    private transient Timeline fTimeline;
+    private transient Timeline bTimeline;
 
     public Weapon2() {
-        super(1, 1);
+        super(3, 100);
         this.fTimeline = null;
         this.bTimeline = null;
-        this.defaultWidth = 50;
-        this.defaultHeight = 10;
     }
 
     @Override
@@ -140,7 +165,6 @@ class Weapon2 extends Weapon {
     @Override
     public void attack(Hero hero) {
 
-        System.out.println("Weapon 2 attack attack");
         Weapon2 c_weapon = this;
 
         if (fTimeline != null && fTimeline.getStatus() == Animation.Status.RUNNING) {
@@ -153,23 +177,23 @@ class Weapon2 extends Weapon {
         c_weapon.getWeaponImage().setFitWidth(50);
 
         fTimeline = (new Timeline(new KeyFrame(Duration.millis(0.8), fEvent -> attackAnimation(c_weapon, 1))));
-        fTimeline.setCycleCount(150);
+        fTimeline.setCycleCount(getRange());
         fTimeline.setOnFinished(e -> {
-                    bTimeline = new Timeline(new KeyFrame(Duration.millis(0.8), bEvent -> attackAnimation(c_weapon, -1)));
-                    bTimeline.setCycleCount(150);
-                    bTimeline.play();
-                });
+            bTimeline = new Timeline(new KeyFrame(Duration.millis(0.8), bEvent -> attackAnimation(c_weapon, -1)));
+            bTimeline.setCycleCount(getRange());
+            bTimeline.play();
+        });
 
         fTimeline.play();
     }
 
     private void attackAnimation(Weapon c_weapon, int i) {
-        System.out.println("Weapon 2 attack in progress");
         c_weapon.getWeaponImage().setFitWidth(c_weapon.getWeaponImage().getFitWidth() + i);
     }
 
     @Override
     public void upgrade(ImageView character) {
-
+        super.setRange(getRange()+1);
+        super.setDamage(getDamage()+1);
     }
 }

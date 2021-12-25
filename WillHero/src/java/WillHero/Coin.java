@@ -9,11 +9,12 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coin {
+public class Coin implements Serializable {
 
-    private final ImageView coin;
+    private transient final ImageView coin;
 
     public Coin(int x, int y) {
         this.coin = setCoin(x,y);
@@ -24,7 +25,7 @@ public class Coin {
         ImageView coin;
         try {
             coin = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("coin.png"))));
-            coin.setFitWidth(35);
+            coin.setFitWidth(30);
             coin.setPreserveRatio(true);
             coin.setX(x);
             coin.setY(y);
@@ -40,7 +41,6 @@ public class Coin {
 
     public boolean collision(Hero hero) {
         if (hero.getHero().getBoundsInParent().intersects(coin.getBoundsInParent())) {
-            System.out.println("Coin collected");
             increaseReward(hero);
             this.coin.setVisible(false);
             return true;

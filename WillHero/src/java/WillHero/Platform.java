@@ -7,24 +7,20 @@ import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Platform {
+public class Platform implements Serializable {
 
-    private final int length;
-    private final int id;
-    private final ImageView isLand;
-    static int allot = 0;
+    private transient final ImageView isLand;
+
     private final int speed;
 
     public Platform(int id, int x, int y, int size, int speed) {
-        System.out.println("in pla con" + id);
+
         this.isLand = setIsLnd(id, x, y, size);
-        this.id = id;
         this.speed = speed;
-        this.length = (int) isLand.getFitWidth();
         motion();
-        allot++;
     }
 
     private ImageView setIsLnd(int id, int x, int y, int size) throws NullPointerException {
@@ -40,7 +36,7 @@ public class Platform {
             isLand = null;
             System.out.println("Failed to load Platform");
         }
-        return isLand;
+        return null;
     }
 
     public ImageView getIsLand() throws NullPointerException {
@@ -48,23 +44,6 @@ public class Platform {
     }
 
     private void motion() {
-        this.getIsLand().setX(this.getIsLand().getX() - 60);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public boolean collided(ImageView obj, Group screen) throws ClassCastException {
-        boolean isCollision = false;
-
-        ImageView island = new ImageView(this.isLand.getImage());
-        island.setX(island.getX() + screen.getLayoutX());
-        island.setY(island.getY() + screen.getLayoutY());
-        if (obj.getBoundsInParent().intersects(isLand.getBoundsInParent())) {
-            isCollision = true;
-        }
-
-        return isCollision;
+        StaticFunction.setTranslation(this.getIsLand(),0,speed,2000,-1,true);
     }
 }
