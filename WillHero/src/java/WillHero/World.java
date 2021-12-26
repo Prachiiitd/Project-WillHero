@@ -50,7 +50,7 @@ public class World {
                 stage.setTitle("WillHero: " + nameLabel.getText());
 
                 Game gameController = root_gameAnchorPane.getController();
-                gameController.start(stage, nameLabel, vBox, stackPane, gameAnchorPane);
+                gameController.start(stage, nameLabel.getText(), vBox, stackPane, gameAnchorPane);
 
                 stage.getIcons().add(icon);
                 vBox.getChildren().add(stackPane);

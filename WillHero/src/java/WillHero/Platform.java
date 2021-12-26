@@ -12,35 +12,63 @@ import java.util.Objects;
 
 public class Platform implements Serializable {
 
-    private transient final ImageView isLand;
+    private transient ImageView isLand;
 
     private final int speed;
+    private final int id;
+    private final double x;
+    private final double y;
+    private final int size;
 
-    public Platform(int id, int x, int y, int size, int speed) {
+    public Platform(int id, double x, double y, int size, int speed) {
 
-        this.isLand = setIsLnd(id, x, y, size);
+        this.id = id;
         this.speed = speed;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+
+        setIsLnd();
         motion();
     }
 
-    private ImageView setIsLnd(int id, int x, int y, int size) throws NullPointerException {
-        ImageView isLand;
+    public void setIsLnd() throws NullPointerException {
+//        ImageView isLand;
         try {
-            isLand = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("island" + id + ".png")).getPath())));
-            isLand.setPreserveRatio(true);
-            isLand.setFitWidth(size);
-            isLand.setX(x);
-            isLand.setY(y);
-            return isLand;
+            this.isLand = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("island" + id + ".png")).getPath())));
+            this.isLand.setPreserveRatio(true);
+            this.isLand.setFitWidth(size);
+            this.isLand.setX(x);
+            this.isLand.setY(y);
+//            return isLand;
         } catch (FileNotFoundException | NullPointerException e) {
-            isLand = null;
             System.out.println("Failed to load Platform");
         }
-        return null;
+//        return null;
     }
 
     public ImageView getIsLand() throws NullPointerException {
         return isLand;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getX() {
+        return x;
     }
 
     private void motion() {

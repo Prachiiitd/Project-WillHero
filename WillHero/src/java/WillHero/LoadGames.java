@@ -16,10 +16,12 @@ public class LoadGames {
     }
 
     public ArrayList<String> getLoadableGamesList() {
-        File [] directory = new File("Willhero/src/java/SavedGames").listFiles();
+        String currentDir = System.getProperty("user.dir") + "/WillHero/src/java/";
+
+        File [] directory = new File(currentDir + "SavedGames").listFiles();
         if (directory != null) {
             for(File file : directory) {
-                loadableGames.add(file.getName());
+                loadableGames.add(currentDir + "/SavedGames/" + file.getName());
             }
             return loadableGames;
         }

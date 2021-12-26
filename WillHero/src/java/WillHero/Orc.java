@@ -20,9 +20,11 @@ public abstract class Orc implements Serializable {
     private double jumpSpeed;
     private int hp;
     private boolean isAlive;
+    private double x;
+    private double y;
 
 
-    public Orc(int x, int y, int hp) {
+    public Orc(double x, double y, int hp) {
         Random random = new Random();
         this.hp = hp;
         this.isAlive = true;
@@ -30,6 +32,8 @@ public abstract class Orc implements Serializable {
         this.jumpHeight = random.nextDouble(1, 1.3);
         this.jumpSpeed = 0;
         this.dy = random.nextDouble(0.008, 0.01);
+        this.x = x;
+        this.y = y;
 
         this.tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         this.tl.setCycleCount(Timeline.INDEFINITE);
@@ -42,6 +46,14 @@ public abstract class Orc implements Serializable {
 
     public void setHp(int hp) {
         this.hp = hp;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 
     public boolean isAlive() {
@@ -91,7 +103,7 @@ public abstract class Orc implements Serializable {
         return orc;
     }
 
-    public abstract ImageView setOrc(int x, int y);
+    public abstract ImageView setOrc(double x, double y);
 
     public boolean collision(Object object) {
 
@@ -213,12 +225,12 @@ public abstract class Orc implements Serializable {
 
 class RedOrc extends Orc {
 
-    public RedOrc(int x, int y) {
+    public RedOrc(double x, double y) {
         super(x, y, 10);
     }
 
     @Override
-    public ImageView setOrc(int x, int y) throws NullPointerException {
+    public ImageView setOrc(double x, double y) throws NullPointerException {
         ImageView redOrc;
         try {
             redOrc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("red.png"))));
@@ -242,12 +254,12 @@ class RedOrc extends Orc {
 class GreenOrc extends Orc {
 
 
-    public GreenOrc(int x, int y) {
+    public GreenOrc(double x, double y) {
         super(x, y, 12);
     }
 
     @Override
-    public ImageView setOrc(int x, int y) throws NullPointerException {
+    public ImageView setOrc(double x, double y) throws NullPointerException {
         ImageView greenOrc;
         try {
             greenOrc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("green.png"))));
@@ -269,12 +281,12 @@ class GreenOrc extends Orc {
 
 class BossOrc extends Orc {
 
-    public BossOrc(int x, int y) {
+    public BossOrc(double x, double y) {
         super(x, y, 150);
     }
 
     @Override
-    public ImageView setOrc(int x, int y) throws NullPointerException {
+    public ImageView setOrc(double x, double y) throws NullPointerException {
         ImageView redOrc;
         try {
             redOrc = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("bossOrc.png"))));
@@ -288,6 +300,4 @@ class BossOrc extends Orc {
             throw new NullPointerException("Coin couldn't be loaded");
         }
     }
-
-
 }

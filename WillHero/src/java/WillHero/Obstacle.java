@@ -10,17 +10,33 @@ import java.util.Objects;
 
 public abstract class Obstacle implements Serializable {
 
-    private transient final ImageView obstacle;
+    private transient ImageView obstacle;
+    private final double x;
+    private final double y;
 
     public Obstacle(double x, double y) {
-        obstacle= setObstacle(x, y);
+        this.x = x;
+        this.y = y;
+        this.obstacle = setObstacleImage();
     }
 
     public  ImageView getObstacle() {
         return obstacle;
     }
 
-    public abstract ImageView setObstacle(double x, double y);
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setObstacle(){
+        this.obstacle = setObstacleImage();
+    }
+
+    public abstract ImageView setObstacleImage();
 
 }
 
@@ -39,7 +55,7 @@ class Tnt extends Obstacle {
 
     public Tnt(double x, double y) {
         super(x, y);
-        this.tnt = setObstacle(x, y);
+        this.tnt = setObstacleImage();
         this.jumpHeight = 1;
         this.vJumpSpeed = 0;
         this.hJumpSpeed = 0;
@@ -67,14 +83,14 @@ class Tnt extends Obstacle {
     }
 
     @Override
-    public ImageView setObstacle(double x, double y) throws NullPointerException {
+    public ImageView setObstacleImage() throws NullPointerException {
         ImageView tnt;
         try {
             tnt = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("tnt.png"))));
             tnt.setFitHeight(40);
             tnt.setPreserveRatio(true);
-            tnt.setX(x);
-            tnt.setY(y);
+            tnt.setX(super.getX());
+            tnt.setY(super.getY());
             return tnt;
         } catch (Exception e) {
             throw new NullPointerException("Obstacle couldn't be loaded");

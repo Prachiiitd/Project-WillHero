@@ -18,13 +18,13 @@ public abstract class Chest implements Serializable {
     private final double dy;
     private double jumpSpeed;
     private transient final Timeline timeline;
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
 
-    public Chest(int x, int y) {
+    public Chest(double x, double y) {
         this.x = x;
         this.y = y;
-        this.chest = setChest();
+        setChest();
         this.isClose = true;
         this.jumpHeight = 0.4;
         this.jumpSpeed = 0;
@@ -35,14 +35,22 @@ public abstract class Chest implements Serializable {
         timeline.play();
     }
 
-    public ImageView setChest() throws NullPointerException {
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setChest() throws NullPointerException {
         try {
-            chest = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestClosed.png"))));
-            chest.setFitHeight(50);
-            chest.setPreserveRatio(true);
-            chest.setX(this.x);
-            chest.setY(this.y);
-            return chest;
+            this.chest = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("chestClosed.png"))));
+            this.chest.setFitHeight(50);
+            this.chest.setPreserveRatio(true);
+            this.chest.setX(this.x);
+            this.chest.setY(this.y);
+
         }  catch (Exception e) {
             throw new NullPointerException("Closed chest couldn't be loaded");
         }
@@ -116,7 +124,7 @@ public abstract class Chest implements Serializable {
 class CoinChest extends Chest{
     private final Coin [] coins;
 
-    public CoinChest(int x, int y) {
+    public CoinChest(double x, double y) {
         super(x, y);
         Random random = new Random();
         this.coins = new Coin[random.nextInt(0, 12) + 2];;
@@ -138,7 +146,7 @@ class WeaponChest extends  Chest{
 
     private final Weapon weapon;
 
-    public WeaponChest(int x, int y) {
+    public WeaponChest(double x, double y) {
         super(x, y);
         Random random = new Random();
         Weapon[] weaponList = {new Weapon1(), new Weapon2()};

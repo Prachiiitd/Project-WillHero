@@ -8,28 +8,29 @@ import javafx.scene.image.ImageView;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
-import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Coin implements Serializable {
 
-    private transient final ImageView coin;
+    private transient ImageView coin;
+    private final double x;
+    private final double y;
 
-    public Coin(int x, int y) {
-        this.coin = setCoin(x,y);
+    public Coin(double x, double y) {
+        this.x = x;
+        this.y = y;
+        this.setCoin();
         this.motion();
     }
 
-    private ImageView setCoin(int x, int y) throws NullPointerException {
-        ImageView coin;
+    public void setCoin() throws NullPointerException {
         try {
-            coin = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("coin.png"))));
-            coin.setFitWidth(30);
-            coin.setPreserveRatio(true);
-            coin.setX(x);
-            coin.setY(y);
-            return coin;
+            this.coin = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("coin.png"))));
+            this.coin.setFitWidth(30);
+            this.coin.setPreserveRatio(true);
+            this.coin.setX(x);
+            this.coin.setY(y);
         }  catch (Exception e) {
             throw new NullPointerException("Coin couldn't be loaded");
         }
@@ -37,6 +38,14 @@ public class Coin implements Serializable {
 
     public ImageView getCoin() {
         return coin;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 
     public boolean collision(Hero hero) {

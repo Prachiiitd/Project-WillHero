@@ -13,11 +13,9 @@ import java.util.Objects;
 
 public class Hero implements Serializable {
 
-    private transient final ImageView hero;
-    private transient final double jumpHeight;
-    private transient final double dy;
+    private transient ImageView hero;
 
-    private double jumpSpeed;
+    private double jumpSpeed = 0;
     private final Helmet helmet;
     private final String name;
     private boolean isAlive;
@@ -28,35 +26,28 @@ public class Hero implements Serializable {
     public Hero(String name, int location) {
         this.isAlive = true;
         this.name = name;
-        this.jumpHeight = 1.5;
-        this.jumpSpeed = 0;
-        this.dy = 0.01;
         this.resurrected = false;
-
         this.location = location;
-        this.hero = setHero();
         this.helmet = new Helmet();
+        this.setHero();
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
 
-    private ImageView setHero() {
-        ImageView hero;
+    public void setHero() {
         try {
-            hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
-            hero.setPreserveRatio(true);
-            hero.setFitHeight(40);
-            hero.setX(400);
-            hero.setY(150);
+            this.hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
+            this.hero.setPreserveRatio(true);
+            this.hero.setFitHeight(40);
+            this.hero.setX(400);
+            this.hero.setY(150);
 
         } catch (FileNotFoundException | NullPointerException e) {
-            hero = null;
             System.out.println("Failed to load hero");
             e.printStackTrace();
         }
-        return hero;
     }
 
     public void useWeapon() {
@@ -118,6 +109,7 @@ public class Hero implements Serializable {
         this.hero.setY(hero.getY() + jumpSpeed);
         this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + jumpSpeed);
         this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + jumpSpeed);
+        double dy = 0.01;
         jumpSpeed += dy;
 
         ArrayList<Object> objects = new ArrayList<>();
@@ -127,7 +119,7 @@ public class Hero implements Serializable {
 
         for (Object object : objects) {
             if (collision(object)) {
-                jumpSpeed = jumpHeight;
+                jumpSpeed = 1.5;
                 if (isAlive) {
                     StaticFunction.setScaling(hero, 0, -0.1, 100, 2, true);
                     jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;

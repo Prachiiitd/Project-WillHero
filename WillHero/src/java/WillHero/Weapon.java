@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public abstract class Weapon implements Serializable {
 
-    private transient final ImageView weaponImage;
+    private transient ImageView weaponImage;
     private boolean active = false;
     private int damage;
     private int range;
@@ -20,6 +20,10 @@ public abstract class Weapon implements Serializable {
         this.weaponImage = setWeaponImage();
         this.damage = damage;
         this.range = range;
+    }
+
+    public void setWeapon() {
+        this.weaponImage = setWeaponImage();
     }
 
     public abstract ImageView setWeaponImage();

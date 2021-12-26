@@ -48,14 +48,6 @@ public class Game implements Initializable {
     @FXML
     private transient ImageView pauseIcon;
     @FXML
-    private transient ImageView mainMenuIcon;
-    @FXML
-    private transient ImageView restartIcon;
-    @FXML
-    private transient ImageView saveIcon;
-    @FXML
-    private transient ImageView resumeIcon;
-    @FXML
     private transient AnchorPane gameAnchorPane;
     @FXML
     private transient Label currLocation;
@@ -84,23 +76,25 @@ public class Game implements Initializable {
     Camera camera;
 
 
-    public void start(Stage stage, Label nameLabel, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
-        hero = new Hero(nameLabel.getText(), 0);
+    public void start(Stage stage, String name, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
+        hero = new Hero(name, 0);
         this.vBox = vBox;
         this.stackPane = stackPane;
         this.gameAnchorPane = gameAnchorPane;
         this.camera = new PerspectiveCamera();
 
-        bestLocation = new Label();
-        bestReward = new Label();
-        screenObj = new Group();
+        this.bestLocation = new Label();
+        this.bestReward = new Label();
+        this.screenObj = new Group();
+        this.gate = new ArrayList<>();
+        this.arenaScreen = new ArenaScreen();
+        this.coins = new ArrayList<>();
+
         platforms = new ArrayList<>();
-        coins = new ArrayList<>();
         orcs = new ArrayList<>();
         chests = new ArrayList<>();
         tnts = new ArrayList<>();
-        gate = new ArrayList<>();
-        arenaScreen = new ArenaScreen();
+
         stage.getScene().setCamera(camera);
         customWorld();
         buildWorld(screenObj);
@@ -109,7 +103,81 @@ public class Game implements Initializable {
 
             @Override
             public void handle(KeyEvent event) {
-//                gravity(hero.getHero(), false, 0);
+
+                Node node = (Node) event.getSource();
+                VBox vBox = (VBox) node.getScene().getRoot();
+                StackPane stackPane = (StackPane) vBox.getChildren().get(0);
+
+                System.out.println(hero.getHero().getX() + " " + hero.getHero().getY());
+                if (stackPane.getChildren().size() == 2) return;
+
+                if (event.getCode() == KeyCode.RIGHT)
+                    hero.getHero().setX(hero.getHero().getX() + 5);
+                if (event.getCode() == KeyCode.LEFT)
+                    hero.getHero().setX(hero.getHero().getX() - 5);
+                if (event.getCode() == KeyCode.UP)
+                    hero.getHero().setY(hero.getHero().getY() + 5);
+                if (event.getCode() == KeyCode.DOWN)
+                    hero.getHero().setY(hero.getHero().getY() - 5);
+                if (event.getCode() == KeyCode.SPACE)
+                    for (Node object : screenObj.getChildren()) {
+                        ImageView imageView = (ImageView) object;
+//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
+                        imageView.setX(imageView.getX() + 100);
+                    }
+
+                if (event.getCode().isDigitKey()) {
+//                    hero.getHero().setX(hero.getHero().getX() + 100);
+//                    camera.translateXProperty().set(hero.getHero().getX() + 100);
+                    hero.useWeapon();
+                    for (Node object : screenObj.getChildren()) {
+                        ImageView imageView = (ImageView) object;
+                        imageView.setX(imageView.getX() - 100);
+                        hero.setLocation(hero.getLocation() + 1);
+//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
+                    }
+                }
+            }
+        });
+
+
+        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
+        tl.setCycleCount(Timeline.INDEFINITE);
+        tl.play();
+
+        loadScreen();
+    }
+
+    public void resume(Stage stage, Hero hero, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane,
+                       ArrayList<Platform> generatedPlatforms, ArrayList<Coin> generatedCoins,
+                       ArrayList<Obstacle> generatedObstacles, ArrayList<Chest> generatedChests,
+                       ArrayList<Orc> generatedOrcs) throws IOException {
+        this.hero = hero;
+        this.vBox = vBox;
+        this.stackPane = stackPane;
+        this.gameAnchorPane = gameAnchorPane;
+        this.camera = new PerspectiveCamera();
+
+        this.bestLocation = new Label();
+        this.bestReward = new Label();
+        this.screenObj = new Group();
+        this.coins = generatedCoins;
+
+        platforms = generatedPlatforms;
+        orcs = generatedOrcs;
+        chests = generatedChests;
+        tnts = generatedObstacles;
+
+        gate = new ArrayList<>();
+        arenaScreen = new ArenaScreen();
+        stage.getScene().setCamera(camera);
+
+        buildWorld(screenObj);
+
+        stackPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
 
                 Node node = (Node) event.getSource();
                 VBox vBox = (VBox) node.getScene().getRoot();
@@ -166,11 +234,7 @@ public class Game implements Initializable {
         StaticFunction.setTranslation(tempIl5, 0, -25, 2000, TranslateTransition.INDEFINITE, true);
         StaticFunction.setTranslation(tempIl6, 0, 25, 2000, TranslateTransition.INDEFINITE, true);
         StaticFunction.setTranslation(tempIl6, 0, 40, 1000, TranslateTransition.INDEFINITE, true);
-        StaticFunction.setRotation(resumeIcon, 360, 1000, 2, true);
-        StaticFunction.setRotation(restartIcon, 360, 1000, 2, true);
         StaticFunction.setRotation(pauseIcon, 360, 1000, 2, true);
-        StaticFunction.setRotation(saveIcon, 360, 1000, 2, true);
-        StaticFunction.setRotation(mainMenuIcon, 360, 1000, 2, true);
 
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
@@ -207,20 +271,18 @@ public class Game implements Initializable {
         for (Coin coin : coins) {
             screenObj.getChildren().add(coin.getCoin());
         }
+        for (Chest chest : chests) {
+            screenObj.getChildren().add(chest.getChest());
+        }
         for (Obstacle obstacle : tnts) {
             screenObj.getChildren().add(obstacle.getObstacle());
         }
         for (Orc orc : orcs) {
             screenObj.getChildren().add(orc.getOrc());
         }
-        for (Chest chest : chests) {
-            screenObj.getChildren().add(chest.getChest());
-        }
-
 
         gameAnchorPane.getChildren().addAll(screenObj);
         gameAnchorPane.getChildren().addAll(hero.getHero(), hero.getHelmet().getWeapon(0).getWeaponImage(), hero.getHelmet().getWeapon(1).getWeaponImage());
-//        hero.setScoreLabel(currReward,currLocation);
     }
 
 
@@ -404,7 +466,7 @@ public class Game implements Initializable {
 
         } catch (ClassCastException e) {
             System.out.println("Error");
-        } catch (ConcurrentModificationException e) {
+        } catch (ConcurrentModificationException ignored) {
         }
     }
 

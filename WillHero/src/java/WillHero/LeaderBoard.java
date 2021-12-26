@@ -1,14 +1,10 @@
 package WillHero;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,12 +21,12 @@ public class LeaderBoard {
     private AnchorPane anchorPane;
     private ArrayList<String> players;
     private ArrayList<Hero> heroes;
-    private ReGenerateHero reGenerateHero;
+    private ReGenerateHero generateSprites;
 
 
     public void start(Stage stage, AnchorPane anchorPane) throws IOException {
         this.anchorPane = anchorPane;
-        this.reGenerateHero =new ReGenerateHero();
+        this.generateSprites =new ReGenerateHero();
         this.players = new LoadGames().getLoadablePlayersList();
         this.heroes = new ArrayList<>();
         loadHeroes();
@@ -40,13 +36,14 @@ public class LeaderBoard {
     private void loadHeroes() {
         for (String player: players) {
             try {
-                Hero hero = reGenerateHero.getHero(player);
+                Hero hero = generateSprites.getHero(player);
                 heroes.add(hero);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     private void printHeroes() {
         for(Hero hero : heroes)
