@@ -14,6 +14,8 @@ import java.util.Objects;
 public class Hero implements Serializable {
 
     private transient ImageView hero;
+    private transient Timeline tl;
+
 
     private double jumpSpeed = 0;
     private final Helmet helmet;
@@ -23,15 +25,16 @@ public class Hero implements Serializable {
     private int reward;
     private boolean resurrected;
 
-    public Hero(String name, int location) {
-        this.isAlive = true;
+    public Hero(String name, int location, int reward, boolean isAlive, boolean isResurrected, Helmet helmet) {
+        this.isAlive = isAlive;
         this.name = name;
-        this.resurrected = false;
+        this.resurrected = isResurrected;
         this.location = location;
-        this.helmet = new Helmet();
+        this.reward = reward;
+        this.helmet = helmet;
         this.setHero();
 
-        Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
+        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
@@ -54,6 +57,10 @@ public class Hero implements Serializable {
         if (helmet.getWeapon(helmet.getChoice()).isActive()) {
             helmet.getWeapon(helmet.getChoice()).attack(this);
         }
+    }
+
+    public Timeline getTl() {
+        return tl;
     }
 
     public String getName() {
@@ -163,19 +170,10 @@ public class Hero implements Serializable {
                 else{
                     tnt.getObstacle().setX(tnt.getObstacle().getX()+20);
                 }
-//                else {
-//                    for(Node node:together().getChildren()){
-//                        if(node instanceof ImageView){
-//                            ((ImageView)node).setX(((ImageView)node).getX()-25);
-//                        }
-//                    }
-//
-//                }
 
                 return true;
             }
 
-            // Left side collision of hero with orc right
             if (StaticFunction.leftCollision(hero, tnt.getObstacle(), 3)) {
 
                 if((((Tnt)tnt).getHitCount())==0){
@@ -185,21 +183,8 @@ public class Hero implements Serializable {
                 else{
                     tnt.getObstacle().setX(tnt.getObstacle().getX()-20);
                 }
-//                else {
-//                    for(Node node:together().getChildren()){
-//                        if(node instanceof ImageView){
-//                            ((ImageView)node).setX(((ImageView)node).getX()-25);
-//                        }
-//                    }
-//
-//                }
-
                 return true;
-
             }
-//            if(Object instanceof Tnt tnt){
-
-//            }
 
             // Bottom side collision of hero with orc top
             if (StaticFunction.bottomCollision(hero, tnt.getObstacle(), 3)) {
@@ -227,19 +212,19 @@ public class Hero implements Serializable {
         // Collision with orc
         if (object instanceof Orc orc) {
 
-            // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(hero, orc.getOrc(), 3)) {
-                return true;
-            }
-
             // Right side collision of hero with orc left
-            if (StaticFunction.rightCollision(hero, orc.getOrc(), 3)) {
-                orc.getOrc().setX(orc.getOrc().getX() + 5);
+            if (StaticFunction.leftCollision(orc.getOrc(), hero, 10)) {
+                orc.getOrc().setX(orc.getOrc().getX() + 20);
             }
 
             // Left side collision of hero with orc right
-            if (StaticFunction.leftCollision(hero, orc.getOrc(), 3)) {
-                orc.getOrc().setX(orc.getOrc().getX() - 5);
+            if (StaticFunction.leftCollision(hero, orc.getOrc(), 10)) {
+                orc.getOrc().setX(orc.getOrc().getX() - 20);
+            }
+
+            // Bottom side collision of hero with orc top
+            if (StaticFunction.bottomCollision(hero, orc.getOrc(), 3)) {
+                return true;
             }
 
             // Top side collision of hero with orc bottom

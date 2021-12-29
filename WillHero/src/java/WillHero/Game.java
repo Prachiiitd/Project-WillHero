@@ -75,9 +75,8 @@ public class Game implements Initializable {
     private static Timeline tl;
     Camera camera;
 
-
     public void start(Stage stage, String name, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
-        hero = new Hero(name, 0);
+        hero = new Hero(name, 0, 0, true, false, new Helmet(new Weapon1(5,100,false), new Weapon2(3,100,false), 0));
         this.vBox = vBox;
         this.stackPane = stackPane;
         this.gameAnchorPane = gameAnchorPane;
@@ -122,20 +121,17 @@ public class Game implements Initializable {
                 if (event.getCode() == KeyCode.SPACE)
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
-//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
                         imageView.setX(imageView.getX() + 100);
                     }
 
                 if (event.getCode().isDigitKey()) {
-//                    hero.getHero().setX(hero.getHero().getX() + 100);
-//                    camera.translateXProperty().set(hero.getHero().getX() + 100);
                     hero.useWeapon();
-                    for (Node object : screenObj.getChildren()) {
-                        ImageView imageView = (ImageView) object;
-                        imageView.setX(imageView.getX() - 100);
-                        hero.setLocation(hero.getLocation() + 1);
-//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
-                    }
+                    hero.setLocation(hero.getLocation() + 1);
+                    hero.getTl().pause();
+                    Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
+                    tl.setCycleCount(30);
+                    tl.setOnFinished(e -> {tl.stop();hero.getTl().play();});
+                    tl.play();
                 }
             }
         });
@@ -146,6 +142,13 @@ public class Game implements Initializable {
         tl.play();
 
         loadScreen();
+    }
+
+    private void moveObject() {
+        for (Node object : screenObj.getChildren()) {
+            ImageView imageView = (ImageView) object;
+            imageView.setX(imageView.getX() - 5);
+        }
     }
 
     public void resume(Stage stage, Hero hero, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane,
@@ -197,24 +200,21 @@ public class Game implements Initializable {
                 if (event.getCode() == KeyCode.SPACE)
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
-//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
                         imageView.setX(imageView.getX() + 100);
                     }
 
                 if (event.getCode().isDigitKey()) {
-//                    hero.getHero().setX(hero.getHero().getX() + 100);
-//                    camera.translateXProperty().set(hero.getHero().getX() + 100);
                     hero.useWeapon();
-                    for (Node object : screenObj.getChildren()) {
-                        ImageView imageView = (ImageView) object;
-                        imageView.setX(imageView.getX() - 100);
-                        hero.setLocation(hero.getLocation() + 1);
-//                        StaticFunction.setTranslation(imageView, -30, 0, 3000, 1, false);
-                    }
+                    hero.setLocation(hero.getLocation() + 1);
+                    hero.getTl().pause();
+                    Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
+                    tl.setCycleCount(40);
+                    tl.setOnFinished(e -> {tl.stop();hero.getTl().play();});
+                    tl.play();
+
                 }
             }
         });
-
 
         tl = new Timeline(new KeyFrame(Duration.millis(5), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
         tl.setCycleCount(Timeline.INDEFINITE);
@@ -222,7 +222,6 @@ public class Game implements Initializable {
 
         loadScreen();
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -238,7 +237,6 @@ public class Game implements Initializable {
 
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
-
     }
 
 
@@ -262,6 +260,14 @@ public class Game implements Initializable {
     @FXML
     public void buildWorld(Group screenObj) {
         //Initialize Game
+
+        ImageView gat = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("gate.png"))));
+        gat.setPreserveRatio(true); gat.setFitWidth(220); gat.setLayoutX(350); gat.setLayoutY(135);
+
+        ImageView gif = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("WN8R.gif"))));
+        gif.setPreserveRatio(true); gif.setFitWidth(190); gif.setLayoutX(364); gif.setLayoutY(160);
+        gate.add(gif); gate.add(gat);
+
         for (ImageView imageView : gate) {
             screenObj.getChildren().add(imageView);
         }
@@ -289,19 +295,6 @@ public class Game implements Initializable {
     private void customWorld() {
         platforms.add(new Platform(3, 0, 350, 200, 50));
         platforms.add(new Platform(0, 300, 350, 600, 0));
-        ImageView gat = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("gate.png"))));
-        gat.setPreserveRatio(true);
-        gat.setFitWidth(220);
-        gat.setLayoutX(350);
-        gat.setLayoutY(135);
-        ImageView gif = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("WN8R.gif"))));
-        gif.setPreserveRatio(true);
-        gif.setFitWidth(190);
-        gif.setLayoutX(364);
-        gif.setLayoutY(160);
-        gate.add(gif);
-        gate.add(gat);
-
 
         int z = 0;
         Random random = new Random();

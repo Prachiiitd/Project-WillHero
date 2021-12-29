@@ -90,29 +90,33 @@ public class ResumeGame {
         System.out.println(generatedObstacle.size());
         System.out.println(generatedOrc.size());
 
+        stage.close();
+
+
         AnchorPane gameAnchorPane;
         StackPane stackPane = new StackPane();
         VBox vBox = new VBox();
 
         try {
+            Stage _stage  = new Stage();
             FXMLLoader root_gameAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("Game.fxml")));
-
             gameAnchorPane = root_gameAnchorPane.load();
             gameAnchorPane.setBackground(StaticFunction.defaultBackground());
             stackPane.getChildren().add(gameAnchorPane);
 
             Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
-            stage.setTitle("WillHero: " + generatedHero.getName());
+            _stage.setTitle("WillHero: " + generatedHero.getName());
 
-            Game gameController = root_gameAnchorPane.getController();
-            gameController.resume(stage, generatedHero, vBox, stackPane, gameAnchorPane,
-                                    generatedPlatform, generatedCoin, generatedObstacle, generatedChest, generatedOrc);
-
-            stage.getIcons().add(icon);
+            _stage.getIcons().add(icon);
             vBox.getChildren().add(stackPane);
             Scene scene = new Scene(vBox);
-            stage.setScene(scene);
-            stage.show();
+            _stage.setScene(scene);
+
+            Game gameController = root_gameAnchorPane.getController();
+            gameController.resume(_stage, generatedHero, vBox, stackPane , gameAnchorPane,
+                    generatedPlatform, generatedCoin, generatedObstacle, generatedChest, generatedOrc);
+
+            _stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -12,14 +12,15 @@ import java.util.Objects;
 public abstract class Weapon implements Serializable {
 
     private transient ImageView weaponImage;
-    private boolean active = false;
+    private boolean active;
     private int damage;
     private int range;
 
-    public Weapon(int damage, int range) {
+    public Weapon(int damage, int range, boolean active) {
         this.weaponImage = setWeaponImage();
         this.damage = damage;
         this.range = range;
+        this.active = active;
     }
 
     public void setWeapon() {
@@ -72,8 +73,8 @@ class Weapon1 extends Weapon implements Cloneable{
 
     private transient Timeline fTimeline;
     private transient Timeline bTimeline;
-    public Weapon1() {
-        super(5, 100);
+    public Weapon1(int damage, int range, boolean active) {
+        super(5, 100, false);
         this.fTimeline = null;
         this.bTimeline = null;
     }
@@ -88,6 +89,7 @@ class Weapon1 extends Weapon implements Cloneable{
             throw new AssertionError();
         }
     }
+
     @Override
     public ImageView setWeaponImage() {
 
@@ -144,8 +146,8 @@ class Weapon2 extends Weapon {
     private transient Timeline fTimeline;
     private transient Timeline bTimeline;
 
-    public Weapon2() {
-        super(3, 100);
+    public Weapon2(int damage, int range, boolean active) {
+        super(3, 100, false);
         this.fTimeline = null;
         this.bTimeline = null;
     }

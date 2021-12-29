@@ -213,7 +213,7 @@ public abstract class Orc implements Serializable {
 
         if (object instanceof Hero hero) {
             // Bottom side collision of orc with hero top
-            return StaticFunction.bottomCollision(orc, hero.getHero(), 0);
+            return StaticFunction.bottomCollision(orc, hero.getHero(), 3);
         }
 
         return false;

@@ -149,7 +149,7 @@ class WeaponChest extends  Chest{
     public WeaponChest(double x, double y) {
         super(x, y);
         Random random = new Random();
-        Weapon[] weaponList = {new Weapon1(), new Weapon2()};
+        Weapon[] weaponList = {new Weapon1(5,100,false), new Weapon2(3,100,false)};
         weapon = weaponList[random.nextInt(1,2)];
     }
 

@@ -8,10 +8,14 @@ import java.util.ArrayList;
 public class Helmet implements Serializable {
 
     private final ArrayList<Weapon> weapons;
-    int choice = 0;
+    int choice;
 
-    public Helmet(){
-        weapons = setWeapons();
+    public Helmet(Weapon weapon1, Weapon weapon2, int choice) {
+        weapons = new ArrayList<>();
+        weapons.add(weapon1);
+        weapons.add(weapon2);
+        this.choice = choice;
+
     }
 
     public int getChoice() {
@@ -20,14 +24,6 @@ public class Helmet implements Serializable {
 
     public void setChoice(int choice) {
         this.choice = choice;
-    }
-
-    private ArrayList<Weapon> setWeapons() {
-
-        ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-        weapons.add(new Weapon1());
-        weapons.add(new Weapon2());
-        return weapons;
     }
 
     public void upgradeWeapon(Weapon weapon){

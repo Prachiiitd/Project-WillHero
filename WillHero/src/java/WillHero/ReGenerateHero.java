@@ -13,14 +13,16 @@ public class ReGenerateHero {
 
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
             try {
-                generatedHero = (Hero) in.readObject();
-                generatedHero.setHero();
-                generatedHero.getHelmet().getWeapon(0).setWeapon();
-                generatedHero.getHelmet().getWeapon(1).setWeapon();
+                Hero hero = (Hero) in.readObject();
+                Weapon weapon1 = new Weapon1(hero.getHelmet().getWeapon(0).getDamage(), hero.getHelmet().getWeapon(0).getRange(), hero.getHelmet().getWeapon(0).isActive());
+                Weapon weapon2 = new Weapon2(hero.getHelmet().getWeapon(1).getDamage(), hero.getHelmet().getWeapon(1).getRange(), hero.getHelmet().getWeapon(1).isActive());
+                Helmet helmet = new Helmet(weapon1, weapon2, hero.getHelmet().getChoice());
+                generatedHero = new Hero(hero.getName(), hero.getLocation(), hero.getReward(), hero.isAlive(), hero.isResurrected(), helmet);
             } catch (ClassCastException e) {
                 System.out.println("Hero: Invalid Cast Exception");
             }
         }
+
         return generatedHero;
     }
 }
