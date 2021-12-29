@@ -37,6 +37,56 @@ import java.util.Optional;
 
 public class StaticFunction {
 
+    ArrayList<String> list = new ArrayList<>();
+    private static final ReGenerateHero reGenerateHero = new ReGenerateHero();
+    private static final ArrayList<Hero> heroes = new ArrayList<>();
+    private static ArrayList<String> heroNames = new ArrayList<>();
+
+
+    static void getPlayers(ArrayList<String> players) {
+
+        for (String player : players) {
+            try {
+                Hero hero = reGenerateHero.getHero(player);
+                if (!heroNames.contains(hero.getName())) {
+                    heroes.add(hero);
+                    heroNames.add(hero.getName());
+                } else if (!(hero.getLocation() == heroes.get(heroNames.indexOf(hero.getName())).getLocation() )|| !(hero.getReward() == heroes.get(heroNames.indexOf(hero.getName())).getReward())) {
+//                    heroes.replaceAll(heroes.indexOf(heroes.get(heroNames.indexOf(hero.getName()))), hero);
+                    heroes.set(heroNames.indexOf(hero.getName()), hero);
+//                    heroes.set(heroes.getindex(heroNames.indexOf(hero.getName())), hero);
+//                    System.out.println(hero.getName() + "In static function");
+                }
+            }catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static ArrayList<Hero> getHeroes() {
+        return heroes;
+    }
+
+    static void bestReward(Label label) {
+        int reward = 0;
+        for (Hero hero : heroes) {
+            if (hero.getReward() > reward) {
+                reward = hero.getReward();
+            }
+        }
+        label.setText(String.valueOf(reward));
+    }
+
+    static void bestLocation(Label label) {
+        int location = 0;
+        for (Hero hero : heroes) {
+            if (hero.getLocation() > location) {
+                location = hero.getLocation();
+            }
+        }
+        label.setText(String.valueOf(location));
+    }
+
     static void clickResponse(ImageView image) {
         ScaleTransition scale = new ScaleTransition();
         scale.setNode(image);
@@ -134,17 +184,6 @@ public class StaticFunction {
         );
     }
 
-    static void bestReward(Label label) {
-        int reward;
-        reward = 80;
-        label.setText(String.valueOf(reward));
-    }
-
-    static void bestLocation(Label label) {
-        int location;
-        location = 20;
-        label.setText(String.valueOf(location));
-    }
 
     static void mainMenuFn(MouseEvent mainMenu, ImageView mainMenuIcon, Timeline timeline) {
         StaticFunction.clickResponse(mainMenuIcon);

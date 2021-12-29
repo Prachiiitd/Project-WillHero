@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -51,7 +52,7 @@ public class MainMenu implements Initializable {
     private ImageView leaderboardIcon;
     @FXML
     private ImageView settingIcon;
-
+    private ArrayList<String> players;
 
     public MainMenu() {
         this.newGame = new World();
@@ -84,7 +85,16 @@ public class MainMenu implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            this.players = new LoadGames().getLoadablePlayersList();
+        }
+        catch(NullPointerException e){
+            this.players = new ArrayList<>();
+            System.out.println("Prachi hu");
+        }
         StaticFunction.setTranslation(floatingName, 0, 80, 1000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.getPlayers(players);
+//        StaticFunction.setTranslation(floatingName, 0, 80, 1000,TranslateTransition.INDEFINITE, true);
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
 
@@ -109,24 +119,33 @@ public class MainMenu implements Initializable {
         StaticFunction.clickResponse(this.leaderboardIcon);
 
         try {
+            if(this.players.size()>0) {
 
-            Stage stage  = StaticFunction.getStage(leaderboardIcon);
-            URL toScene = getClass().getResource("LeaderBoard.fxml");
-            Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
+                Stage stage = StaticFunction.getStage(leaderboardIcon);
+                URL toScene = getClass().getResource("LeaderBoard.fxml");
+                Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
 
-            FXMLLoader boardAnchor = new FXMLLoader(toScene);
+                FXMLLoader boardAnchor = new FXMLLoader(toScene);
 
-            AnchorPane leaderBoardPane = boardAnchor.load();
-            leaderBoardPane.setBackground(StaticFunction.defaultBackground());
-            Scene scene = new Scene(leaderBoardPane);
+                AnchorPane leaderBoardPane = boardAnchor.load();
+                leaderBoardPane.setBackground(StaticFunction.defaultBackground());
+                Scene scene = new Scene(leaderBoardPane);
 
-            leaderBoard = boardAnchor.getController();
-            leaderBoard.start(stage, leaderBoardPane);
+                leaderBoard = boardAnchor.getController();
+                leaderBoard.start(stage, leaderBoardPane,players);
 
-            stage.setTitle("WillHero: Leader Board");
-            stage.getIcons().add(icon);
-            stage.setScene(scene);
-            stage.show();
+                stage.setTitle("WillHero: Leader Board");
+                stage.getIcons().add(icon);
+                stage.setScene(scene);
+                stage.show();
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to go oo?", ButtonType.OK);
+                alert.setTitle("No players");
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.showAndWait();
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
