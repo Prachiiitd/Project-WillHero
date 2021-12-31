@@ -150,6 +150,22 @@ public class Game implements Initializable {
             ImageView imageView = (ImageView) object;
             imageView.setX(imageView.getX() - 5);
         }
+
+        for (Platform platform : platforms) {
+            platform.setX(platform.getX() - 5);
+        }
+        for (Orc orc : orcs) {
+            orc.setX(orc.getX() - 5);
+        }
+        for (Chest chest : chests) {
+            chest.setX(chest.getX() - 5);
+        }
+        for (Obstacle tnt : tnts) {
+            tnt.setX(tnt.getX() - 5);
+        }
+        for (Coin coin : coins) {
+            coin.setX(coin.getX() - 5);
+        }
     }
 
     public void resume(Stage stage, Hero hero, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane,

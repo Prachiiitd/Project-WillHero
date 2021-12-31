@@ -16,8 +16,8 @@ public class Platform implements Serializable {
 
     private final int speed;
     private final int id;
-    private final double x;
-    private final double y;
+    private double x;
+    private double y;
     private final int size;
 
     public Platform(int id, double x, double y, int size, int speed) {
@@ -69,6 +69,14 @@ public class Platform implements Serializable {
 
     public double getX() {
         return x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setX(double x) {
+        this.x = x;
     }
 
     private void motion() {

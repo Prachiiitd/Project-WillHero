@@ -11,8 +11,8 @@ import java.util.Objects;
 public abstract class Obstacle implements Serializable {
 
     private transient ImageView obstacle;
-    private final double x;
-    private final double y;
+    private double x;
+    private double y;
 
     public Obstacle(double x, double y) {
         this.x = x;
@@ -30,6 +30,14 @@ public abstract class Obstacle implements Serializable {
 
     public double getY() {
         return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setX(double x) {
+        this.x = x;
     }
 
     public void setObstacle(){
@@ -69,6 +77,7 @@ class Tnt extends Obstacle {
         this.tl.setCycleCount(Timeline.INDEFINITE);
         this.tl.play();
     }
+
 
     public int getHitCount() {
         return hitCount;

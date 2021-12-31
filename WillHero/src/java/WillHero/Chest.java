@@ -18,8 +18,8 @@ public abstract class Chest implements Serializable {
     private final double dy;
     private double jumpSpeed;
     private transient final Timeline timeline;
-    private final double x;
-    private final double y;
+    private double x;
+    private double y;
 
     public Chest(double x, double y) {
         this.x = x;
@@ -33,6 +33,14 @@ public abstract class Chest implements Serializable {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(new javafx.animation.KeyFrame(Duration.millis(5), e -> motion()));
         timeline.play();
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     public double getX() {
@@ -101,7 +109,8 @@ public abstract class Chest implements Serializable {
     }
 
     public void motion(){
-        this.chest.setY(chest.getY() + jumpSpeed);
+        this.y = y + jumpSpeed;
+        this.chest.setY(this.y);
         jumpSpeed += dy;
 
         for(Platform object : Game.getPlatformList()){
@@ -118,7 +127,6 @@ public abstract class Chest implements Serializable {
 
     abstract public void getContent(Hero hero);
 }
-
 
 
 class CoinChest extends Chest{

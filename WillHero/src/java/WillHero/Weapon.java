@@ -23,6 +23,7 @@ public abstract class Weapon implements Serializable {
         this.active = active;
     }
 
+
     public void setWeapon() {
         this.weaponImage = setWeaponImage();
     }

@@ -56,6 +56,14 @@ public abstract class Orc implements Serializable {
         return y;
     }
 
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
     public boolean isAlive() {
         return isAlive;
     }
@@ -65,7 +73,10 @@ public abstract class Orc implements Serializable {
     }
 
     public void jump() {
-        this.orc.setY(orc.getY() + jumpSpeed);
+
+        y+=jumpSpeed;
+        this.orc.setY(y);
+
         jumpSpeed += dy;
         if (hp <= 0) {
             this.setAlive(false);
@@ -196,13 +207,16 @@ public abstract class Orc implements Serializable {
 
             // Right side collision of hero with orc left
             if (StaticFunction.rightCollision(orc, chest.getChest(), 3)) {
-                chest.getChest().setX(chest.getChest().getX() + 5);
+                chest.setX(chest.getX() + 5);
+                chest.getChest().setX(chest.getX());
 
             }
 
             // Left side collision of hero with orc right
             if (StaticFunction.leftCollision(orc, chest.getChest(), 3)) {
-                chest.getChest().setX(chest.getChest().getX() - 5);
+//                chest.getChest().setX(chest.getChest().getX() - 5);
+                chest.setX(chest.getX() - 5);
+                chest.getChest().setX(chest.getX());
             }
 
             // Top side collision of hero with orc bottom

@@ -49,7 +49,7 @@ public class RegenerateSprite {
 
         for(Object obj : gameObjects) {
             if(obj instanceof Platform platform) {
-                Platform _platform = new Platform(platform.getId(), platform.getX(), platform.getY()-location*100, platform.getSize(), platform.getSpeed());
+                Platform _platform = new Platform(platform.getId(), platform.getX(), platform.getY(), platform.getSize(), platform.getSpeed());
                     generatedPlatforms.add(_platform);
 
 
