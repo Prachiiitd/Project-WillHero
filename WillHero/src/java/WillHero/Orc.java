@@ -240,7 +240,7 @@ public abstract class Orc implements Serializable {
 class RedOrc extends Orc {
 
     public RedOrc(double x, double y) {
-        super(x, y, 10);
+        super(x, y, 170);
     }
 
     @Override
@@ -269,7 +269,7 @@ class GreenOrc extends Orc {
 
 
     public GreenOrc(double x, double y) {
-        super(x, y, 12);
+        super(x, y, 150);
     }
 
     @Override
@@ -295,8 +295,20 @@ class GreenOrc extends Orc {
 
 class BossOrc extends Orc {
 
+    private double hspeed;
+
     public BossOrc(double x, double y) {
-        super(x, y, 150);
+        super(x, y, 450);
+
+        this.hspeed=0;
+    }
+
+    public double getHspeed() {
+        return hspeed;
+    }
+
+    public void setHspeed(double hspeed) {
+        this.hspeed = hspeed;
     }
 
     @Override
@@ -313,5 +325,27 @@ class BossOrc extends Orc {
         } catch (Exception e) {
             throw new NullPointerException("Coin couldn't be loaded");
         }
+    }
+    @Override
+    public void jump() {
+        super.jump();
+        super.getOrc().setTranslateX(super.getOrc().getTranslateX() + hspeed);
+
+    }
+    @Override
+    public boolean collision(Object object) {
+
+        if (object instanceof Platform platform) {
+//            top side collision with platform
+            if (StaticFunction.bottomCollision(super.getOrc(), platform.getIsLand(), 4)) {
+                return true;
+            }
+        }
+        if (object instanceof Hero hero) {
+
+        }
+
+    return false;
+
     }
 }

@@ -1,5 +1,6 @@
 package WillHero;
 
+import Exceptions.DeadBossOrcException;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -76,7 +77,7 @@ public class Game implements Initializable {
     Camera camera;
 
     public void start(Stage stage, String name, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
-        hero = new Hero(name, 0, 0, true, false, new Helmet(new Weapon1(5,100,false), new Weapon2(3,100,false), 0));
+        hero = new Hero(name, 0, 0, true, false, new Helmet(new Weapon1(5, 100, false), new Weapon2(3, 100, false), 0));
         this.vBox = vBox;
         this.stackPane = stackPane;
         this.gameAnchorPane = gameAnchorPane;
@@ -127,11 +128,14 @@ public class Game implements Initializable {
                 if (event.getCode().isDigitKey()) {
                     hero.useWeapon();
                     hero.setLocation(hero.getLocation() + 1);
-                    currLocation.setText((Integer.parseInt(currLocation.getText())+100)/100 + "");
+//                    currLocation.setText((Integer.parseInt(currLocation.getText()) + 100) / 100 + "");
                     hero.getTl().pause();
                     Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
                     tl.setCycleCount(30);
-                    tl.setOnFinished(e -> {tl.stop();hero.getTl().play();});
+                    tl.setOnFinished(e -> {
+                        tl.stop();
+                        hero.getTl().play();
+                    });
                     tl.play();
                 }
             }
@@ -218,6 +222,7 @@ public class Game implements Initializable {
                     for (Node object : screenObj.getChildren()) {
                         ImageView imageView = (ImageView) object;
                         imageView.setX(imageView.getX() + 100);
+//                        gate.get(0).setX(gate.get(0).getX() -100);
                     }
 
                 if (event.getCode().isDigitKey()) {
@@ -226,7 +231,10 @@ public class Game implements Initializable {
                     hero.getTl().pause();
                     Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
                     tl.setCycleCount(40);
-                    tl.setOnFinished(e -> {tl.stop();hero.getTl().play();});
+                    tl.setOnFinished(e -> {
+                        tl.stop();
+                        hero.getTl().play();
+                    });
                     tl.play();
 
                 }
@@ -236,8 +244,8 @@ public class Game implements Initializable {
         tl = new Timeline(new KeyFrame(Duration.millis(5), e -> playGame(gameAnchorPane, hero, platforms, screenObj, currLocation, currReward)));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
-
-        loadScreen();
+        if (hero.isAlive())
+            loadScreen();
     }
 
     @Override
@@ -279,13 +287,20 @@ public class Game implements Initializable {
         //Initialize Game
 
         ImageView gat = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("gate.png"))));
-        gat.setPreserveRatio(true); gat.setFitWidth(220); gat.setLayoutX(350); gat.setLayoutY(135);
+        gat.setPreserveRatio(true);
+        gat.setFitWidth(220);
+        gat.setLayoutX(350 - hero.getLocation() * 150);
+        gat.setLayoutY(135);
 
         ImageView gif = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("WN8R.gif"))));
-        gif.setPreserveRatio(true); gif.setFitWidth(190); gif.setLayoutX(364); gif.setLayoutY(160);
-        gate.add(gif); gate.add(gat);
+        gif.setPreserveRatio(true);
+        gif.setFitWidth(190);
+        gif.setLayoutX(364 - hero.getLocation() * 150);
+        gif.setLayoutY(160);
+        gate.add(gif);
+        gate.add(gat);
 
-        ArrayList<Coin> coi = getCoinCluster(700,260);
+        ArrayList<Coin> coi = getCoinCluster(700, 260);
 //                    screenObj.getChildren().addAll(coi.getChildren());
         coins.addAll(coi);
         ArrayList<Coin> coi2 = getCoinCluster(1000, 200);
@@ -323,7 +338,7 @@ public class Game implements Initializable {
         int z = 0;
         Random random = new Random();
         int pr = 0;
-        for (int i = 0; i < 31; i++) {
+        for (int i = 0; i < 32; i++) {
             pr += 1;
             if (i + 3 > 4) {
                 int speed = 1;
@@ -331,7 +346,7 @@ public class Game implements Initializable {
                     speed = 50;
                 }
                 int x = (int) (platforms.get(platforms.size() - 1).getIsLand().getX() + platforms.get(platforms.size() - 1).getIsLand().getFitWidth() + 150);
-                Platform platform = new Platform(random.nextInt(0, 5), x, random.nextInt(300,370), random.nextInt(2, 4) * 100, speed);
+                Platform platform = new Platform(random.nextInt(0, 5), x, random.nextInt(300, 350), random.nextInt(2, 4) * 100, speed);
                 if ((i + 1) % 2 == 0) {
                     GreenOrc g = new GreenOrc(x + 40, 250);
                     orcs.add(g);
@@ -393,7 +408,10 @@ public class Game implements Initializable {
         Orc boss = new BossOrc(x + 200 + 150, 200);
         orcs.add(boss);
         ImageView gif = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Gif2.gif"))));
-        gif.setPreserveRatio(true); gif.setFitWidth(190); gif.setLayoutX(x+700); gif.setLayoutY(160);
+        gif.setPreserveRatio(true);
+        gif.setFitWidth(190);
+        gif.setLayoutX(x + 700);
+        gif.setLayoutY(160);
         gate.add(gif);
     }
 
@@ -427,6 +445,28 @@ public class Game implements Initializable {
 
         garbageRemover(gameAnchorPane);
         setScoreLabel();
+    try {
+        if (Math.abs(hero.getHero().getX() - getOrcList().get(getOrcList().size() - 1).getOrc().getX()) <= 350) {
+            System.out.println("hello1" + ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).getHspeed());
+            if (getOrcList().get(getOrcList().size() - 1).getOrc().getX() <= hero.getHero().getX()) {
+
+                ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).setHspeed(0.07);
+                System.out.println(" hello2 " + ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).getHspeed());
+            } else {
+                ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).setHspeed(-0.07);
+                System.out.println("hello3" + ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).getHspeed());
+            }
+        } else {
+            ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).setHspeed(0);
+            System.out.println("hello4" + ((BossOrc) (getOrcList().get(getOrcList().size() - 1))).getHspeed());
+        }
+    }
+    catch (ClassCastException e){
+        System.out.println("hello5");
+//        tl.stop();
+    gameWin(gameAnchorPane);
+//        declareWinner();
+    }
 
         if (hero.getHero().getY() > 480) {
             hero.setAlive(false);
@@ -444,6 +484,24 @@ public class Game implements Initializable {
 
             gameOver(gameAnchorPane);
         }
+    }
+    private void declareWinner(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Woohoo!");
+        alert.setHeaderText(null);
+        alert.setContentText("You Won");
+        alert.initStyle(StageStyle.UNDECORATED);
+//        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.isPresent() &&  result.get() == ButtonType.YES){
+//
+////            stage.close();
+//        }
+//        Platform.runLater(alert::showAndWait);
+
+        alert.showAndWait();
+        tl.pause();
+
+
     }
 
 
@@ -494,7 +552,26 @@ public class Game implements Initializable {
     private void setScoreLabel() {
         progressBar.setProgress(hero.getLocation() / 1400.0); ///not working
         currReward.setText("" + hero.getReward());
-//        currLocation.setText((Integer.parseInt(currLocation.getText())+100) + "");
+        currLocation.setText(hero.getLocation() + "");
+    }
+
+    public void gameWin(AnchorPane gameAnchorPane) {
+        tl.pause();
+        System.out.println("Game Win");
+        VBox vBox = (VBox) gameAnchorPane.getScene().getRoot();
+        StackPane stackPane = (StackPane) vBox.getChildren().get(0);
+
+        try {
+            FXMLLoader gameOverFXML = new FXMLLoader(Objects.requireNonNull(getClass().getResource("GameOver.fxml")));
+            AnchorPane gameOverPane = gameOverFXML.load();
+            stackPane.getChildren().add(gameOverPane);
+            GameOver gameOver = gameOverFXML.getController();
+            gameOver.start(tl, hero, stackPane, gameOverPane);
+
+        } catch (IOException e) {
+            System.out.println("ArenaScreen couldn't be loaded");
+            e.printStackTrace();
+        }
     }
 
 

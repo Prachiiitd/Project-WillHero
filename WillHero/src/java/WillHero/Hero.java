@@ -138,7 +138,7 @@ public class Hero implements Serializable {
         for (Object object : objects) {
 
             if (collision(object)) {
-                jumpSpeed = 1.5;
+                jumpSpeed = 1;
                 if (isAlive) {
                     StaticFunction.setScaling(hero, 0, -0.1, 100, 2, true);
                     jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;

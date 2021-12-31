@@ -37,8 +37,8 @@ public class GameOver implements Initializable {
         this.hero = hero;
         this.loadGameOver = loadGameOver;
         this.stackPane = stackPane;
-        currLocation.setText(hero.getLocation()/216 + "");
-        progressBar.setProgress(hero.getLocation()/(216*120.0));
+        currLocation.setText(hero.getLocation() + "");
+        progressBar.setProgress(hero.getLocation()/120.0);
     }
 
     @Override
