@@ -1,9 +1,14 @@
 package WillHero;
 
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -31,6 +36,12 @@ public class ResumeGame {
     private ReGenerateHero reGenerateHero;
     private ArrayList<Hero> heroes;
     private String gameName;
+    TableView<Hero> tableView = new TableView<>();
+    TableColumn<Hero, String> name = new TableColumn<>("name");
+    TableColumn<Hero, Integer> reward = new TableColumn<>("reward");
+    TableColumn<Hero, Integer> location = new TableColumn<>("location");
+
+
 
     private Hero generatedHero;
     private final ArrayList<Platform> generatedPlatform = new ArrayList<>();
@@ -62,19 +73,83 @@ public class ResumeGame {
                 e.printStackTrace();
             }
         }
+        ObservableList<Hero> data = tableView.getItems();
+        data.addAll(heroes);
+        tableView.setItems(data);
+
+        name.setCellValueFactory(new PropertyValueFactory<Hero,String>( "name" ));
+        reward.setCellValueFactory(new PropertyValueFactory<Hero,Integer>( "reward" ));
+        location.setCellValueFactory(new PropertyValueFactory<Hero,Integer>( "location" ));
+
     }
 
     public void listGame() {
         // heroes to be loaded on the AnchorPane.
-        choice = 0;
-        generatedHero = heroes.get(choice);
-        gameName = loadGames.get(choice);
+//        choice = -1;
+        tableView.setPrefWidth(500);
+        tableView.setPrefHeight(100);
+        tableView.setLayoutX(380);
+        tableView.setLayoutY(250);
+        tableView.setEditable(false);
+        tableView.setFocusTraversable(false);
+        tableView.setStyle("-fx-background-color: #000000;");
+        tableView.setStyle("-fx-text-fill: #ffffff;");
+        tableView.setStyle("-fx-font-size: 20;");
+        tableView.setStyle("-fx-font-family: 'Arial';");
+        tableView.setStyle("-fx-font-weight: bold;");
+        tableView.setStyle("-fx-border-color: #ffffff;");
+        tableView.setStyle("-fx-border-width: 2;");
+        tableView.setStyle("-fx-border-style: solid;");
+        tableView.setStyle("-fx-border-radius: 5;");
+        tableView.setStyle("-fx-background-radius: 5;");
+        tableView.setStyle("-fx-background-color: #000000;");
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.getColumns().add(name);
+        tableView.getColumns().add(reward);
+        tableView.getColumns().add(location);
+        this.anchorPane.getChildren().add(tableView);
+//        tableView.setOn
+        tableView.setRowFactory( tv -> {
+            TableRow<Hero> row = new TableRow<>();
+            row.setOnMouseEntered(event -> {
+                row.setStyle("-fx-background-color: #ADD8E6;");
+            }
+            );
 
-        try {
-            storeSprites();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+            row.setOnMouseExited(event -> {
+                row.setStyle("-fx-background-color: #ffffff;");
+                    }
+            );
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    Hero rowData = row.getItem();
+                    generatedHero = rowData;
+                    System.out.println(generatedHero.getName()+ "  Hello");
+                    System.out.println(generatedHero.getReward());
+                    System.out.println(generatedHero.getLocation());
+                    System.out.println(rowData);
+                    for(int i = 0; i < heroes.size(); i++) {
+                        if(generatedHero.getName().equals(heroes.get(i).getName())) {
+                            choice = i;
+                        }
+                    }
+                    gameName = loadGames.get(choice);
+                    try {
+                        storeSprites();
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            return row ;
+        });
+
+//        generatedHero = heroes.get(choice);
+
+
+
+
+
     }
 
     private void storeSprites() throws IOException, ClassNotFoundException {
@@ -90,7 +165,7 @@ public class ResumeGame {
         System.out.println(generatedObstacle.size());
         System.out.println(generatedOrc.size());
 
-        stage.close();
+//        stage.close();
 
 
         AnchorPane gameAnchorPane;
@@ -98,25 +173,25 @@ public class ResumeGame {
         VBox vBox = new VBox();
 
         try {
-            Stage _stage  = new Stage();
+//            Stage this.stage  = new Stage();
             FXMLLoader root_gameAnchorPane = new FXMLLoader(Objects.requireNonNull(getClass().getResource("Game.fxml")));
             gameAnchorPane = root_gameAnchorPane.load();
             gameAnchorPane.setBackground(StaticFunction.defaultBackground());
             stackPane.getChildren().add(gameAnchorPane);
 
             Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
-            _stage.setTitle("WillHero: " + generatedHero.getName());
+            this.stage.setTitle("WillHero: " + generatedHero.getName());
 
-            _stage.getIcons().add(icon);
+            this.stage.getIcons().add(icon);
             vBox.getChildren().add(stackPane);
             Scene scene = new Scene(vBox);
-            _stage.setScene(scene);
+            this.stage.setScene(scene);
 
             Game gameController = root_gameAnchorPane.getController();
-            gameController.resume(_stage, generatedHero, vBox, stackPane , gameAnchorPane,
+            gameController.resume(this.stage, generatedHero, vBox, stackPane , gameAnchorPane,
                     generatedPlatform, generatedCoin, generatedObstacle, generatedChest, generatedOrc);
 
-            _stage.show();
+            this.stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();

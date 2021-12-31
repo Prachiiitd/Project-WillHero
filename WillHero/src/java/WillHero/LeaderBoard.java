@@ -3,10 +3,7 @@ package WillHero;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -32,8 +29,6 @@ public class LeaderBoard implements Initializable {
     private TableColumn<Hero, Integer> reward;
     @FXML
     private TableColumn<Hero, Integer> location;
-
-
     @FXML
     private ImageView backIcon;
 
@@ -93,8 +88,11 @@ public class LeaderBoard implements Initializable {
         for(Hero hero : heroes)
             data.add(hero);
         table.setItems(data);
+
         name.setCellValueFactory(new PropertyValueFactory<Hero,String>( "name" ));
         reward.setCellValueFactory(new PropertyValueFactory<Hero,Integer>( "reward" ));
         location.setCellValueFactory(new PropertyValueFactory<Hero,Integer>( "location" ));
+
+//        remark.setCellValueFactory(new PropertyValueFactory<Hero,CheckBox>( "remark" ));
     }
 }

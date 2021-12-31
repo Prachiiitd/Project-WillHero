@@ -127,6 +127,7 @@ public class Game implements Initializable {
                 if (event.getCode().isDigitKey()) {
                     hero.useWeapon();
                     hero.setLocation(hero.getLocation() + 1);
+                    currLocation.setText((Integer.parseInt(currLocation.getText())+100)/100 + "");
                     hero.getTl().pause();
                     Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
                     tl.setCycleCount(30);
@@ -268,6 +269,13 @@ public class Game implements Initializable {
         gif.setPreserveRatio(true); gif.setFitWidth(190); gif.setLayoutX(364); gif.setLayoutY(160);
         gate.add(gif); gate.add(gat);
 
+        ArrayList<Coin> coi = getCoinCluster(700,260);
+//                    screenObj.getChildren().addAll(coi.getChildren());
+        coins.addAll(coi);
+        ArrayList<Coin> coi2 = getCoinCluster(1000, 200);
+//                    screenObj.getChildren().addAll(coi.getChildren());
+        coins.addAll(coi2);
+
         for (ImageView imageView : gate) {
             screenObj.getChildren().add(imageView);
         }
@@ -307,7 +315,7 @@ public class Game implements Initializable {
                     speed = 50;
                 }
                 int x = (int) (platforms.get(platforms.size() - 1).getIsLand().getX() + platforms.get(platforms.size() - 1).getIsLand().getFitWidth() + 150);
-                Platform platform = new Platform(random.nextInt(0, 5), x, 350, random.nextInt(2, 4) * 100, speed);
+                Platform platform = new Platform(random.nextInt(0, 5), x, random.nextInt(300,370), random.nextInt(2, 4) * 100, speed);
                 if ((i + 1) % 2 == 0) {
                     GreenOrc g = new GreenOrc(x + 40, 250);
                     orcs.add(g);
@@ -319,7 +327,7 @@ public class Game implements Initializable {
 //                    screenObj.getChildren().addAll(coi.getChildren());
                 }
                 if ((i - 1) % 6 == 0 || (i - 2) % 6 == 0) {
-                    Obstacle tnt = new Tnt(x + 60, 280);
+                    Obstacle tnt = new Tnt(x + 60, 250);
                     tnts.add(tnt);
 //                    screenObj.getChildren().add(tnt.getObstacle());
 
@@ -368,6 +376,9 @@ public class Game implements Initializable {
         platforms.add(new Platform(4, x + 500 + 140, 350, 420, 50));
         Orc boss = new BossOrc(x + 200 + 150, 200);
         orcs.add(boss);
+        ImageView gif = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Gif2.gif"))));
+        gif.setPreserveRatio(true); gif.setFitWidth(190); gif.setLayoutX(x+700); gif.setLayoutY(160);
+        gate.add(gif);
     }
 
 
@@ -467,7 +478,7 @@ public class Game implements Initializable {
     private void setScoreLabel() {
         progressBar.setProgress(hero.getLocation() / 1400.0); ///not working
         currReward.setText("" + hero.getReward());
-        currLocation.setText("" + hero.getLocation() / 216);
+//        currLocation.setText((Integer.parseInt(currLocation.getText())+100) + "");
     }
 
 
@@ -489,7 +500,6 @@ public class Game implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     @FXML
     public void pause(MouseEvent pause) {

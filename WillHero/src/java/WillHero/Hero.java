@@ -1,6 +1,7 @@
 package WillHero;
 
 import javafx.animation.*;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
@@ -24,6 +25,7 @@ public class Hero implements Serializable {
     private int location;
     private int reward;
     private boolean resurrected;
+//    private CheckBox remark;
 
     public Hero(String name, int location, int reward, boolean isAlive, boolean isResurrected, Helmet helmet) {
         this.isAlive = isAlive;
@@ -33,6 +35,7 @@ public class Hero implements Serializable {
         this.reward = reward;
         this.helmet = helmet;
         this.setHero();
+//        this.remark = new CheckBox();
 
         tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
@@ -75,9 +78,13 @@ public class Hero implements Serializable {
     public int getLocation() {
         return location;
     }
+//    public CheckBox getCheckBox() {
+//        return remark;
+//    }
 
     public void setLocation(int location) {
         this.location = location;
+
     }
 
     public int getReward() {
@@ -112,7 +119,7 @@ public class Hero implements Serializable {
     }
 
     // Jumping
-    public void jump() {
+    public void jump() throws NullPointerException {
         this.hero.setY(hero.getY() + jumpSpeed);
         this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + jumpSpeed);
         this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + jumpSpeed);
@@ -120,11 +127,16 @@ public class Hero implements Serializable {
         jumpSpeed += dy;
 
         ArrayList<Object> objects = new ArrayList<>();
-        objects.addAll(Game.getPlatformList());
-        objects.addAll(Game.getOrcList());
-        objects.addAll(Game.getTntList());
+        try {
+            objects.addAll(Game.getPlatformList());
+            objects.addAll(Game.getOrcList());
+            objects.addAll(Game.getTntList());
+        }
+        catch (NullPointerException ignored) {
+        }
 
         for (Object object : objects) {
+
             if (collision(object)) {
                 jumpSpeed = 1.5;
                 if (isAlive) {

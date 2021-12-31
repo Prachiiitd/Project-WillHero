@@ -14,6 +14,7 @@ public class RegenerateSprite {
     private final ArrayList<Obstacle> generatedObstacles;
     private final ArrayList<Chest> generatedChests;
     private final ArrayList<Orc> generatedOrcs;
+    private  int location;
 
     private ArrayList<Object> gameObjects;
 
@@ -42,14 +43,15 @@ public class RegenerateSprite {
             }
         }
     }
-
+//    public int p=0;
     private void getSprites(String fileName) throws IOException, ClassNotFoundException {
         deserialize(fileName);
 
         for(Object obj : gameObjects) {
             if(obj instanceof Platform platform) {
-                Platform _platform = new Platform(platform.getId(), platform.getX(), platform.getY(), platform.getSize(), platform.getSpeed());
-                generatedPlatforms.add(_platform);
+                Platform _platform = new Platform(platform.getId(), platform.getX(), platform.getY()-location*100, platform.getSize(), platform.getSpeed());
+                    generatedPlatforms.add(_platform);
+
 
             } else if(obj instanceof Coin coin) {
                 Coin _coin = new Coin(coin.getX(), coin.getY());
@@ -83,7 +85,12 @@ public class RegenerateSprite {
                 }
                 generatedOrcs.add(_orc);
 
-            } else if(obj instanceof Hero);
+            } else if(obj instanceof Hero hero) {
+                location=hero.getLocation()*100;
+
+//                hero = new Hero(obj.getX(), obj.getY());
+//                hero.
+            }
 
             else {
                 System.out.println("Invalid Object");
