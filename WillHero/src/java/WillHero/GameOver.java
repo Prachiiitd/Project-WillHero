@@ -80,6 +80,13 @@ public class GameOver implements Initializable {
         if(timeline.getStatus() == Timeline.Status.PAUSED) {
             stackPane.getChildren().remove(loadGameOver);
             hero.setReward(hero.getReward() - 5);
+            double minx = Double.MAX_VALUE;
+            for(Platform p : Game.getPlatformList()) {
+                if (p.getIsLand().getX()>hero.getX()) {
+                    //commit
+                }
+
+            }
             hero.getHero().setX(hero.getHero().getX() - 200);
             hero.getHero().setY(250);
             hero.setAlive(true);

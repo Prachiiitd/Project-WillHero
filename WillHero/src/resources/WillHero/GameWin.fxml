@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane accessibleRole="NODE" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Game">
+<AnchorPane accessibleRole="NODE" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.GameOver">
 
     <children>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="102.0" layoutX="-8.0" layoutY="568.0" strokeType="INSIDE" width="1376.0">
@@ -57,7 +57,7 @@
                 </LinearGradient>
             </fill>
         </Rectangle>
-        <ImageView fx:id="mainMenuIcon" accessibleRole="BUTTON" layoutX="332.0" layoutY="572.0"  pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="mainMenuIcon" accessibleRole="BUTTON" layoutX="332.0" layoutY="572.0" onMousePressed="#mainMenu" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@back.png" />
             </image>
@@ -69,7 +69,12 @@
                 <DropShadow offsetX="-3.0" offsetY="3.0" radius="4.75" width="0.0" />
             </effect>
         </ImageView>
-        <ImageView fx:id="restartIcon" accessibleRole="BUTTON" layoutX="931.0" layoutY="568.0"  pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="565.0" fitWidth="1365.0" layoutY="1.0">
+            <image>
+                <Image url="@cracker4.gif" />
+            </image>
+        </ImageView>
+        <ImageView fx:id="restartIcon" accessibleRole="BUTTON" layoutX="931.0" layoutY="568.0" onMousePressed="#restart" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@play.png" />
             </image>

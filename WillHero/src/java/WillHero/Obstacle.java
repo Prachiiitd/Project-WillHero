@@ -174,8 +174,7 @@ class Tnt extends Obstacle {
 
         if (object instanceof Platform platform) {
 //          top side collision with platform
-            if (StaticFunction.bottomCollision(super.getObstacle(), platform.getIsLand(), 7)) {
-
+            if (StaticFunction.bottomCollision(super.getObstacle(), platform.getIsLand(), this.vJumpSpeed*3 + 3)) {
                 if (hitCount == 0) {
                     super.getObstacle().setY(platform.getIsLand().getBoundsInParent().getMinY() - super.getObstacle().getFitHeight());
                 }

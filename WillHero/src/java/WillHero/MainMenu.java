@@ -14,6 +14,8 @@ import javafx.scene.input.MouseEvent;
 //import javafx.scene.media.Media;
 //import javafx.scene.media.MediaPlayer;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
@@ -34,7 +36,7 @@ public class MainMenu implements Initializable {
 
     private World newGame;
     private LeaderBoard leaderBoard;
-//    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
 
     @FXML
     private Label bestReward;
@@ -99,19 +101,18 @@ public class MainMenu implements Initializable {
         StaticFunction.bestReward(bestReward);
 
 
-//        if(mediaPlayer==null){
-////            Media sound = new Media(new File("ColorSwitch\\src\\sounds\\Background.mp3").toURI().toString());
-//            Media sound = null;
-//            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
-//            mediaPlayer = new MediaPlayer(sound);
-//            mediaPlayer.setStartTime(Duration.seconds(1));
-//            mediaPlayer.setStartTime(Duration.seconds(100));
-//            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-////            mediaPlayer.play();
-//        }
-//        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
-////            mediaPlayer.play();
-//        }
+        if(mediaPlayer==null){
+            Media sound = null;
+            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
+            mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setStartTime(Duration.seconds(1));
+            mediaPlayer.setStartTime(Duration.seconds(100));
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//            mediaPlayer.play();
+        }
+        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
+//            mediaPlayer.play();
+        }
 
     }
 
@@ -140,7 +141,7 @@ public class MainMenu implements Initializable {
                 stage.show();
             }
             else{
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to go oo?", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "No data available yet!!!?", ButtonType.OK);
                 alert.setTitle("No players");
                 alert.initStyle(StageStyle.UNDECORATED);
                 alert.showAndWait();
@@ -196,23 +197,33 @@ public class MainMenu implements Initializable {
         StaticFunction.clickResponse(this.resumeGameIcon);
 
         try {
-            Stage stage  = StaticFunction.getStage(resumeGameIcon);
-            URL toScene = getClass().getResource("Saved.fxml");
-            Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
+            if(this.players.size()>0) {
 
-            FXMLLoader resumeAnchor = new FXMLLoader(toScene);
 
-            AnchorPane resumeAnchorPane = resumeAnchor.load();
-            resumeAnchorPane.setBackground(StaticFunction.defaultBackground());
-            Scene scene = new Scene(resumeAnchorPane);
+                Stage stage = StaticFunction.getStage(resumeGameIcon);
+                URL toScene = getClass().getResource("Saved.fxml");
+                Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
 
-            ResumeGame resumeGame = resumeAnchor.getController();
-            resumeGame.start(stage, resumeAnchorPane);
+                FXMLLoader resumeAnchor = new FXMLLoader(toScene);
 
-            stage.setTitle("WillHero: Resume Game");
-            stage.getIcons().add(icon);
-            stage.setScene(scene);
-            stage.show();
+                AnchorPane resumeAnchorPane = resumeAnchor.load();
+                resumeAnchorPane.setBackground(StaticFunction.defaultBackground());
+                Scene scene = new Scene(resumeAnchorPane);
+
+                ResumeGame resumeGame = resumeAnchor.getController();
+                resumeGame.start(stage, resumeAnchorPane);
+
+                stage.setTitle("WillHero: Resume Game");
+                stage.getIcons().add(icon);
+                stage.setScene(scene);
+                stage.show();
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "No saved games yet?", ButtonType.OK);
+                alert.setTitle("No players");
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.showAndWait();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

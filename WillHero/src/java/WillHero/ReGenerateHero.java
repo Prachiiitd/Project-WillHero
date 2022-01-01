@@ -17,7 +17,7 @@ public class ReGenerateHero {
                 Weapon weapon1 = new Weapon1(hero.getHelmet().getWeapon(0).getDamage(), hero.getHelmet().getWeapon(0).getRange(), hero.getHelmet().getWeapon(0).isActive());
                 Weapon weapon2 = new Weapon2(hero.getHelmet().getWeapon(1).getDamage(), hero.getHelmet().getWeapon(1).getRange(), hero.getHelmet().getWeapon(1).isActive());
                 Helmet helmet = new Helmet(weapon1, weapon2, hero.getHelmet().getChoice());
-                generatedHero = new Hero(hero.getName(), hero.getLocation(), hero.getReward(), hero.isAlive(), hero.isResurrected(), helmet);
+                generatedHero = new Hero(hero.getName(), hero.getLocation(), hero.getReward(), hero.isAlive(), hero.isResurrected(), helmet, hero.getJumpSpeed(), hero.getX(), hero.getY());
             } catch (ClassCastException e) {
                 System.out.println("Hero: Invalid Cast Exception");
             }

@@ -1,5 +1,7 @@
 package WillHero;
 
+import WillHero.MainMenu;
+import WillHero.ReGenerateHero;
 import javafx.animation.*;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -37,10 +39,12 @@ import java.util.Optional;
 
 public class StaticFunction {
 
+
     ArrayList<String> list = new ArrayList<>();
     private static final ReGenerateHero reGenerateHero = new ReGenerateHero();
     private static final ArrayList<Hero> heroes = new ArrayList<>();
-    private static ArrayList<String> heroNames = new ArrayList<>();
+    private static final ArrayList<String> heroNames = new ArrayList<>();
+    private static boolean ft=false;
 
 
     static void getPlayers(ArrayList<String> players) {
@@ -174,14 +178,30 @@ public class StaticFunction {
     }
 
     static Background defaultBackground() {
+        String startbg = "#01D9F8FF";
+        if(ft){
+            startbg ="000000";
+
+        }
+        else{
+            startbg ="#01D9F8FF";
+        }
+        String endbg = "#C4F4FEFF";
         return new Background(new BackgroundFill(
                 new LinearGradient(
                         0, 0, 0, 1, true,                  //sizing
                         CycleMethod.NO_CYCLE,                 //cycling
-                        new Stop(0, Color.web("#01D9F8FF")),    //colors
-                        new Stop(1, Color.web("#C4F4FEFF"))
+                        new Stop(0, Color.web(startbg)),    //colors
+                        new Stop(1, Color.web(endbg))
                 ), CornerRadii.EMPTY, Insets.EMPTY)
         );
+    }
+
+    static void setft(Boolean f){
+        ft=f;
+    }
+    static Boolean getft(){
+        return ft;
     }
 
 
@@ -234,13 +254,6 @@ public class StaticFunction {
 
     static boolean rightCollision(ImageView node1, ImageView node2, double margin) {
 //        node1 ka right collides with node2 ka left
-        return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() + margin &&
-
-                node1.getBoundsInParent().getMaxX() < node2.getBoundsInParent().getMaxX() &&
-                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
+        return  leftCollision(node2, node1, margin);
     }
 }

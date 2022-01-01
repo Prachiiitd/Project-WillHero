@@ -43,6 +43,7 @@ public class RegenerateSprite {
             }
         }
     }
+
 //    public int p=0;
     private void getSprites(String fileName) throws IOException, ClassNotFoundException {
         deserialize(fileName);
@@ -87,9 +88,6 @@ public class RegenerateSprite {
 
             } else if(obj instanceof Hero hero) {
                 location=hero.getLocation()*100;
-
-//                hero = new Hero(obj.getX(), obj.getY());
-//                hero.
             }
 
             else {
