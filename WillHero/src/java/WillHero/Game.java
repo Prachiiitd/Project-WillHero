@@ -73,11 +73,16 @@ public class Game implements Initializable {
     private ArrayList<ImageView> gate;
     private ArenaScreen arenaScreen;
 
+    private static double hSpeed = 0;
+    private double dx = 0.7;
+    private double xDist = 0;
+    private Timeline tlh;
+
     private static Timeline tl;
     Camera camera;
 
     public void start(Stage stage, String name, VBox vBox, StackPane stackPane, AnchorPane gameAnchorPane) throws IOException {
-        hero = new Hero(name, 0, 0, true, false, new Helmet(new Weapon1(5, 100, false), new Weapon2(3, 100, false), 0));
+        hero = new Hero(name, 0, 0, true, false, new Helmet(new Weapon1(5, 100, false), new Weapon2(3, 100, false), 0), 0, 450, 150);
         this.vBox = vBox;
         this.stackPane = stackPane;
         this.gameAnchorPane = gameAnchorPane;
@@ -126,17 +131,22 @@ public class Game implements Initializable {
                     }
 
                 if (event.getCode().isDigitKey()) {
+                    if (tlh != null && tlh.getStatus() == Animation.Status.RUNNING) {
+                        tlh.stop();
+                    }
+
+                    xDist = 0;
+                    dx = dx>=0? dx: -dx;
+
                     hero.useWeapon();
                     hero.setLocation(hero.getLocation() + 1);
-//                    currLocation.setText((Integer.parseInt(currLocation.getText()) + 100) / 100 + "");
+                    currLocation.setText((Integer.parseInt(currLocation.getText())+100)/100 + "");
                     hero.getTl().pause();
-                    Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
-                    tl.setCycleCount(30);
-                    tl.setOnFinished(e -> {
-                        tl.stop();
-                        hero.getTl().play();
-                    });
-                    tl.play();
+
+                    tlh = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
+                    tlh.setCycleCount(30);
+                    tlh.setOnFinished(e -> {tlh.stop();hero.getTl().play(); xDist = 0; dx = dx>0? dx: -dx;});
+                    tlh.play();
                 }
             }
         });
@@ -150,25 +160,32 @@ public class Game implements Initializable {
     }
 
     private void moveObject() {
+        hSpeed+=dx;
+        xDist+=hSpeed;
+        double maxXDist = 150;
+        if(xDist > maxXDist /2) {
+            dx = dx>0? -dx: dx;
+        }
+
         for (Node object : screenObj.getChildren()) {
             ImageView imageView = (ImageView) object;
-            imageView.setX(imageView.getX() - 5);
+            imageView.setX(imageView.getX() - hSpeed);
         }
 
         for (Platform platform : platforms) {
-            platform.setX(platform.getX() - 5);
+            platform.setX(platform.getX() - hSpeed);
         }
         for (Orc orc : orcs) {
-            orc.setX(orc.getX() - 5);
+            orc.setX(orc.getX() - hSpeed);
         }
         for (Chest chest : chests) {
-            chest.setX(chest.getX() - 5);
+            chest.setX(chest.getX() - hSpeed);
         }
         for (Obstacle tnt : tnts) {
-            tnt.setX(tnt.getX() - 5);
+            tnt.setX(tnt.getX() - hSpeed);
         }
         for (Coin coin : coins) {
-            coin.setX(coin.getX() - 5);
+            coin.setX(coin.getX() - hSpeed);
         }
     }
 
@@ -226,17 +243,21 @@ public class Game implements Initializable {
                     }
 
                 if (event.getCode().isDigitKey()) {
+                    if (tlh != null && tlh.getStatus() == Animation.Status.RUNNING) {
+                        tlh.stop();
+                    }
+                    xDist = 0;
+                    dx = dx>0? dx: -dx;
+
                     hero.useWeapon();
                     hero.setLocation(hero.getLocation() + 1);
+                    currLocation.setText((Integer.parseInt(currLocation.getText())+100)/100 + "");
                     hero.getTl().pause();
-                    Timeline tl = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
-                    tl.setCycleCount(40);
-                    tl.setOnFinished(e -> {
-                        tl.stop();
-                        hero.getTl().play();
-                    });
-                    tl.play();
 
+                    tlh = new Timeline(new KeyFrame(Duration.millis(5), e -> moveObject()));
+                    tlh.setCycleCount(30);
+                    tlh.setOnFinished(e -> {tlh.stop();hero.getTl().play(); xDist = 0; dx = dx>0? dx: -dx;});
+                    tlh.play();
                 }
             }
         });
@@ -281,6 +302,9 @@ public class Game implements Initializable {
         return tnts;
     }
 
+    public static double gethSpeed() {
+        return hSpeed;
+    }
 
     @FXML
     public void buildWorld(Group screenObj) {

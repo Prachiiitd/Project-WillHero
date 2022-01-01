@@ -18,24 +18,28 @@ public class Hero implements Serializable {
     private transient Timeline tl;
 
 
-    private double jumpSpeed = 0;
+    private double jumpSpeed;
     private final Helmet helmet;
     private final String name;
     private boolean isAlive;
     private int location;
     private int reward;
     private boolean resurrected;
-//    private CheckBox remark;
 
-    public Hero(String name, int location, int reward, boolean isAlive, boolean isResurrected, Helmet helmet) {
+    private double x;
+    private double y;
+
+    public Hero(String name, int location, int reward, boolean isAlive, boolean isResurrected, Helmet helmet, double jumpSpeed, double x, double y) {
         this.isAlive = isAlive;
         this.name = name;
         this.resurrected = isResurrected;
         this.location = location;
         this.reward = reward;
         this.helmet = helmet;
+        this.jumpSpeed = jumpSpeed;
+        this.x = x;
+        this.y = y;
         this.setHero();
-//        this.remark = new CheckBox();
 
         tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
@@ -47,8 +51,8 @@ public class Hero implements Serializable {
             this.hero = new ImageView(new Image(new FileInputStream(Objects.requireNonNull(getClass().getResource("hero.png")).getPath())));
             this.hero.setPreserveRatio(true);
             this.hero.setFitHeight(40);
-            this.hero.setX(400);
-            this.hero.setY(150);
+            this.hero.setX(x);
+            this.hero.setY(y);
 
         } catch (FileNotFoundException | NullPointerException e) {
             System.out.println("Failed to load hero");
@@ -60,6 +64,18 @@ public class Hero implements Serializable {
         if (helmet.getWeapon(helmet.getChoice()).isActive()) {
             helmet.getWeapon(helmet.getChoice()).attack(this);
         }
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getJumpSpeed() {
+        return jumpSpeed;
     }
 
     public Timeline getTl() {
@@ -74,13 +90,9 @@ public class Hero implements Serializable {
         return hero;
     }
 
-    // Setting up game Stats
     public int getLocation() {
         return location;
     }
-//    public CheckBox getCheckBox() {
-//        return remark;
-//    }
 
     public void setLocation(int location) {
         this.location = location;
@@ -120,10 +132,12 @@ public class Hero implements Serializable {
 
     // Jumping
     public void jump() throws NullPointerException {
-        this.hero.setY(hero.getY() + jumpSpeed);
+        y+=jumpSpeed;
+//        this.hero.setY(hero.getY() + jumpSpeed);
+        this.hero.setY(y);
         this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + jumpSpeed);
         this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + jumpSpeed);
-        double dy = 0.01;
+        double dy = 0.018;
         jumpSpeed += dy;
 
         ArrayList<Object> objects = new ArrayList<>();
@@ -138,7 +152,7 @@ public class Hero implements Serializable {
         for (Object object : objects) {
 
             if (collision(object)) {
-                jumpSpeed = 1;
+                jumpSpeed = 1.6;
                 if (isAlive) {
                     StaticFunction.setScaling(hero, 0, -0.1, 100, 2, true);
                     jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;

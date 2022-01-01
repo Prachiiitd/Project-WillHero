@@ -29,7 +29,7 @@ public abstract class Orc implements Serializable {
         this.hp = hp;
         this.isAlive = true;
         this.orc = setOrc(x, y);
-        this.jumpHeight = random.nextDouble(1, 1.3);
+        this.jumpHeight = random.nextDouble(0.8, 1.2);
         this.jumpSpeed = 0;
         this.dy = random.nextDouble(0.008, 0.01);
         this.x = x;
@@ -123,7 +123,6 @@ public abstract class Orc implements Serializable {
             if (StaticFunction.bottomCollision(orc, platform.getIsLand(), 4)) {
                 return true;
             }
-
         }
 
         if (object instanceof Orc orci) {
@@ -136,9 +135,7 @@ public abstract class Orc implements Serializable {
         }
 
         if (object instanceof Obstacle tnt) {
-
             // Right side collision of hero with orc left
-
             if (StaticFunction.rightCollision(orc, tnt.getObstacle(), 3)) {
                 System.out.println("Right side collision of hero with TNT right");
                 if ((((Tnt) tnt).getHitCount()) == 0) {

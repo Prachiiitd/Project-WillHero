@@ -87,9 +87,6 @@ public class RegenerateSprite {
 
             } else if(obj instanceof Hero hero) {
                 location=hero.getLocation()*100;
-
-//                hero = new Hero(obj.getX(), obj.getY());
-//                hero.
             }
 
             else {
