@@ -17,7 +17,6 @@ public abstract class Chest implements Serializable {
     private final double jumpHeight;
     private final double dy;
     private double jumpSpeed;
-    private transient final Timeline timeline;
     private double x;
     private double y;
 
@@ -29,7 +28,7 @@ public abstract class Chest implements Serializable {
         this.jumpHeight = 0.4;
         this.jumpSpeed = 0;
         this.dy = 0.01;
-        timeline = new Timeline();
+        Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(new javafx.animation.KeyFrame(Duration.millis(5), e -> motion()));
         timeline.play();
@@ -96,21 +95,22 @@ public abstract class Chest implements Serializable {
         }
 
         if(object instanceof Platform platform) {
+            return StaticFunction.bottomCollision(chest, platform.getIsLand(), 4+jumpSpeed*4);
+        }
 
-            if (StaticFunction.bottomCollision(chest, platform.getIsLand(), 4)) {
-                if(!isClose) {
+        if(object instanceof Orc orc) {
+            return StaticFunction.bottomCollision(chest, orc.getOrc(), 4+jumpSpeed*4);
+        }
 
-                }
-                return true;
-            }
+        if (object instanceof Obstacle obstacle) {
+            return StaticFunction.bottomCollision(chest, obstacle.getObstacle(), 4);
         }
 
         return false;
     }
 
     public void motion(){
-        this.y = y + jumpSpeed;
-        this.chest.setY(this.y);
+        this.chest.setY(this.y+=jumpSpeed);
         jumpSpeed += dy;
 
         for(Platform object : Game.getPlatformList()){
@@ -119,7 +119,6 @@ public abstract class Chest implements Serializable {
                 if (isClose) {
                     jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;
                 }
-
                 break;
             }
         }
@@ -146,7 +145,6 @@ class CoinChest extends Chest{
     private void increaseReward(Hero hero) {
         hero.setReward(hero.getReward() + 1);
     }
-
 }
 
 
@@ -157,7 +155,7 @@ class WeaponChest extends  Chest{
     public WeaponChest(double x, double y) {
         super(x, y);
         Random random = new Random();
-        Weapon[] weaponList = {new Weapon1(5,100,false), new Weapon2(3,100,false)};
+        Weapon[] weaponList = {new Weapon1(5,100,false, false,0, 0), new Weapon2(3,100,false, false,0 ,0)};
         weapon = weaponList[random.nextInt(1,2)];
     }
 
@@ -167,15 +165,15 @@ class WeaponChest extends  Chest{
         if(weapon instanceof Weapon1){
             hero.getHelmet().setChoice(0);
             hero.getHelmet().getWeapon(0).setActivate(true, true);
-            hero.getHelmet().getWeapon(0).getWeaponImage().setX(hero.getHero().getX() + 5);
-            hero.getHelmet().getWeapon(0).getWeaponImage().setY(hero.getHero().getY() + 5);
+            hero.getHelmet().getWeapon(0).setX(hero.getX() + 5);
+            hero.getHelmet().getWeapon(0).setY(hero.getY() + 5);
         }
 
         if(weapon instanceof Weapon2){
             hero.getHelmet().setChoice(1);
             hero.getHelmet().getWeapon(1).setActivate(true, true);
-            hero.getHelmet().getWeapon(1).getWeaponImage().setX(hero.getHero().getX());
-            hero.getHelmet().getWeapon(1).getWeaponImage().setY(hero.getHero().getBoundsInParent().getMaxY() - 15);
+            hero.getHelmet().getWeapon(1).setX(hero.getX());
+            hero.getHelmet().getWeapon(1).setY(hero.getHero().getFitHeight() + hero.getY() - 15);
         }
     }
 }

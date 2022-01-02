@@ -44,14 +44,14 @@ public class RegenerateSprite {
         }
     }
 
-//    public int p=0;
+    //    public int p=0;
     private void getSprites(String fileName) throws IOException, ClassNotFoundException {
         deserialize(fileName);
 
         for(Object obj : gameObjects) {
             if(obj instanceof Platform platform) {
                 Platform _platform = new Platform(platform.getId(), platform.getX(), platform.getY(), platform.getSize(), platform.getSpeed());
-                    generatedPlatforms.add(_platform);
+                generatedPlatforms.add(_platform);
 
 
             } else if(obj instanceof Coin coin) {
@@ -98,25 +98,5 @@ public class RegenerateSprite {
 
     public void regenerate(String fileName) throws IOException, ClassNotFoundException {
         getSprites(fileName);
-    }
-
-    public ArrayList<Platform> getGeneratedPlatforms() {
-        return generatedPlatforms;
-    }
-
-    public ArrayList<Coin> getGeneratedCoins() {
-        return generatedCoins;
-    }
-
-    public ArrayList<Obstacle> getGeneratedObstacles() {
-        return generatedObstacles;
-    }
-
-    public ArrayList<Chest> getGeneratedChests() {
-        return generatedChests;
-    }
-
-    public ArrayList<Orc> getGeneratedOrcs() {
-        return generatedOrcs;
     }
 }

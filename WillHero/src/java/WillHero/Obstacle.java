@@ -73,7 +73,7 @@ class Tnt extends Obstacle {
         this.dx = 0.01;
         this.blast=false;
 
-        this.tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
+        this.tl = new Timeline(new KeyFrame(Duration.millis(2), e -> jump()));
         this.tl.setCycleCount(Timeline.INDEFINITE);
         this.tl.play();
     }
@@ -134,6 +134,8 @@ class Tnt extends Obstacle {
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getChestList());
+        objects.addAll(Game.getHeroWrap());
+        objects.addAll(Game.getTntList());
 
         for(Object object : objects){
             if(collision(object)){
@@ -195,29 +197,44 @@ class Tnt extends Obstacle {
                 objectImage = ((Orc) object).getOrc();
             }
 
-            if (StaticFunction.bottomCollision(super.getObstacle(),objectImage,3) && blast) {
-                objectImage.setVisible(false);
+            // Right side collision of hero with orc left
+            if (StaticFunction.rightCollision(super.getObstacle(), objectImage, 10*Game.gethSpeed()+100)) {
+                Game.sethSpeed(0);
+                System.out.println("fjbdckabszbdcb");
+                if(hitCount==1){
+                    hitCount=2;
+                } else if(hitCount==0){
+                    hitCount=1;
+                }
+
+                if(!isBlast()){
+                    super.setX(super.getX()+20);
+                    super.getObstacle().setX(super.getX());
+                }
+            }
+
+            // Right side collision of hero with orc left
+            if (StaticFunction.leftCollision(super.getObstacle(), objectImage, 10*Game.gethSpeed()+100)) {
+                Game.sethSpeed(0);
+                System.out.println("fjbdckabszbdcb");
+
+                if(hitCount==1){
+                    hitCount=2;
+                }
+                if(hitCount==0){
+                    hitCount=1;
+                }
+
+                if(!isBlast()){
+                    super.setX(super.getX()-20);
+                    super.getObstacle().setX(super.getX());
+                }
             }
         }
 
         if (object instanceof Chest chest) {
-            // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(super.getObstacle(), chest.getChest(), 0)) {
-                return true;
-            }
-
-            // Right side collision of hero with orc left
-            if (StaticFunction.rightCollision(super.getObstacle(), chest.getChest(), 0)) {
-                chest.getChest().setX(chest.getChest().getX() + 5);
-            }
-
-            // Left side collision of hero with orc right
-            if (StaticFunction.leftCollision(super.getObstacle(), chest.getChest(), 0)) {
-                chest.getChest().setX(chest.getChest().getX() - 5);
-            }
-
-            // Top side collision of hero with orc bottom
-            return StaticFunction.topCollision(super.getObstacle(), chest.getChest(), 0);
+            // Bottom side collision of obstacle with chest top
+            return StaticFunction.bottomCollision(super.getObstacle(), chest.getChest(), 4 + this.vJumpSpeed * 3);
         }
         return false;
     }

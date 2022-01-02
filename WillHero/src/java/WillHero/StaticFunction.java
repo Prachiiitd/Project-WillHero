@@ -227,12 +227,12 @@ public class StaticFunction {
     static boolean bottomCollision(ImageView node1, ImageView node2, double margin) {
 //        node1 ka bottom collides with node2 ka top
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMaxY() < node2.getBoundsInParent().getMinY() + margin &&
-                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMaxY() < node2.getBoundsInParent().getMaxY() &&
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX();
+                node1.getBoundsInParent().getMaxY() >= node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMaxY() <= node2.getBoundsInParent().getMinY() + margin &&
+                node1.getBoundsInParent().getMinY() <= node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMaxY() <= node2.getBoundsInParent().getMaxY() &&
+                node1.getBoundsInParent().getMaxX() >= node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMinX() <= node2.getBoundsInParent().getMaxX();
     }
 
     static boolean topCollision(ImageView node1, ImageView node2, double margin) {
@@ -243,13 +243,13 @@ public class StaticFunction {
     static boolean leftCollision(ImageView node1, ImageView node2, double margin) {
 //        node1 ka left collides with node2 ka right
         return node1.getBoundsInParent().intersects(node2.getBoundsInParent()) &&
-                node1.getBoundsInParent().getMinX() < node2.getBoundsInParent().getMaxX() &&
-                node1.getBoundsInParent().getMinX() + margin > node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMinX() <= node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMinX() + margin >= node2.getBoundsInParent().getMaxX() &&
 
-                node1.getBoundsInParent().getMaxX() > node2.getBoundsInParent().getMaxX() &&
-                node1.getBoundsInParent().getMinX() > node2.getBoundsInParent().getMinX() &&
-                node1.getBoundsInParent().getMaxY() > node2.getBoundsInParent().getMinY() &&
-                node1.getBoundsInParent().getMinY() < node2.getBoundsInParent().getMaxY();
+                node1.getBoundsInParent().getMaxX() >= node2.getBoundsInParent().getMaxX() &&
+                node1.getBoundsInParent().getMinX() >= node2.getBoundsInParent().getMinX() &&
+                node1.getBoundsInParent().getMaxY() >= node2.getBoundsInParent().getMinY() &&
+                node1.getBoundsInParent().getMinY() <= node2.getBoundsInParent().getMaxY();
     }
 
     static boolean rightCollision(ImageView node1, ImageView node2, double margin) {

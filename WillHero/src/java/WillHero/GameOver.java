@@ -80,15 +80,27 @@ public class GameOver implements Initializable {
         if(timeline.getStatus() == Timeline.Status.PAUSED) {
             stackPane.getChildren().remove(loadGameOver);
             hero.setReward(hero.getReward() - 5);
+
             double minx = Double.MAX_VALUE;
             for(Platform p : Game.getPlatformList()) {
-                if (p.getIsLand().getX()>hero.getX()) {
-                    //commit
-                }
+                if (p.getIsLand().getBoundsInParent().getMinX() < hero.getHero().getX() &&
+                        p.getIsLand().getBoundsInParent().getMaxX() > hero.getHero().getX()) {
+                    minx = p.getIsLand().getX()+p.getIsLand().getFitWidth()/2;
+                    break;
+                } else if(hero.getHero().getX() < p.getX()) {
+                    minx = Math.min(minx,p.getIsLand().getX()+p.getIsLand().getFitWidth()/2);
 
+                }
             }
-            hero.getHero().setX(hero.getHero().getX() - 200);
-            hero.getHero().setY(250);
+
+            hero.setX(minx);
+            hero.getHero().setX(hero.getX());
+            hero.setY(250);
+            hero.getHero().setY(hero.getY());
+            hero.getHelmet().getWeapon(0).setActivate(false, false);
+            hero.getHelmet().getWeapon(1).setActivate(false, false);
+
+            hero.getHero().setScaleY(1);
             hero.setAlive(true);
             hero.setResurrected(true);
             hero.getHero().disableProperty();

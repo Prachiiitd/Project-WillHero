@@ -101,18 +101,18 @@ public class MainMenu implements Initializable {
         StaticFunction.bestReward(bestReward);
 
 
-        if(mediaPlayer==null){
-            Media sound = null;
-            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
-            mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.setStartTime(Duration.seconds(1));
-            mediaPlayer.setStartTime(Duration.seconds(100));
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-//            mediaPlayer.play();
-        }
-        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
-//            mediaPlayer.play();
-        }
+//        if(mediaPlayer==null){
+//            Media sound = null;
+//            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
+//            mediaPlayer = new MediaPlayer(sound);
+//            mediaPlayer.setStartTime(Duration.seconds(1));
+//            mediaPlayer.setStartTime(Duration.seconds(100));
+//            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+////            mediaPlayer.play();
+//        }
+//        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
+////            mediaPlayer.play();
+//        }
 
     }
 

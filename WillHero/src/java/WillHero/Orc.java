@@ -18,10 +18,12 @@ public abstract class Orc implements Serializable {
     private final double jumpHeight;
     private final double dy;
     private double jumpSpeed;
+    private double hSpeed;
     private int hp;
     private boolean isAlive;
     private double x;
     private double y;
+    private boolean rewarded;
 
 
     public Orc(double x, double y, int hp) {
@@ -31,6 +33,7 @@ public abstract class Orc implements Serializable {
         this.orc = setOrc(x, y);
         this.jumpHeight = random.nextDouble(0.8, 1.2);
         this.jumpSpeed = 0;
+        this.hSpeed = 0;
         this.dy = random.nextDouble(0.008, 0.01);
         this.x = x;
         this.y = y;
@@ -56,12 +59,12 @@ public abstract class Orc implements Serializable {
         return y;
     }
 
-    public void setY(double y) {
-        this.y = y;
-    }
-
     public void setX(double x) {
         this.x = x;
+    }
+
+    public double getJumpSpeed() {
+        return jumpSpeed;
     }
 
     public boolean isAlive() {
@@ -74,8 +77,15 @@ public abstract class Orc implements Serializable {
 
     public void jump() {
 
-        y+=jumpSpeed;
-        this.orc.setY(y);
+        this.orc.setY(y+=jumpSpeed);
+
+        if(hSpeed > 0) {
+            hSpeed -= 0.01;
+            this.orc.setX(x += hSpeed);
+        }else if(hSpeed < 0){
+            hSpeed+= 0.01;
+            this.orc.setX(x-=this.dy);
+        }
 
         jumpSpeed += dy;
         if (hp <= 0) {
@@ -84,6 +94,8 @@ public abstract class Orc implements Serializable {
         ArrayList<Object> objects = new ArrayList<>();
         objects.addAll(Game.getPlatformList());
         objects.addAll(Game.getChestList());
+        objects.addAll(Game.getOrcList());
+        objects.addAll(Game.getHeroWrap());
 
         for (Object object : objects) {
             if (collision(object)) {
@@ -120,69 +132,26 @@ public abstract class Orc implements Serializable {
 
         if (object instanceof Platform platform) {
 //            top side collision with platform
-            if (StaticFunction.bottomCollision(orc, platform.getIsLand(), 4)) {
+            if (StaticFunction.bottomCollision(orc, platform.getIsLand(), 4*jumpSpeed + 3)) {
                 return true;
             }
         }
 
         if (object instanceof Orc orci) {
-            if (StaticFunction.bottomCollision(orc, orci.getOrc(), 3)) {
-                return true;
-            }
-            if (StaticFunction.topCollision(orc, orci.getOrc(), 3)) {
+            if (StaticFunction.bottomCollision(orc, orci.getOrc(), 4*jumpSpeed + 3)) {
                 return true;
             }
         }
 
         if (object instanceof Obstacle tnt) {
-            // Right side collision of hero with orc left
-            if (StaticFunction.rightCollision(orc, tnt.getObstacle(), 3)) {
-                System.out.println("Right side collision of hero with TNT right");
-                if ((((Tnt) tnt).getHitCount()) == 0) {
-                    ((Tnt) tnt).setHitCount(1);
-                }
 
-                if (((Tnt) tnt).isBlast()) {
-                    isAlive = false;
-                    destroy();
-                }
-
-                return true;
+            if(orc.getBoundsInParent().intersects(tnt.getObstacle().getBoundsInParent()) && ((Tnt)tnt).isBlast()){
+                isAlive = false;
+                destroy();
             }
 
-            // Left side collision of hero with orc right
-            if (StaticFunction.leftCollision(orc, tnt.getObstacle(), 3)) {
-                System.out.println("Left side collision of hero with TNT right");
-
-                if ((((Tnt) tnt).getHitCount()) == 0) {
-                    ((Tnt) tnt).setHitCount(1);
-                }
-
-                if (((Tnt) tnt).isBlast()) {
-                    isAlive = false;
-                    destroy();
-                }
-                return true;
-            }
-
-            // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(orc, tnt.getObstacle(), 3)) {
-                System.out.println("Bottom side collision of hero with TNT right");
-
-                if ((((Tnt) tnt).getHitCount()) == 0) {
-                    ((Tnt) tnt).setHitCount(1);
-                }
-                if (((Tnt) tnt).isBlast()) {
-                    isAlive = false;
-                    destroy();
-                }
-
-                return true;
-            }
-
-            // Top side collision of hero with orc bottom
-            if (StaticFunction.topCollision(orc, tnt.getObstacle(), 3)) {
-                System.out.println("Top side collision of hero with TNT bottom");
+            // Bottom side collision of orc with tnt top
+            if (StaticFunction.bottomCollision(orc, tnt.getObstacle(), 4*jumpSpeed + 3)) {
 
                 if ((((Tnt) tnt).getHitCount()) == 0) {
                     ((Tnt) tnt).setHitCount(1);
@@ -195,42 +164,54 @@ public abstract class Orc implements Serializable {
             }
         }
 
-        if (object instanceof Chest chest) {
 
+        if (object instanceof Chest chest) {
             // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(orc, chest.getChest(), 3)) {
+            if (StaticFunction.bottomCollision(orc, chest.getChest(), 4*jumpSpeed + 3)) {
                 return true;
             }
 
             // Right side collision of hero with orc left
-            if (StaticFunction.rightCollision(orc, chest.getChest(), 3)) {
+            if (StaticFunction.rightCollision(orc, chest.getChest(), 10*Game.gethSpeed()+10)) {
                 chest.setX(chest.getX() + 5);
                 chest.getChest().setX(chest.getX());
-
             }
 
             // Left side collision of hero with orc right
-            if (StaticFunction.leftCollision(orc, chest.getChest(), 3)) {
-//                chest.getChest().setX(chest.getChest().getX() - 5);
+            if (StaticFunction.leftCollision(orc, chest.getChest(), 10*Game.gethSpeed()+10)) {
                 chest.setX(chest.getX() - 5);
                 chest.getChest().setX(chest.getX());
-            }
-
-            // Top side collision of hero with orc bottom
-            if (StaticFunction.topCollision(orc, chest.getChest(), 3)) {
-                return true;
             }
         }
 
         if (object instanceof Hero hero) {
-            // Bottom side collision of orc with hero top
-            return StaticFunction.bottomCollision(orc, hero.getHero(), 3);
-        }
+//             Left side collision of orc with hero right
+            if (StaticFunction.leftCollision(orc, hero.getHero(), 10*Game.gethSpeed()+10)) {
+                Game.sethSpeed(0);
+                hSpeed = 1.5;
+            }
 
+//             right side collision of orc with hero right
+            if (StaticFunction.rightCollision(orc, hero.getHero(), 10*Game.gethSpeed()+10)) {
+                Game.sethSpeed(0);
+                hSpeed = -1.5;
+            }
+
+            // Bottom side collision of orc with hero top
+            return StaticFunction.bottomCollision(orc, hero.getHero(), 4*jumpSpeed + 3);
+        }
         return false;
     }
 
+    public abstract void increaseReward(Hero hero);
 
+    public boolean isRewarded() {
+        return rewarded;
+    }
+
+    public void setRewarded(boolean rewarded) {
+        this.rewarded = rewarded;
+    }
 }
 
 
@@ -256,8 +237,10 @@ class RedOrc extends Orc {
         }
     }
 
-    private void increaseReward(Hero hero) {
-        hero.setReward(hero.getReward() + 1);
+    public void increaseReward(Hero hero) {
+        if(super.isRewarded()) return;
+        super.setRewarded(true);
+        hero.setReward(hero.getReward() + 2);
     }
 }
 
@@ -283,29 +266,28 @@ class GreenOrc extends Orc {
             throw new NullPointerException("Coin couldn't be loaded");
         }
     }
-
-    private void increaseReward(Hero hero) {
+    @Override
+    public void increaseReward(Hero hero) {
+        if(super.isRewarded()) return;
+        super.setRewarded(true);
         hero.setReward(hero.getReward() + 1);
+
     }
 }
 
 
 class BossOrc extends Orc {
 
-    private double hspeed;
+    private double hSpeed;
 
     public BossOrc(double x, double y) {
         super(x, y, 450);
 
-        this.hspeed=0;
+        this.hSpeed =0;
     }
 
-    public double getHspeed() {
-        return hspeed;
-    }
-
-    public void setHspeed(double hspeed) {
-        this.hspeed = hspeed;
+    public void sethSpeed(double hSpeed) {
+        this.hSpeed = hSpeed;
     }
 
     @Override
@@ -326,23 +308,23 @@ class BossOrc extends Orc {
     @Override
     public void jump() {
         super.jump();
-        super.getOrc().setTranslateX(super.getOrc().getTranslateX() + hspeed);
-
+        super.getOrc().setTranslateX(super.getOrc().getTranslateX() + hSpeed);
     }
+
     @Override
     public boolean collision(Object object) {
 
         if (object instanceof Platform platform) {
 //            top side collision with platform
-            if (StaticFunction.bottomCollision(super.getOrc(), platform.getIsLand(), 4)) {
-                return true;
-            }
+            return StaticFunction.bottomCollision(super.getOrc(), platform.getIsLand(), 4 * super.getJumpSpeed() + 3);
         }
-        if (object instanceof Hero hero) {
+        return false;
+    }
 
-        }
-
-    return false;
-
+    @Override
+    public void increaseReward(Hero hero) {
+        if(super.isRewarded()) return;
+        super.setRewarded(true);
+        hero.setReward(hero.getReward() + 5);
     }
 }

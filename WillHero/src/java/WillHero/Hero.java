@@ -1,11 +1,13 @@
 package WillHero;
 
 import javafx.animation.*;
-import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -15,7 +17,8 @@ import java.util.Objects;
 public class Hero implements Serializable {
 
     private transient ImageView hero;
-    private transient Timeline tl;
+    private final transient Timeline tl;
+//    private final transient MediaPlayer jumpMedia;
 
 
     private double jumpSpeed;
@@ -39,9 +42,22 @@ public class Hero implements Serializable {
         this.jumpSpeed = jumpSpeed;
         this.x = x;
         this.y = y;
+//        Media jumpSound;
+//        jumpSound = new Media(new File(Objects.requireNonNull(getClass().getResource("pop.mp3")).getFile()).toURI().toString());
+//        jumpMedia = new MediaPlayer(jumpSound);
+//        jumpMedia.setStartTime(Duration.millis(10));
+//        jumpMedia.setCycleCount(1);
+//        jumpMedia.setOnEndOfMedia(new Runnable() {
+//            @Override
+//            public void run() {
+//                jumpMedia.seek(Duration.ZERO);
+//                if(jumpMedia.getStatus().equals(MediaPlayer.Status.PLAYING))
+//                    jumpMedia.pause();
+//            }
+//        });
         this.setHero();
 
-        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> jump()));
+        tl = new Timeline(new KeyFrame(Duration.millis(2), e -> jump()));
         tl.setCycleCount(Timeline.INDEFINITE);
         tl.play();
     }
@@ -72,6 +88,14 @@ public class Hero implements Serializable {
 
     public double getX() {
         return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     public double getJumpSpeed() {
@@ -132,12 +156,11 @@ public class Hero implements Serializable {
 
     // Jumping
     public void jump() throws NullPointerException {
-        y+=jumpSpeed;
-//        this.hero.setY(hero.getY() + jumpSpeed);
-        this.hero.setY(y);
+
+        this.hero.setY(y+=jumpSpeed);
         this.helmet.getWeapon(0).getWeaponImage().setY(hero.getY() + jumpSpeed);
         this.helmet.getWeapon(1).getWeaponImage().setY(this.helmet.getWeapon(1).getWeaponImage().getY() + jumpSpeed);
-        double dy = 0.018;
+        double dy = 0.005;
         jumpSpeed += dy;
 
         ArrayList<Object> objects = new ArrayList<>();
@@ -152,9 +175,14 @@ public class Hero implements Serializable {
         for (Object object : objects) {
 
             if (collision(object)) {
-                jumpSpeed = 1.6;
+                jumpSpeed = 0.9;
                 if (isAlive) {
-                    StaticFunction.setScaling(hero, 0, -0.1, 100, 2, true);
+//                    jumpMedia.play();
+//                    if(!jumpMedia.getStatus().equals(MediaPlayer.Status.PLAYING)){
+//                        jumpMedia.play();
+//                    }
+
+                    StaticFunction.setScaling(hero, 0, -0.1, 50, 2, true);
                     jumpSpeed = jumpSpeed > 0 ? -jumpSpeed : jumpSpeed;
                 } else {
                     jumpSpeed = 0;
@@ -168,69 +196,30 @@ public class Hero implements Serializable {
 
         // Hero's Collision with Platform
         if (object instanceof Platform platform) {
-
             // Hero's base collide with top the top edge of Platform
-            if (StaticFunction.bottomCollision(hero, platform.getIsLand(), 4)) {
+            if (StaticFunction.bottomCollision(hero, platform.getIsLand(), jumpSpeed*3)) {
                 return true;
             }
 
             // Hero's right collides with the left edge of Platform
-            if (StaticFunction.rightCollision(hero, platform.getIsLand(), 4)) {
+            if (StaticFunction.rightCollision(hero, platform.getIsLand(), 4*Game.gethSpeed())) {
                 return true;
             }
         }
+
         if (object instanceof Obstacle tnt) {
 
-            // Right side collision of hero with orc left
-
-            if (StaticFunction.rightCollision(hero, tnt.getObstacle(), 3)) {
-
-                if((((Tnt)tnt).getHitCount())==1){
-                    ((Tnt)tnt).setHitCount(2);
-                }
-                if((((Tnt)tnt).getHitCount())==0){
-                    ((Tnt)tnt).setHitCount(1);
-                }
-
-                if(((Tnt)tnt).isBlast()) isAlive=false;
-                else{
-                    tnt.getObstacle().setX(tnt.getObstacle().getX()+20);
-                }
-
-                return true;
+            if(hero.getBoundsInParent().intersects(tnt.getObstacle().getBoundsInParent()) && ((Tnt)tnt).isBlast()){
+                isAlive = false;
             }
 
-            if (StaticFunction.leftCollision(hero, tnt.getObstacle(), 3)) {
-
-                if((((Tnt)tnt).getHitCount())==0){
-                    ((Tnt)tnt).setHitCount(1);
-                }
-                if(((Tnt)tnt).isBlast()) isAlive=false;
-                else{
-                    tnt.getObstacle().setX(tnt.getObstacle().getX()-20);
-                }
-                return true;
-            }
-
-            // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(hero, tnt.getObstacle(), 3)) {
+            // Bottom side collision of hero with obstacle top
+            if (StaticFunction.bottomCollision(hero, tnt.getObstacle(), 3*jumpSpeed)) {
                 if((((Tnt)tnt).getHitCount())==0){
                     ((Tnt)tnt).setHitCount(1);
                 }
                 if(((Tnt)tnt).isBlast()) isAlive=false;
 
-                return true;
-            }
-
-            // Top side collision of hero with orc bottom
-            if (StaticFunction.topCollision(hero, tnt.getObstacle(), 3)) {
-                if((((Tnt)tnt).getHitCount())==1){
-                    ((Tnt)tnt).setHitCount(2);
-                }
-                if((((Tnt)tnt).getHitCount())==0){
-                    ((Tnt)tnt).setHitCount(1);
-                }
-                if(((Tnt)tnt).isBlast()) isAlive=false;
                 return true;
             }
         }
@@ -238,18 +227,8 @@ public class Hero implements Serializable {
         // Collision with orc
         if (object instanceof Orc orc) {
 
-            // Right side collision of hero with orc left
-            if (StaticFunction.leftCollision(orc.getOrc(), hero, 10)) {
-                orc.getOrc().setX(orc.getOrc().getX() + 20);
-            }
-
-            // Left side collision of hero with orc right
-            if (StaticFunction.leftCollision(hero, orc.getOrc(), 10)) {
-                orc.getOrc().setX(orc.getOrc().getX() - 20);
-            }
-
             // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(hero, orc.getOrc(), 3)) {
+            if (StaticFunction.bottomCollision(hero, orc.getOrc(), Math.abs(3*(jumpSpeed - orc.getJumpSpeed())) + 3)) {
                 return true;
             }
 
@@ -259,7 +238,6 @@ public class Hero implements Serializable {
                 return true;
             }
         }
-
         return false;
     }
     // End of collision
