@@ -11,18 +11,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-//import javafx.scene.media.Media;
-//import javafx.scene.media.MediaPlayer;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+
 import javafx.scene.text.Text;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,7 +30,6 @@ public class MainMenu implements Initializable {
 
     private World newGame;
     private LeaderBoard leaderBoard;
-    private MediaPlayer mediaPlayer;
 
     @FXML
     private Label bestReward;
@@ -92,25 +85,26 @@ public class MainMenu implements Initializable {
         }
         catch(NullPointerException e){
             this.players = new ArrayList<>();
-            System.out.println("Prachi hu");
         }
-        StaticFunction.setTranslation(floatingName, 0, 80, 1000,TranslateTransition.INDEFINITE, true);
+        StaticFunction.setTranslation(floatingName, 0, 80, 1000,TranslateTransition.INDEFINITE);
         StaticFunction.getPlayers(players);
-//        StaticFunction.setTranslation(floatingName, 0, 80, 1000,TranslateTransition.INDEFINITE, true);
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
 
-
+    //sound
+        StaticFunction.setSounds();
 //        if(mediaPlayer==null){
-//            Media sound = null;
+//            Media sound;
 //            sound = new Media(new File(Objects.requireNonNull(getClass().getResource("background.mp3")).getFile()).toURI().toString());
 //            mediaPlayer = new MediaPlayer(sound);
-//            mediaPlayer.setStartTime(Duration.seconds(1));
-//            mediaPlayer.setStartTime(Duration.seconds(100));
+//            mediaPlayer.setStartTime(Duration.seconds(0));
+////            mediaPlayer.setStartTime(Duration.seconds(100));
 //            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//            StaticFunction.setSounds(mediaPlayer);
 ////            mediaPlayer.play();
 //        }
 //        if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
+//            StaticFunction.setSounds(mediaPlayer);
 ////            mediaPlayer.play();
 //        }
 
@@ -133,7 +127,7 @@ public class MainMenu implements Initializable {
                 Scene scene = new Scene(leaderBoardPane);
 
                 leaderBoard = boardAnchor.getController();
-                leaderBoard.start(stage, leaderBoardPane,players);
+                leaderBoard.start();
 
                 stage.setTitle("WillHero: Leader Board");
                 stage.getIcons().add(icon);
@@ -145,7 +139,6 @@ public class MainMenu implements Initializable {
                 alert.setTitle("No players");
                 alert.initStyle(StageStyle.UNDECORATED);
                 alert.showAndWait();
-
             }
 
         } catch (IOException e) {
@@ -170,7 +163,7 @@ public class MainMenu implements Initializable {
         Label label = new Label();
 
         Optional<String> result = textInputDialog.showAndWait();
-        System.out.println((textInputDialog.getEditor().getText()));
+//        System.out.println((textInputDialog.getEditor().getText()));
 
         result.ifPresent(name -> {
             label.setText(name);

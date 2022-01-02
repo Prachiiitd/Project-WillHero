@@ -23,7 +23,7 @@ public class World {
         worldList.add(new Game());
     }
 
-    public int selectGame(Label nameLabel) {
+    public int selectGame() {
         int game;
         /* Option for taking inputs for a particular world ca be taken
             and that world will appear for user
@@ -33,9 +33,9 @@ public class World {
     }
 
     public void start(Stage stage, Label nameLabel) throws WorldNotExistException {
-        int srNo = selectGame(nameLabel);
+        int srNo = selectGame();
         if (srNo < worldList.size()){
-            AnchorPane gameAnchorPane, screenAnchorPane;
+            AnchorPane gameAnchorPane;
             StackPane stackPane = new StackPane();
             VBox vBox = new VBox();
 

@@ -3,6 +3,7 @@ package WillHero;
 import Exceptions.AlreadyResurrectedException;
 import Exceptions.InsufficientCoinException;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -10,11 +11,24 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameOver implements Initializable {
+
+    @FXML
+    public Text floatingName;
+    @FXML
+    public ImageView st1;
+    @FXML
+    public ImageView st2;
+    @FXML
+    public ImageView st3;
+    @FXML
+    public ImageView st4;
+
 
     @FXML
     private ImageView mainMenuIcon;
@@ -43,8 +57,14 @@ public class GameOver implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        StaticFunction.setRotation(restartIcon,360, 1000, 2,true);
-        StaticFunction.setRotation(mainMenuIcon,360, 1000, 2,true);
+        StaticFunction.setRotation(restartIcon, 1000, 2,true);
+        StaticFunction.setRotation(mainMenuIcon, 1000, 2,true);
+
+        StaticFunction.setTranslation(floatingName, 100, 0, 1000, TranslateTransition.INDEFINITE);
+        StaticFunction.setRotation(st1, 500, -1, true);
+        StaticFunction.setRotation(st2, 500, -1, true);
+        StaticFunction.setRotation(st3, 500, -1, true);
+        StaticFunction.setRotation(st4, 500, -1, true);
     }
 
     public void mainMenu(MouseEvent mainMenu) {
@@ -93,12 +113,12 @@ public class GameOver implements Initializable {
                 }
             }
 
+            hero.getHelmet().getWeapon(0).setActivate(false, false);
+            hero.getHelmet().getWeapon(1).setActivate(false, false);
             hero.setX(minx);
             hero.getHero().setX(hero.getX());
             hero.setY(250);
             hero.getHero().setY(hero.getY());
-            hero.getHelmet().getWeapon(0).setActivate(false, false);
-            hero.getHelmet().getWeapon(1).setActivate(false, false);
 
             hero.getHero().setScaleY(1);
             hero.setAlive(true);

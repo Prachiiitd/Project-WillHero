@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public abstract class Obstacle implements Serializable {
 
-    private transient ImageView obstacle;
+    private final transient ImageView obstacle;
     private double x;
     private double y;
 
@@ -40,10 +40,6 @@ public abstract class Obstacle implements Serializable {
         this.x = x;
     }
 
-    public void setObstacle(){
-        this.obstacle = setObstacleImage();
-    }
-
     public abstract ImageView setObstacleImage();
 
 }
@@ -52,7 +48,6 @@ class Tnt extends Obstacle {
 
     private transient final double jumpHeight;
     private transient final double dx;
-    private transient final ImageView tnt;
     private boolean blast;
     private double vJumpSpeed;
     private double hJumpSpeed;
@@ -63,7 +58,7 @@ class Tnt extends Obstacle {
 
     public Tnt(double x, double y) {
         super(x, y);
-        this.tnt = setObstacleImage();
+        setObstacleImage();
         this.jumpHeight = 1;
         this.vJumpSpeed = 0;
         this.hJumpSpeed = 0;
@@ -108,6 +103,21 @@ class Tnt extends Obstacle {
 
 
     private void jump() {
+        ArrayList<Object> objects = new ArrayList<>();
+        try {
+            objects.addAll(Game.getPlatformList());
+            objects.addAll(Game.getChestList());
+            objects.addAll(Game.getHeroWrap());
+            objects.addAll(Game.getTntList());
+        }
+        catch(NullPointerException e){
+            System.out.println("One of the arraylist is null in tnt");
+        }
+
+        if(!StaticFunction.getStartit()){
+            return;
+        }
+
         if( hitCount>0 && !blast){
             if(blastTime>=5000)
                 setBlast();
@@ -131,11 +141,7 @@ class Tnt extends Obstacle {
         }
         super.getObstacle().setY(super.getObstacle().getY()+ vJumpSpeed);
         super.getObstacle().setX(super.getObstacle().getX() +hJumpSpeed);
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.addAll(Game.getPlatformList());
-        objects.addAll(Game.getChestList());
-        objects.addAll(Game.getHeroWrap());
-        objects.addAll(Game.getTntList());
+
 
         for(Object object : objects){
             if(collision(object)){
@@ -198,9 +204,8 @@ class Tnt extends Obstacle {
             }
 
             // Right side collision of hero with orc left
-            if (StaticFunction.rightCollision(super.getObstacle(), objectImage, 10*Game.gethSpeed()+100)) {
+            if (StaticFunction.rightCollision(super.getObstacle(), objectImage, 10*Game.getHSpeed()+100)) {
                 Game.sethSpeed(0);
-                System.out.println("fjbdckabszbdcb");
                 if(hitCount==1){
                     hitCount=2;
                 } else if(hitCount==0){
@@ -214,9 +219,8 @@ class Tnt extends Obstacle {
             }
 
             // Right side collision of hero with orc left
-            if (StaticFunction.leftCollision(super.getObstacle(), objectImage, 10*Game.gethSpeed()+100)) {
+            if (StaticFunction.leftCollision(super.getObstacle(), objectImage, 10*Game.getHSpeed()+100)) {
                 Game.sethSpeed(0);
-                System.out.println("fjbdckabszbdcb");
 
                 if(hitCount==1){
                     hitCount=2;

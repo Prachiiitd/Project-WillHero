@@ -1,13 +1,11 @@
 package WillHero;
 
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -38,10 +36,6 @@ public abstract class Chest implements Serializable {
         this.x = x;
     }
 
-    public void setY(double y) {
-        this.y = y;
-    }
-
     public double getX() {
         return x;
     }
@@ -70,10 +64,6 @@ public abstract class Chest implements Serializable {
         }  catch (Exception e) {
             throw new NullPointerException("OpenChest couldn't be loaded");
         }
-    }
-
-    public boolean isClose() {
-        return isClose;
     }
 
     public ImageView getChest() {
@@ -110,6 +100,9 @@ public abstract class Chest implements Serializable {
     }
 
     public void motion(){
+        if(!StaticFunction.getStartit()){
+            return;
+        }
         this.chest.setY(this.y+=jumpSpeed);
         jumpSpeed += dy;
 
@@ -134,7 +127,7 @@ class CoinChest extends Chest{
     public CoinChest(double x, double y) {
         super(x, y);
         Random random = new Random();
-        this.coins = new Coin[random.nextInt(0, 12) + 2];;
+        this.coins = new Coin[random.nextInt(0, 12) + 2];
     }
 
     @Override
@@ -156,7 +149,7 @@ class WeaponChest extends  Chest{
         super(x, y);
         Random random = new Random();
         Weapon[] weaponList = {new Weapon1(5,100,false, false,0, 0), new Weapon2(3,100,false, false,0 ,0)};
-        weapon = weaponList[random.nextInt(1,2)];
+        weapon = weaponList[random.nextInt(0,2)];
     }
 
     @Override
@@ -164,16 +157,24 @@ class WeaponChest extends  Chest{
 
         if(weapon instanceof Weapon1){
             hero.getHelmet().setChoice(0);
-            hero.getHelmet().getWeapon(0).setActivate(true, true);
-            hero.getHelmet().getWeapon(0).setX(hero.getX() + 5);
-            hero.getHelmet().getWeapon(0).setY(hero.getY() + 5);
+            if(hero.getHelmet().getWeapon(0).isActive()) {
+                hero.getHelmet().getWeapon(0).upgrade();
+            } else {
+                hero.getHelmet().getWeapon(0).setActivate(true, true);
+                hero.getHelmet().getWeapon(0).setX(hero.getX() + 5);
+                hero.getHelmet().getWeapon(0).setY(hero.getY() + 5);
+            }
         }
 
         if(weapon instanceof Weapon2){
             hero.getHelmet().setChoice(1);
-            hero.getHelmet().getWeapon(1).setActivate(true, true);
-            hero.getHelmet().getWeapon(1).setX(hero.getX());
-            hero.getHelmet().getWeapon(1).setY(hero.getHero().getFitHeight() + hero.getY() - 15);
+            if(hero.getHelmet().getWeapon(0).isActive()) {
+                hero.getHelmet().getWeapon(0).upgrade();
+            } else {
+                hero.getHelmet().getWeapon(1).setActivate(true, true);
+                hero.getHelmet().getWeapon(1).setX(hero.getX());
+                hero.getHelmet().getWeapon(1).setY(hero.getHero().getFitHeight() + hero.getY() - 15);
+            }
         }
     }
 }

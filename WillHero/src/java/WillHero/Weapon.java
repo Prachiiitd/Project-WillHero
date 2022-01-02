@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public abstract class Weapon implements Serializable {
 
-    private transient ImageView weaponImage;
+    private final transient ImageView weaponImage;
     private boolean active;
     private boolean visible;
 
@@ -54,10 +54,6 @@ public abstract class Weapon implements Serializable {
         return visible;
     }
 
-    public void setWeapon() {
-        this.weaponImage = setWeaponImage();
-    }
-
     public abstract ImageView setWeaponImage();
 
     public ImageView getWeaponImage() {
@@ -81,7 +77,7 @@ public abstract class Weapon implements Serializable {
     }
 
     public void collision(Orc orc) {
-        if (orc.getOrc().getBoundsInParent().intersects(weaponImage.getBoundsInParent())) {
+        if (orc.getOrc().getBoundsInParent().intersects(weaponImage.getBoundsInParent()) && visible && active) {
             orc.setHp(orc.getHp() - damage);
         }
     }
@@ -98,7 +94,7 @@ public abstract class Weapon implements Serializable {
 
     public abstract void attack(Hero hero);
 
-    public abstract void upgrade(ImageView character);
+    public abstract void upgrade();
 }
 
 class Weapon1 extends Weapon implements Cloneable{
@@ -109,10 +105,8 @@ class Weapon1 extends Weapon implements Cloneable{
         super(damage, range, active, visible, x, y);
         this.fTimeline = null;
         this.bTimeline = null;
-        StaticFunction.setRotation(this.getWeaponImage(), 360, 100, -1, false);
+        StaticFunction.setRotation(this.getWeaponImage(), 100, -1, false);
     }
-
-//gane kyu bnd kr die??????????? aavaz bdhao
 
     @Override
     public Weapon clone() {
@@ -143,7 +137,7 @@ class Weapon1 extends Weapon implements Cloneable{
 
     @Override
     public void attack(Hero hero) {
-        System.out.println("Weapon 1 attack");
+//        System.out.println("Weapon 1 attack");
         Weapon1 c_weapon = (Weapon1) this.clone();
 
         if (fTimeline != null && fTimeline.getStatus() == Animation.Status.RUNNING) {
@@ -167,13 +161,13 @@ class Weapon1 extends Weapon implements Cloneable{
     }
 
     @Override
-    public void upgrade(ImageView character) {
-        super.setRange(getRange()+1);
-        super.setDamage(getDamage()+1);
+    public void upgrade() {
+        super.setRange(getRange()+5);
+        super.setDamage(getDamage()+10);
     }
 
     private void attackAnimation(Weapon c_weapon, int i) {
-        System.out.println("Weapon 1 attack in progress");
+//        System.out.println("Weapon 1 attack in progress");
         c_weapon.getWeaponImage().setX(c_weapon.getWeaponImage().getX() + i);
     }
 }
@@ -207,7 +201,7 @@ class Weapon2 extends Weapon {
 
     @Override
     public void attack(Hero hero) {
-        System.out.println("Weapon 2 attack");
+//        System.out.println("Weapon 2 attack");
         if (fTimeline != null && fTimeline.getStatus() == Animation.Status.RUNNING) {
             fTimeline.stop();
         }
@@ -233,8 +227,8 @@ class Weapon2 extends Weapon {
     }
 
     @Override
-    public void upgrade(ImageView character) {
-        super.setRange(getRange()+3);
+    public void upgrade() {
+        super.setRange(getRange()+10);
         super.setDamage(getDamage()+10);
     }
 }

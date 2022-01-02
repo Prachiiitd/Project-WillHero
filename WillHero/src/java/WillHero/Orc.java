@@ -76,26 +76,37 @@ public abstract class Orc implements Serializable {
     }
 
     public void jump() {
+        ArrayList<Object> objects = new ArrayList<>();
+        try {
 
-        this.orc.setY(y+=jumpSpeed);
+            objects.addAll(Game.getPlatformList());
+            objects.addAll(Game.getChestList());
+            objects.addAll(Game.getOrcList());
+            objects.addAll(Game.getHeroWrap());
+        }
+        catch (NullPointerException e) {
+            System.out.println("One of the arraylist is null in orc");
+        }
 
-        if(hSpeed > 0) {
+
+        if (!StaticFunction.getStartit()) {
+            return;
+        }
+
+        this.orc.setY(y += jumpSpeed);
+
+        if (hSpeed > 0) {
             hSpeed -= 0.01;
             this.orc.setX(x += hSpeed);
-        }else if(hSpeed < 0){
-            hSpeed+= 0.01;
-            this.orc.setX(x-=this.dy);
+        } else if (hSpeed < 0) {
+            hSpeed += 0.01;
+            this.orc.setX(x -= this.dy);
         }
 
         jumpSpeed += dy;
         if (hp <= 0) {
             this.setAlive(false);
         }
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.addAll(Game.getPlatformList());
-        objects.addAll(Game.getChestList());
-        objects.addAll(Game.getOrcList());
-        objects.addAll(Game.getHeroWrap());
 
         for (Object object : objects) {
             if (collision(object)) {
@@ -109,17 +120,19 @@ public abstract class Orc implements Serializable {
     }
 
     public void destroy() {
-        if (tl != null && tl.getStatus() == Animation.Status.RUNNING) this.tl.stop();
+        if (!isAlive) {
+            if (tl != null && tl.getStatus() == Animation.Status.RUNNING) this.tl.stop();
 
-        Image image = new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("marneKeBad.png")));
-        this.orc.setImage(image);
-        StaticFunction.setRotation(this.orc, 360, 500, -1, false);
-        tl = new Timeline(new KeyFrame(Duration.millis(5), e -> {
-            this.orc.setY(this.orc.getY() + 2);
-            this.orc.setX(this.orc.getX() + 0.5);
-        }));
-        tl.setCycleCount(Timeline.INDEFINITE);
-        tl.play();
+            Image image = new Image(Objects.requireNonNull(this.getClass().getResourceAsStream("marneKeBad.png")));
+            this.orc.setImage(image);
+            StaticFunction.setRotation(this.orc, 500, -1, false);
+            tl = new Timeline(new KeyFrame(Duration.millis(5), e -> {
+                this.orc.setY(this.orc.getY() + 2);
+                this.orc.setX(this.orc.getX() + 0.5);
+            }));
+            tl.setCycleCount(Timeline.INDEFINITE);
+            tl.play();
+        }
     }
 
     public ImageView getOrc() {
@@ -132,26 +145,26 @@ public abstract class Orc implements Serializable {
 
         if (object instanceof Platform platform) {
 //            top side collision with platform
-            if (StaticFunction.bottomCollision(orc, platform.getIsLand(), 4*jumpSpeed + 3)) {
+            if (StaticFunction.bottomCollision(orc, platform.getIsLand(), 8 * jumpSpeed + 3)) {
                 return true;
             }
         }
 
         if (object instanceof Orc orci) {
-            if (StaticFunction.bottomCollision(orc, orci.getOrc(), 4*jumpSpeed + 3)) {
+            if (StaticFunction.bottomCollision(orc, orci.getOrc(), 4 * jumpSpeed + 3)) {
                 return true;
             }
         }
 
         if (object instanceof Obstacle tnt) {
 
-            if(orc.getBoundsInParent().intersects(tnt.getObstacle().getBoundsInParent()) && ((Tnt)tnt).isBlast()){
+            if (orc.getBoundsInParent().intersects(tnt.getObstacle().getBoundsInParent()) && ((Tnt) tnt).isBlast()) {
                 isAlive = false;
                 destroy();
             }
 
             // Bottom side collision of orc with tnt top
-            if (StaticFunction.bottomCollision(orc, tnt.getObstacle(), 4*jumpSpeed + 3)) {
+            if (StaticFunction.bottomCollision(orc, tnt.getObstacle(), 4 * jumpSpeed + 3)) {
 
                 if ((((Tnt) tnt).getHitCount()) == 0) {
                     ((Tnt) tnt).setHitCount(1);
@@ -167,18 +180,18 @@ public abstract class Orc implements Serializable {
 
         if (object instanceof Chest chest) {
             // Bottom side collision of hero with orc top
-            if (StaticFunction.bottomCollision(orc, chest.getChest(), 4*jumpSpeed + 3)) {
+            if (StaticFunction.bottomCollision(orc, chest.getChest(), 4 * jumpSpeed + 3)) {
                 return true;
             }
 
             // Right side collision of hero with orc left
-            if (StaticFunction.rightCollision(orc, chest.getChest(), 10*Game.gethSpeed()+10)) {
+            if (StaticFunction.rightCollision(orc, chest.getChest(), 12 * Game.getHSpeed() + 10)) {
                 chest.setX(chest.getX() + 5);
                 chest.getChest().setX(chest.getX());
             }
 
             // Left side collision of hero with orc right
-            if (StaticFunction.leftCollision(orc, chest.getChest(), 10*Game.gethSpeed()+10)) {
+            if (StaticFunction.leftCollision(orc, chest.getChest(), 12 * Game.getHSpeed() + 10)) {
                 chest.setX(chest.getX() - 5);
                 chest.getChest().setX(chest.getX());
             }
@@ -186,19 +199,19 @@ public abstract class Orc implements Serializable {
 
         if (object instanceof Hero hero) {
 //             Left side collision of orc with hero right
-            if (StaticFunction.leftCollision(orc, hero.getHero(), 10*Game.gethSpeed()+10)) {
+            if (StaticFunction.leftCollision(orc, hero.getHero(), 12 * Game.getHSpeed() + 10)) {
                 Game.sethSpeed(0);
                 hSpeed = 1.5;
             }
 
 //             right side collision of orc with hero right
-            if (StaticFunction.rightCollision(orc, hero.getHero(), 10*Game.gethSpeed()+10)) {
+            if (StaticFunction.rightCollision(orc, hero.getHero(), 12 * Game.getHSpeed() + 10)) {
                 Game.sethSpeed(0);
                 hSpeed = -1.5;
             }
 
             // Bottom side collision of orc with hero top
-            return StaticFunction.bottomCollision(orc, hero.getHero(), 4*jumpSpeed + 3);
+            return StaticFunction.bottomCollision(orc, hero.getHero(), 4 * jumpSpeed + 3);
         }
         return false;
     }
@@ -218,7 +231,7 @@ public abstract class Orc implements Serializable {
 class RedOrc extends Orc {
 
     public RedOrc(double x, double y) {
-        super(x, y, 170);
+        super(x, y, 100);
     }
 
     @Override
@@ -238,7 +251,7 @@ class RedOrc extends Orc {
     }
 
     public void increaseReward(Hero hero) {
-        if(super.isRewarded()) return;
+        if (super.isRewarded()) return;
         super.setRewarded(true);
         hero.setReward(hero.getReward() + 2);
     }
@@ -247,9 +260,8 @@ class RedOrc extends Orc {
 
 class GreenOrc extends Orc {
 
-
     public GreenOrc(double x, double y) {
-        super(x, y, 150);
+        super(x, y, 80);
     }
 
     @Override
@@ -266,9 +278,10 @@ class GreenOrc extends Orc {
             throw new NullPointerException("Coin couldn't be loaded");
         }
     }
+
     @Override
     public void increaseReward(Hero hero) {
-        if(super.isRewarded()) return;
+        if (super.isRewarded()) return;
         super.setRewarded(true);
         hero.setReward(hero.getReward() + 1);
 
@@ -283,7 +296,7 @@ class BossOrc extends Orc {
     public BossOrc(double x, double y) {
         super(x, y, 450);
 
-        this.hSpeed =0;
+        this.hSpeed = 0;
     }
 
     public void sethSpeed(double hSpeed) {
@@ -305,6 +318,7 @@ class BossOrc extends Orc {
             throw new NullPointerException("Coin couldn't be loaded");
         }
     }
+
     @Override
     public void jump() {
         super.jump();
@@ -312,18 +326,8 @@ class BossOrc extends Orc {
     }
 
     @Override
-    public boolean collision(Object object) {
-
-        if (object instanceof Platform platform) {
-//            top side collision with platform
-            return StaticFunction.bottomCollision(super.getOrc(), platform.getIsLand(), 4 * super.getJumpSpeed() + 3);
-        }
-        return false;
-    }
-
-    @Override
     public void increaseReward(Hero hero) {
-        if(super.isRewarded()) return;
+        if (super.isRewarded()) return;
         super.setRewarded(true);
         hero.setReward(hero.getReward() + 5);
     }

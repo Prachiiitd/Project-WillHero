@@ -1,19 +1,14 @@
 package WillHero;
 
-import WillHero.MainMenu;
-import WillHero.ReGenerateHero;
 import javafx.animation.*;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Point3D;
-import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -21,6 +16,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -30,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -39,13 +37,13 @@ import java.util.Optional;
 
 public class StaticFunction {
 
-
-    ArrayList<String> list = new ArrayList<>();
     private static final ReGenerateHero reGenerateHero = new ReGenerateHero();
     private static final ArrayList<Hero> heroes = new ArrayList<>();
     private static final ArrayList<String> heroNames = new ArrayList<>();
+    private static boolean startit = false;
     private static boolean ft=false;
-
+    private static boolean play=true;
+    private static MediaPlayer mediaPlayer;
 
     static void getPlayers(ArrayList<String> players) {
 
@@ -56,10 +54,7 @@ public class StaticFunction {
                     heroes.add(hero);
                     heroNames.add(hero.getName());
                 } else if (!(hero.getLocation() == heroes.get(heroNames.indexOf(hero.getName())).getLocation() )|| !(hero.getReward() == heroes.get(heroNames.indexOf(hero.getName())).getReward())) {
-//                    heroes.replaceAll(heroes.indexOf(heroes.get(heroNames.indexOf(hero.getName()))), hero);
                     heroes.set(heroNames.indexOf(hero.getName()), hero);
-//                    heroes.set(heroes.getindex(heroNames.indexOf(hero.getName())), hero);
-//                    System.out.println(hero.getName() + "In static function");
                 }
             }catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -107,23 +102,7 @@ public class StaticFunction {
         return (Stage) node.getScene().getWindow();
     }
 
-    static void onHover(Node node, Point3D axis) {
-        RotateTransition rotate = new RotateTransition();
-        rotate.setNode(node);
-        rotate.setByAngle(360);
-        rotate.setAxis(axis);
-        rotate.setCycleCount(RotateTransition.INDEFINITE);
-        rotate.setDuration(Duration.millis(1000));
-        rotate.play();
-    }
-
-    static void offHover(Node node) {
-        RotateTransition rotate = new RotateTransition();
-        rotate.setNode(node);
-        rotate.stop();
-    }
-
-    static FXMLLoader setScene(Stage stage, URL toFrame, String title) throws IOException {
+    static void setScene(Stage stage, URL toFrame, String title) throws IOException {
 
         Image icon = new Image(new FileInputStream(Objects.requireNonNull(StaticFunction.class.getResource("mainIcon.png")).getPath()));
         stage.setTitle("WillHero: " + title);
@@ -136,78 +115,110 @@ public class StaticFunction {
 
         stage.setScene(scene);
         stage.show();
-        return loader;
     }
 
-    static TranslateTransition setTranslation(Node node, float xMotion, float yMotion, int duration, int cycle, boolean reverse) {
+    static void setTranslation(Node node, float xMotion, float yMotion, int duration, int cycle) {
         TranslateTransition trFloatingName = new TranslateTransition();
         trFloatingName.setNode(node);
-        trFloatingName.setByY(xMotion);
+        trFloatingName.setByX(xMotion);
         trFloatingName.setByY(yMotion);
         trFloatingName.setDuration(Duration.millis(duration));
         trFloatingName.setCycleCount(cycle);
-        trFloatingName.setAutoReverse(reverse);
+        trFloatingName.setAutoReverse(true);
         trFloatingName.play();
-        return trFloatingName;
     }
 
-    static RotateTransition setRotation(Node node, int angle, int duration, int cycle, boolean reverse) {
-        RotateTransition trFloatingName6 = new RotateTransition();
+    static void setRotation(Node node, int duration, int cycle, boolean reverse) {
         RotateTransition trFloatingName = new RotateTransition();
         trFloatingName.setNode(node);
         trFloatingName.setAxis(Rotate.Z_AXIS);
         trFloatingName.setInterpolator(Interpolator.LINEAR);
         trFloatingName.setDuration(Duration.millis(duration));
         trFloatingName.setCycleCount(cycle);
-        trFloatingName.setByAngle(angle);
+        trFloatingName.setByAngle(360);
         trFloatingName.setAutoReverse(reverse);
         trFloatingName.play();
-        return trFloatingName;
     }
 
-    static ScaleTransition setScaling(Node node, double setByX, double setByY, int duration, int cycle, boolean reverse) {
+    static void setScaling(Node node) {
         ScaleTransition scaleTransition = new ScaleTransition();
-        scaleTransition.setDuration(Duration.millis(duration));
-        scaleTransition.setAutoReverse(reverse);
-        scaleTransition.setCycleCount(cycle);
-        scaleTransition.setByX(setByX);
-        scaleTransition.setByY(setByY);
+        scaleTransition.setDuration(Duration.millis(50));
+        scaleTransition.setAutoReverse(true);
+        scaleTransition.setCycleCount(2);
+        scaleTransition.setByX(0);
+        scaleTransition.setByY(-0.1);
         scaleTransition.setNode(node);
         scaleTransition.play();
-        return scaleTransition;
+    }
+  static void setSounds() {
+        if(mediaPlayer!=null)
+        mediaPlayer.stop();
+      if(mediaPlayer==null){
+          Media sound;
+          sound = new Media(new File(Objects.requireNonNull(StaticFunction.class.getResource("background.mp3")).getFile()).toURI().toString());
+          mediaPlayer = new MediaPlayer(sound);
+          mediaPlayer.setStartTime(Duration.seconds(0));
+//            mediaPlayer.setStartTime(Duration.seconds(100));
+          mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+
+      }
+      if(!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
+      }
+
+      if(play)
+            mediaPlayer.play();
+  }
+
+    static void setPlay(Boolean p){
+        play=p;
+    }
+    static Boolean getPlay(){
+        return play;
+    }
+
+    static void setStartit(Boolean p){
+        startit=p;
+    }
+    static Boolean getStartit(){
+        return startit;
     }
 
     static Background defaultBackground() {
-        String startbg = "#01D9F8FF";
+        String startBg = "#01D9F8FF";
         if(ft){
-            startbg ="000000";
+            startBg ="000000";
 
         }
         else{
-            startbg ="#01D9F8FF";
+            startBg ="#01D9F8FF";
         }
-        String endbg = "#C4F4FEFF";
+        String endBg = "#C4F4FEFF";
         return new Background(new BackgroundFill(
                 new LinearGradient(
                         0, 0, 0, 1, true,                  //sizing
                         CycleMethod.NO_CYCLE,                 //cycling
-                        new Stop(0, Color.web(startbg)),    //colors
-                        new Stop(1, Color.web(endbg))
+                        new Stop(0, Color.web(startBg)),    //colors
+                        new Stop(1, Color.web(endBg))
                 ), CornerRadii.EMPTY, Insets.EMPTY)
         );
     }
 
-    static void setft(Boolean f){
+    static void setFt(Boolean f){
         ft=f;
     }
-    static Boolean getft(){
+    static Boolean getFt(){
         return ft;
     }
+
 
 
     static void mainMenuFn(MouseEvent mainMenu, ImageView mainMenuIcon, Timeline timeline) {
         StaticFunction.clickResponse(mainMenuIcon);
 
+        mainMenu(mainMenu, timeline);
+    }
+
+    static void mainMenu(MouseEvent mainMenu, Timeline timeline) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to go to MainMenu?", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Back to Main Menu");
         alert.initStyle(StageStyle.UNDECORATED);
@@ -222,6 +233,16 @@ public class StaticFunction {
                 e.printStackTrace();
             }
         }
+    }
+
+    static void setHeroTable(TableView<Hero> table, ArrayList<Hero> heroes, TableColumn<Hero, String> name, TableColumn<Hero, Integer> reward, TableColumn<Hero, Integer> location) {
+        ObservableList<Hero> data = table.getItems();
+        data.addAll(heroes);
+        table.setItems(data);
+
+        name.setCellValueFactory(new PropertyValueFactory<>( "name" ));
+        reward.setCellValueFactory(new PropertyValueFactory<>( "reward" ));
+        location.setCellValueFactory(new PropertyValueFactory<>( "location" ));
     }
 
     static boolean bottomCollision(ImageView node1, ImageView node2, double margin) {

@@ -1,14 +1,12 @@
 package WillHero;
 
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -37,9 +35,9 @@ public class ResumeGame {
     private ArrayList<Hero> heroes;
     private String gameName;
     TableView<Hero> tableView = new TableView<>();
-    TableColumn<Hero, String> name = new TableColumn<>("name");
-    TableColumn<Hero, Integer> reward = new TableColumn<>("reward");
-    TableColumn<Hero, Integer> location = new TableColumn<>("location");
+    TableColumn<Hero, String> name = new TableColumn<>("Name");
+    TableColumn<Hero, Integer> reward = new TableColumn<>("Reward");
+    TableColumn<Hero, Integer> location = new TableColumn<>("Location");
 
 
 
@@ -73,23 +71,14 @@ public class ResumeGame {
                 e.printStackTrace();
             }
         }
-        ObservableList<Hero> data = tableView.getItems();
-        data.addAll(heroes);
-        tableView.setItems(data);
-
-        name.setCellValueFactory(new PropertyValueFactory<Hero,String>( "name" ));
-        reward.setCellValueFactory(new PropertyValueFactory<Hero,Integer>( "reward" ));
-        location.setCellValueFactory(new PropertyValueFactory<Hero,Integer>( "location" ));
-
+        StaticFunction.setHeroTable(tableView, heroes, name, reward, location);
     }
 
     public void listGame() {
-        // heroes to be loaded on the AnchorPane.
-//        choice = -1;
         tableView.setPrefWidth(500);
-        tableView.setPrefHeight(100);
-        tableView.setLayoutX(380);
-        tableView.setLayoutY(250);
+        tableView.setPrefHeight(300);
+        tableView.setLayoutX(450);
+        tableView.setLayoutY(150);
         tableView.setEditable(false);
         tableView.setFocusTraversable(false);
         tableView.setStyle("-fx-background-color: #000000;");
@@ -108,26 +97,19 @@ public class ResumeGame {
         tableView.getColumns().add(reward);
         tableView.getColumns().add(location);
         this.anchorPane.getChildren().add(tableView);
-//        tableView.setOn
         tableView.setRowFactory( tv -> {
             TableRow<Hero> row = new TableRow<>();
-            row.setOnMouseEntered(event -> {
-                row.setStyle("-fx-background-color: #ADD8E6;");
-            }
-            );
+            row.setOnMouseEntered(event -> row.setStyle("-fx-background-color: #ADD8E6;"));
 
-            row.setOnMouseExited(event -> {
-                row.setStyle("-fx-background-color: #ffffff;");
-                    }
-            );
+            row.setOnMouseExited(event -> row.setStyle("-fx-background-color: #ffffff;"));
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
                     Hero rowData = row.getItem();
                     generatedHero = rowData;
-                    System.out.println(generatedHero.getName()+ "  Hello");
-                    System.out.println(generatedHero.getReward());
-                    System.out.println(generatedHero.getLocation());
-                    System.out.println(rowData);
+//                    System.out.println(generatedHero.getName()+ "  Hello");
+//                    System.out.println(generatedHero.getReward());
+//                    System.out.println(generatedHero.getLocation());
+//                    System.out.println(rowData);
                     for(int i = 0; i < heroes.size(); i++) {
                         if(generatedHero.getName().equals(heroes.get(i).getName())) {
                             choice = i;
@@ -158,12 +140,12 @@ public class ResumeGame {
     }
 
     private void resumeGame(){
-        System.out.println(generatedHero.getName());
-        System.out.println(generatedPlatform.size());
-        System.out.println(generatedChest.size());
-        System.out.println(generatedCoin.size());
-        System.out.println(generatedObstacle.size());
-        System.out.println(generatedOrc.size());
+//        System.out.println(generatedHero.getName());
+//        System.out.println(generatedPlatform.size());
+//        System.out.println(generatedChest.size());
+//        System.out.println(generatedCoin.size());
+//        System.out.println(generatedObstacle.size());
+//        System.out.println(generatedOrc.size());
 
 //        stage.close();
 

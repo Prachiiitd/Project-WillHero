@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.WeakHashMap;
 
 public class RegenerateSprite {
 
@@ -14,7 +13,6 @@ public class RegenerateSprite {
     private final ArrayList<Obstacle> generatedObstacles;
     private final ArrayList<Chest> generatedChests;
     private final ArrayList<Orc> generatedOrcs;
-    private  int location;
 
     private ArrayList<Object> gameObjects;
 
@@ -29,7 +27,7 @@ public class RegenerateSprite {
     }
 
     private void deserialize(String fileName) throws IOException, ClassNotFoundException {
-        gameObjects = new ArrayList<Object>();
+        gameObjects = new ArrayList<>();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
             while (true) {
                 try {
@@ -85,9 +83,6 @@ public class RegenerateSprite {
                     _orc  = new BossOrc(orc.getX(), orc.getY());
                 }
                 generatedOrcs.add(_orc);
-
-            } else if(obj instanceof Hero hero) {
-                location=hero.getLocation()*100;
             }
 
             else {

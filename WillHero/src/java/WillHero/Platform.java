@@ -1,7 +1,5 @@
 package WillHero;
 
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -80,6 +78,6 @@ public class Platform implements Serializable {
     }
 
     private void motion() {
-        StaticFunction.setTranslation(this.getIsLand(),0,speed,2000,-1,true);
+        StaticFunction.setTranslation(this.getIsLand(),0,speed,2000,-1);
     }
 }

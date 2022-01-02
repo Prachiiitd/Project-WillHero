@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Setting">
+<AnchorPane maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity"  prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WillHero.Setting">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" height="346.0" layoutX="380.0" layoutY="180.0" stroke="#56bee8" strokeType="INSIDE" strokeWidth="5.0" width="545.0">
          <fill>
@@ -34,7 +34,7 @@
             </RadialGradient>
          </fill>
       </Rectangle>
-      <Button fx:id="changeBg" layoutX="550.0" layoutY="220.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="207.0" text="Change Background" textAlignment="CENTER" onMousePressed="#ChangeBackground">
+      <Button layoutX="550.0" layoutY="220.0" mnemonicParsing="false" onMousePressed="#ChangeBackground" prefHeight="34.0" prefWidth="207.0" text="Change Background" textAlignment="CENTER">
          <font>
             <Font name="DejaVu Sans Bold" size="14.0" />
          </font>
@@ -60,7 +60,7 @@
             </LinearGradient>
          </textFill>
       </Button>
-      <Button layoutX="550.0" layoutY="280.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="207.0" text="Sounnd OFF/ON" textAlignment="CENTER">
+      <Button layoutX="550.0" layoutY="280.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="207.0" onMousePressed="#setSounds" text="Sounnd OFF/ON" textAlignment="CENTER">
          <font>
             <Font name="DejaVu Sans Bold" size="14.0" />
          </font>
@@ -86,7 +86,7 @@
             </LinearGradient>
          </textFill>
       </Button>
-      <Button layoutX="550.0" layoutY="330.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="207.0" text="Help" textAlignment="CENTER">
+      <Button layoutX="550.0" layoutY="330.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="207.0" text="Help" textAlignment="CENTER" onMousePressed="#getHelp">
          <font>
             <Font name="DejaVu Sans Bold" size="14.0" />
          </font>
@@ -112,7 +112,7 @@
             </LinearGradient>
          </textFill>
       </Button>
-      <Button fx:id="exit" layoutX="550.0" layoutY="380.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="207.0" text="Exit" textAlignment="CENTER" onMousePressed="#exit">
+      <Button layoutX="550.0" layoutY="380.0" mnemonicParsing="false" onMousePressed="#exit" prefHeight="34.0" prefWidth="207.0" text="Exit" textAlignment="CENTER">
          <font>
             <Font name="DejaVu Sans Bold" size="14.0" />
          </font>

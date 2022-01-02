@@ -4,14 +4,12 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -26,8 +24,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ArenaScreen implements Initializable {
-    @FXML
-    private AnchorPane screenAnchorPane;
+
     @FXML
     private ImageView mainMenuIcon;
     @FXML
@@ -45,8 +42,6 @@ public class ArenaScreen implements Initializable {
 
     private static Timeline tl;
     private Hero hero;
-    private StackPane stackPane;
-    private Group screenObj;
     private ArrayList<Platform> platforms;
     private ArrayList<Orc> orcs;
     private ArrayList<Chest> chests;
@@ -56,27 +51,23 @@ public class ArenaScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        StaticFunction.setTranslation(floatingName, 0, 100, 1000, TranslateTransition.INDEFINITE, true);
-        StaticFunction.setRotation(resumeIcon, 360, 1000, 2, true);
-        StaticFunction.setRotation(restartIcon, 360, 1000, 2, true);
-//        StaticFunction.setRotation(pauseIcon, 360, 1000, 2, true);
-        StaticFunction.setRotation(saveIcon, 360, 1000, 2, true);
-        StaticFunction.setRotation(mainMenuIcon, 360, 1000, 2, true);
+        StaticFunction.setTranslation(floatingName, 0, 100, 1000, TranslateTransition.INDEFINITE);
+        StaticFunction.setRotation(resumeIcon, 1000, 2, true);
+        StaticFunction.setRotation(restartIcon, 1000, 2, true);
+        StaticFunction.setRotation(saveIcon, 1000, 2, true);
+        StaticFunction.setRotation(mainMenuIcon, 1000, 2, true);
         StaticFunction.bestLocation(bestLocation);
         StaticFunction.bestReward(bestReward);
     }
 
-
-    public void start(Timeline tl, Hero hero, StackPane stackPane, ArrayList<Chest> chests, ArrayList<Orc> orcs, ArrayList<Coin> coins, ArrayList<Obstacle> tnts, ArrayList<Platform> platforms,AnchorPane screenAnchorPane) {
+    public void start(Timeline tl, Hero hero, ArrayList<Chest> chests, ArrayList<Orc> orcs, ArrayList<Coin> coins, ArrayList<Obstacle> tnts, ArrayList<Platform> platforms) {
         ArenaScreen.tl = tl;
         this.hero = hero;
-        this.stackPane = stackPane;
         this.platforms = platforms;
         this.orcs = orcs;
         this.chests = chests;
         this.tnts = tnts;
         this.coins = coins;
-        this.screenAnchorPane = screenAnchorPane;
     }
 
 
@@ -89,9 +80,7 @@ public class ArenaScreen implements Initializable {
             for(Platform platform : platforms) {
                 out.writeObject(platform);
             }
-            for(Orc orc : orcs) {
-                out.writeObject(orc);
-            }
+
             for(Chest chest : chests) {
                 out.writeObject(chest);
             }
@@ -100,6 +89,9 @@ public class ArenaScreen implements Initializable {
             }
             for(Coin coin : coins) {
                 out.writeObject(coin);
+            }
+            for(Orc orc : orcs) {
+                out.writeObject(orc);
             }
 
         } finally {
@@ -147,29 +139,18 @@ public class ArenaScreen implements Initializable {
         StackPane stackPane = (StackPane) vBox.getChildren().get(0);
         try {
             stackPane.getChildren().remove(stackPane.getChildren().get(1));
+
         } catch (NullPointerException e) {
             System.out.println("Already Deleted");
         }
     }
 
-
     public void mainMenu(MouseEvent mainMenu) {
         StaticFunction.clickResponse(this.mainMenuIcon);
+///
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to go to MainMenu?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Back to Main Menu");
-        alert.initStyle(StageStyle.UNDECORATED);
+        StaticFunction.mainMenu(mainMenu, tl);
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            tl.stop();
-            MainMenu _mainMenu = new MainMenu();
-            try {
-                _mainMenu.start(StaticFunction.getStage(mainMenu));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @FXML
@@ -182,7 +163,7 @@ public class ArenaScreen implements Initializable {
     }
 
     @FXML
-    public void save(MouseEvent save) {
+    public void save() {
         StaticFunction.clickResponse(this.saveIcon);
 
         String currentDir = System.getProperty("user.dir") + "/WillHero/src/java/";

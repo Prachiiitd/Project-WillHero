@@ -22,7 +22,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <TableView fx:id="table" fixedCellSize="-5.0" layoutX="438.0" layoutY="252.0" prefHeight="310.0" prefWidth="453.0">
+      <TableView fx:id="table" fixedCellSize="-5.0" layoutX="452.0" layoutY="176.0" prefHeight="310.0" prefWidth="453.0">
          <columns>
             <TableColumn fx:id="name" minWidth="50.0" prefWidth="150.0" sortable="false" text="Name" />
             <TableColumn fx:id="location" minWidth="0.0" prefWidth="150.0" text="Location" />

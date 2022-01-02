@@ -15,7 +15,7 @@ public class Coin implements Serializable {
 
     private transient ImageView coin;
     private double x;
-    private double y;
+    private final double y;
 
     public Coin(double x, double y) {
         this.x = x;
@@ -46,10 +46,6 @@ public class Coin implements Serializable {
 
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public void setX(double x) {
